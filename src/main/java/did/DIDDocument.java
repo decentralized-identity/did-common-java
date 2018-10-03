@@ -22,6 +22,7 @@ import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
+import com.google.gson.JsonNull;
 
 public class DIDDocument {
 
@@ -221,6 +222,8 @@ public class DIDDocument {
 
 	@SuppressWarnings("unchecked")
 	public String toJson() throws IOException, JsonLdError {
+
+		if (this.jsonLdObject == null) return "null";
 
 		Map<String, Object> jsonLdObject = (LinkedHashMap<String, Object>) JsonUtils.fromInputStream(DIDDocument.class.getResourceAsStream("diddocument-skeleton.jsonld"));
 		jsonLdObject.putAll(this.jsonLdObject);
