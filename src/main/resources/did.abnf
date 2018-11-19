@@ -1,7 +1,7 @@
 did-reference      = did [ "/" did-path ] [ "?" did-query ] [ "#" did-fragment ] ;
 did                = "did:" method ":" specific-idstring [ ";" service ] ;
-method             = 1*namechar ;
-namechar           = %x61-7A / DIGIT ;
+method             = 1*methodchar ;
+methodchar         = %x61-7A / DIGIT ;
 specific-idstring  = idstring *( ":" idstring ) ;
 idstring           = 1*idchar ;
 idchar             = ALPHA / DIGIT / "." / "-" ;
