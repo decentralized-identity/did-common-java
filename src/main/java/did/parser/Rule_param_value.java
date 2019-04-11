@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_namechar.java
+ * Rule_param_value.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Wed Apr 10 18:08:05 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_namechar extends Rule
+final public class Rule_param_value extends Rule
 {
-  public Rule_namechar(String spelling, ArrayList<Rule> rules)
+  public Rule_param_value(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_namechar extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_namechar parse(ParserContext context)
+  public static Rule_param_value parse(ParserContext context)
   {
-    context.push("namechar");
+    context.push("param-value");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -41,42 +41,18 @@ final public class Rule_namechar extends Rule
       if (parsed)
       {
         boolean f1 = true;
+        @SuppressWarnings("unused")
         int c1 = 0;
-        for (int i1 = 0; i1 < 1 && f1; i1++)
+        while (f1)
         {
-          Rule rule = Terminal_NumericValue.parse(context, "%x61-7A", "[\\x61-\\x7A]", 1);
+          Rule rule = Rule_param_char.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
             c1++;
           }
         }
-        parsed = c1 == 1;
-      }
-      if (parsed)
-      {
-        as1.add(a1);
-      }
-      context.index = s1;
-    }
-    {
-      int s1 = context.index;
-      ParserAlternative a1 = new ParserAlternative(s1);
-      parsed = true;
-      if (parsed)
-      {
-        boolean f1 = true;
-        int c1 = 0;
-        for (int i1 = 0; i1 < 1 && f1; i1++)
-        {
-          Rule rule = Rule_DIGIT.parse(context);
-          if ((f1 = rule != null))
-          {
-            a1.add(rule, context.index);
-            c1++;
-          }
-        }
-        parsed = c1 == 1;
+        parsed = true;
       }
       if (parsed)
       {
@@ -98,16 +74,16 @@ final public class Rule_namechar extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_namechar(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_param_value(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("namechar", parsed);
+    context.pop("param-value", parsed);
 
-    return (Rule_namechar)rule;
+    return (Rule_param_value)rule;
   }
 }
 

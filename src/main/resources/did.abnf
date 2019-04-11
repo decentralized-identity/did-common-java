@@ -1,19 +1,21 @@
-did-reference      = did [ "/" did-path ] [ "?" did-query ] [ "#" did-fragment ] ;
-did                = "did:" method ":" specific-idstring [ ";" service ] ;
-method             = 1*methodchar ;
-methodchar         = %x61-7A / DIGIT ;
-specific-idstring  = idstring *( ":" idstring ) ;
+did                = "did:" method ":" method-specific-id ;
+method             = 1*method-char ;
+method-char        = %x61-7A / DIGIT ;
+method-specific-id = idstring *( ":" idstring ) ;
 idstring           = 1*idchar ;
 idchar             = ALPHA / DIGIT / "." / "-" ;
-service            = 1*namechar *( ";" 1*namechar ) ;
+did-url            = did *( ";" param ) path-abempty
+                     [ "?" query ] [ "#" fragment ] ;
+param              = param-name [ "=" param-value ] ;
+param-name         = 1*param-char ;
+param-value        = *param-char ;
+param-char         = ALPHA / DIGIT / "." / "-" / "_" / pct-encoded ;
 
 
-did-path           = path-rootless ;
-did-query          = query ;
-did-fragment       = fragment ;
-
-
-   path-rootless = segment-nz *( "/" segment ) ;
+      path-abempty  = *( "/" segment ) ;
+      path-absolute = "/" [ segment-nz *( "/" segment ) ] ;
+      path-noscheme = segment-nz-nc *( "/" segment ) ;
+      path-rootless = segment-nz *( "/" segment ) ;
 
    segment       = *pchar ;
    segment-nz    = 1*pchar ;

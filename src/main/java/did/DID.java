@@ -3,6 +3,8 @@ package did;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -16,13 +18,14 @@ import did.parser.Parser;
 import did.parser.ParserException;
 import did.parser.Rule;
 import did.parser.Rule_did;
-import did.parser.Rule_did_fragment;
-import did.parser.Rule_did_path;
-import did.parser.Rule_did_query;
-import did.parser.Rule_did_reference;
+import did.parser.Rule_did_url;
+import did.parser.Rule_fragment;
 import did.parser.Rule_method;
-import did.parser.Rule_service;
-import did.parser.Rule_specific_idstring;
+import did.parser.Rule_method_specific_id;
+import did.parser.Rule_param_name;
+import did.parser.Rule_param_value;
+import did.parser.Rule_path_abempty;
+import did.parser.Rule_query;
 import did.parser.Terminal_NumericValue;
 import did.parser.Terminal_StringValue;
 
@@ -32,11 +35,11 @@ public class DID {
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	private String didReference;
+	private String didUrl;
 	private String did;
 	private String method;
-	private String specificId;
-	private String service;
+	private String methodSpecificId;
+	private Map<String, String> parameters = new HashMap<String, String> ();
 	private String path;
 	private String query;
 	private String fragment;
@@ -45,16 +48,16 @@ public class DID {
 
 	}
 
-	private DID(String didReference) throws IllegalArgumentException, ParserException {
+	private DID(String didUrl) throws IllegalArgumentException, ParserException {
 
-		this.didReference = didReference;
+		this.didUrl = didUrl;
 
 		this.parse();
 	}
 
 	private void parse() throws IllegalArgumentException, ParserException {
 
-		Rule_did_reference rule = (Rule_did_reference) Parser.parse("did-reference", this.didReference);
+		Rule_did_url rule = (Rule_did_url) Parser.parse("did-url", this.didUrl);
 		rule.accept(new DIDVisitor());
 	}
 
@@ -104,31 +107,40 @@ public class DID {
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_specific_idstring rule) {
+		public Object visit(Rule_method_specific_id rule) {
 
-			DID.this.specificId = rule.spelling;
+			DID.this.methodSpecificId = rule.spelling;
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_service rule) {
+		private String param_name = null;
+		
+		public Object visit(Rule_param_name rule) {
 
-			DID.this.service = rule.spelling;
+			param_name = rule.spelling;
+			DID.this.parameters.put(rule.spelling, null);
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_did_path rule) {
+		public Object visit(Rule_param_value rule) {
+
+			DID.this.parameters.put(param_name, rule.spelling);
+			return visitRules(rule.rules);
+		}
+
+		public Object visit(Rule_path_abempty rule) {
 
 			DID.this.path = rule.spelling;
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_did_query rule) {
+		public Object visit(Rule_query rule) {
 
 			DID.this.query = rule.spelling;
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_did_fragment rule) {
+		public Object visit(Rule_fragment rule) {
 
 			DID.this.fragment = rule.spelling;
 			return visitRules(rule.rules);
@@ -157,15 +169,15 @@ public class DID {
 	 */
 
 	@JsonGetter
-	public final String getDidReference() {
+	public final String getDidUrl() {
 
-		return this.didReference;
+		return this.didUrl;
 	}
 
 	@JsonSetter
-	public final void setDidReference(String didReference) {
+	public final void setDidUrl(String didUrl) {
 
-		this.didReference = didReference;
+		this.didUrl = didUrl;
 	}
 
 	@JsonGetter
@@ -193,27 +205,27 @@ public class DID {
 	}
 
 	@JsonGetter
-	public final String getSpecificId() {
+	public final String getMethodSpecificId() {
 
-		return this.specificId;
+		return this.methodSpecificId;
 	}
 
 	@JsonSetter
-	public final void setSpecificId(String specificId) {
+	public final void setMethodSpecificId(String methodSpecificId) {
 
-		this.specificId = specificId;
+		this.methodSpecificId = methodSpecificId;
 	}
 
 	@JsonGetter
-	public final String getService() {
+	public final Map<String, String> getParameters() {
 
-		return this.service;
+		return this.parameters;
 	}
 
 	@JsonSetter
-	public final void setService(String service) {
+	public final void setService(Map<String, String> parameters) {
 
-		this.service = service;
+		this.parameters = parameters;
 	}
 
 	@JsonGetter
@@ -259,18 +271,18 @@ public class DID {
 	@Override
 	public int hashCode() {
 
-		return this.didReference.hashCode();
+		return this.didUrl.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 
-		return this.didReference.equals(obj);
+		return this.didUrl.equals(obj);
 	}
 
 	@Override
 	public String toString() {
 
-		return this.didReference.toString();
+		return this.didUrl.toString();
 	}
 }

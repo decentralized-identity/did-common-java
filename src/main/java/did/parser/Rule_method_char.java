@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_did_fragment.java
+ * Rule_method_char.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Wed Apr 10 18:08:05 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_did_fragment extends Rule
+final public class Rule_method_char extends Rule
 {
-  public Rule_did_fragment(String spelling, ArrayList<Rule> rules)
+  public Rule_method_char(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_did_fragment extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_did_fragment parse(ParserContext context)
+  public static Rule_method_char parse(ParserContext context)
   {
-    context.push("did-fragment");
+    context.push("method-char");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -44,7 +44,32 @@ final public class Rule_did_fragment extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Rule_fragment.parse(context);
+          Rule rule = Terminal_NumericValue.parse(context, "%x61-7A", "[\\x61-\\x7A]", 1);
+          if ((f1 = rule != null))
+          {
+            a1.add(rule, context.index);
+            c1++;
+          }
+        }
+        parsed = c1 == 1;
+      }
+      if (parsed)
+      {
+        as1.add(a1);
+      }
+      context.index = s1;
+    }
+    {
+      int s1 = context.index;
+      ParserAlternative a1 = new ParserAlternative(s1);
+      parsed = true;
+      if (parsed)
+      {
+        boolean f1 = true;
+        int c1 = 0;
+        for (int i1 = 0; i1 < 1 && f1; i1++)
+        {
+          Rule rule = Rule_DIGIT.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -73,16 +98,16 @@ final public class Rule_did_fragment extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_did_fragment(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_method_char(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("did-fragment", parsed);
+    context.pop("method-char", parsed);
 
-    return (Rule_did_fragment)rule;
+    return (Rule_method_char)rule;
   }
 }
 

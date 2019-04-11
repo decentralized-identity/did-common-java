@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_did_query.java
+ * Rule_param_name.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Wed Apr 10 18:08:05 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_did_query extends Rule
+final public class Rule_param_name extends Rule
 {
-  public Rule_did_query(String spelling, ArrayList<Rule> rules)
+  public Rule_param_name(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_did_query extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_did_query parse(ParserContext context)
+  public static Rule_param_name parse(ParserContext context)
   {
-    context.push("did-query");
+    context.push("param-name");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -44,14 +44,23 @@ final public class Rule_did_query extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Rule_query.parse(context);
+          Rule rule = Rule_param_char.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
             c1++;
           }
         }
-        parsed = c1 == 1;
+        while (f1)
+        {
+          Rule rule = Rule_param_char.parse(context);
+          if ((f1 = rule != null))
+          {
+            a1.add(rule, context.index);
+            c1++;
+          }
+        }
+        parsed = c1 >= 1;
       }
       if (parsed)
       {
@@ -73,16 +82,16 @@ final public class Rule_did_query extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_did_query(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_param_name(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("did-query", parsed);
+    context.pop("param-name", parsed);
 
-    return (Rule_did_query)rule;
+    return (Rule_param_name)rule;
   }
 }
 

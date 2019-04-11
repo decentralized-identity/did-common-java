@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_specific_idstring.java
+ * Rule_method_specific_id.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Wed Apr 10 18:08:05 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_specific_idstring extends Rule
+final public class Rule_method_specific_id extends Rule
 {
-  public Rule_specific_idstring(String spelling, ArrayList<Rule> rules)
+  public Rule_method_specific_id(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_specific_idstring extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_specific_idstring parse(ParserContext context)
+  public static Rule_method_specific_id parse(ParserContext context)
   {
-    context.push("specific-idstring");
+    context.push("method-specific-id");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -139,16 +139,16 @@ final public class Rule_specific_idstring extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_specific_idstring(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_method_specific_id(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("specific-idstring", parsed);
+    context.pop("method-specific-id", parsed);
 
-    return (Rule_specific_idstring)rule;
+    return (Rule_method_specific_id)rule;
   }
 }
 

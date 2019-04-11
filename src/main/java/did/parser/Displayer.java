@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Wed Apr 10 18:08:05 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -15,11 +15,6 @@ import java.util.ArrayList;
 public class Displayer implements Visitor
 {
 
-  public Object visit(Rule_did_reference rule)
-  {
-    return visitRules(rule.rules);
-  }
-
   public Object visit(Rule_did rule)
   {
     return visitRules(rule.rules);
@@ -30,12 +25,12 @@ public class Displayer implements Visitor
     return visitRules(rule.rules);
   }
 
-  public Object visit(Rule_namechar rule)
+  public Object visit(Rule_method_char rule)
   {
     return visitRules(rule.rules);
   }
 
-  public Object visit(Rule_specific_idstring rule)
+  public Object visit(Rule_method_specific_id rule)
   {
     return visitRules(rule.rules);
   }
@@ -50,42 +45,37 @@ public class Displayer implements Visitor
     return visitRules(rule.rules);
   }
 
-  public Object visit(Rule_service rule)
+  public Object visit(Rule_did_url rule)
   {
     return visitRules(rule.rules);
   }
 
-  public Object visit(Rule_did_path rule)
+  public Object visit(Rule_param rule)
   {
     return visitRules(rule.rules);
   }
 
-  public Object visit(Rule_did_query rule)
+  public Object visit(Rule_param_name rule)
   {
     return visitRules(rule.rules);
   }
 
-  public Object visit(Rule_did_fragment rule)
+  public Object visit(Rule_param_value rule)
   {
     return visitRules(rule.rules);
   }
 
-  public Object visit(Rule_path_rootless rule)
+  public Object visit(Rule_param_char rule)
+  {
+    return visitRules(rule.rules);
+  }
+
+  public Object visit(Rule_path_abempty rule)
   {
     return visitRules(rule.rules);
   }
 
   public Object visit(Rule_segment rule)
-  {
-    return visitRules(rule.rules);
-  }
-
-  public Object visit(Rule_segment_nz rule)
-  {
-    return visitRules(rule.rules);
-  }
-
-  public Object visit(Rule_segment_nz_nc rule)
   {
     return visitRules(rule.rules);
   }
