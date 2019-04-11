@@ -44,6 +44,7 @@ public class DID {
 	private String path;
 	private String query;
 	private String fragment;
+	private String parseTree;
 
 	private DID() {
 
@@ -56,10 +57,24 @@ public class DID {
 		this.parse();
 	}
 
-	private void parse() throws IllegalArgumentException, ParserException {
+	private DID(String didUrl, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+
+		this.didUrl = didUrl;
+
+		this.parse(keepParseTree);
+	}
+
+	private void parse(boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
 		Rule_did_url rule = (Rule_did_url) Parser.parse("did-url", this.didUrl);
-		rule.accept(new DIDVisitor());
+		DIDVisitor visitor = new DIDVisitor(keepParseTree);
+		rule.accept(visitor);
+		if (keepParseTree) this.parseTree = visitor.parseTree.toString();
+	}
+
+	private void parse() throws IllegalArgumentException, ParserException {
+
+		this.parse(false);
 	}
 
 	/*
@@ -71,9 +86,19 @@ public class DID {
 		return new DID(string);
 	}
 
+	public static DID fromString(String string, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+
+		return new DID(string, keepParseTree);
+	}
+
 	public static DID fromUri(URI uri) throws IllegalArgumentException, ParserException {
 
 		return fromString(uri.toString());
+	}
+
+	public static DID fromUri(URI uri, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+
+		return fromString(uri.toString(), keepParseTree);
 	}
 
 	/*
@@ -96,6 +121,21 @@ public class DID {
 
 	private class DIDVisitor extends Displayer {
 
+		private boolean keepParseTree;
+		private int indent;
+		private StringBuffer parseTree;
+
+		private DIDVisitor(boolean keepParseTree) {
+
+			this.keepParseTree = keepParseTree;
+
+			if (keepParseTree) {
+
+				indent = 0;
+				parseTree = new StringBuffer();
+			}
+		}
+
 		public Object visit(Rule_did rule) {
 
 			DID.this.did = rule.spelling;
@@ -115,7 +155,7 @@ public class DID {
 		}
 
 		private String param_name = null;
-		
+
 		public Object visit(Rule_param_name rule) {
 
 			param_name = rule.spelling;
@@ -157,12 +197,33 @@ public class DID {
 
 		@Override
 		public Object visit(Terminal_NumericValue value) {
+
 			return null;
 		}
 
-		private Object visitRules(ArrayList<Rule> rules) {
+		@Override
+		public Object visitRules(ArrayList<Rule> rules) {
 
-			for (Rule rule : rules) rule.accept(this);
+			for (Rule rule : rules) {
+
+				if (this.keepParseTree) {
+
+					if (! (rule instanceof Terminal_NumericValue || rule instanceof Terminal_StringValue)) {
+
+						if (parseTree.length() > 0) parseTree.append(System.lineSeparator());
+						for (int i=0; i<indent; i++) parseTree.append("  ");
+						parseTree.append(rule.getClass().getSimpleName().substring("Rule_".length()));
+						parseTree.append(": " + "\"" + rule.spelling + "\"");
+					}
+
+					indent++;
+					rule.accept(this);
+					indent--;
+				} else {
+
+					rule.accept(this);
+				}
+			}
 			return null;
 		}
 	}
@@ -277,6 +338,18 @@ public class DID {
 	public final void setFragment(String fragment) {
 
 		this.fragment = fragment;
+	}
+
+	@JsonGetter
+	public final String getParseTree() {
+
+		return this.parseTree;
+	}
+
+	@JsonSetter
+	public final void setParseTree(String parseTree) {
+
+		this.parseTree = parseTree;
 	}
 
 	/*

@@ -147,7 +147,7 @@ public class Displayer implements Visitor
     return null;
   }
 
-  private Object visitRules(ArrayList<Rule> rules)
+  public Object visitRules(ArrayList<Rule> rules)
   {
     for (Rule rule : rules)
       rule.accept(this);
