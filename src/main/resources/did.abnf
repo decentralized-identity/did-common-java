@@ -3,23 +3,18 @@ method             = 1*method-char ;
 method-char        = %x61-7A / DIGIT ;
 method-specific-id = idstring *( ":" idstring ) ;
 idstring           = 1*idchar ;
-idchar             = ALPHA / DIGIT / "." / "-" ;
+idchar             = ALPHA / DIGIT / "." / "-" / "_" ;
 did-url            = did *( ";" param ) path-abempty
                      [ "?" query ] [ "#" fragment ] ;
 param              = param-name [ "=" param-value ] ;
 param-name         = 1*param-char ;
 param-value        = *param-char ;
-param-char         = ALPHA / DIGIT / "." / "-" / "_" / pct-encoded ;
+param-char         = ALPHA / DIGIT / "." / "-" / "_" / ":" / pct-encoded ;
 
 
-      path-abempty  = *( "/" segment ) ;
-      path-absolute = "/" [ segment-nz *( "/" segment ) ] ;
-      path-noscheme = segment-nz-nc *( "/" segment ) ;
-      path-rootless = segment-nz *( "/" segment ) ;
+   path-abempty  = *( "/" segment ) ;
 
    segment       = *pchar ;
-   segment-nz    = 1*pchar ;
-   segment-nz-nc = 1*( unreserved / pct-encoded / sub-delims / "@" ) ;
 
    pchar         = unreserved / pct-encoded / sub-delims / ":" / "@" ;
 
