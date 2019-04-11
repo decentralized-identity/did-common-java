@@ -45,6 +45,7 @@ public class DID {
 	private String query;
 	private String fragment;
 	private String parseTree;
+	private Map<String, Integer> parseRuleCount;
 
 	private DID() {
 
@@ -69,7 +70,12 @@ public class DID {
 		Rule_did_url rule = (Rule_did_url) Parser.parse("did-url", this.didUrl);
 		DIDVisitor visitor = new DIDVisitor(keepParseTree);
 		rule.accept(visitor);
-		if (keepParseTree) this.parseTree = visitor.parseTree.toString();
+
+		if (keepParseTree) {
+
+			this.parseTree = visitor.parseTree.toString();
+			this.parseRuleCount = visitor.parseRuleCount;
+		}
 	}
 
 	private void parse() throws IllegalArgumentException, ParserException {
@@ -124,6 +130,7 @@ public class DID {
 		private boolean keepParseTree;
 		private int indent;
 		private StringBuffer parseTree;
+		private Map<String, Integer> parseRuleCount;
 
 		private DIDVisitor(boolean keepParseTree) {
 
@@ -131,8 +138,9 @@ public class DID {
 
 			if (keepParseTree) {
 
-				indent = 0;
-				parseTree = new StringBuffer();
+				this.indent = 0;
+				this.parseTree = new StringBuffer();
+				this.parseRuleCount = new HashMap<String, Integer> ();
 			}
 		}
 
@@ -208,13 +216,19 @@ public class DID {
 
 				if (this.keepParseTree) {
 
+					String ruleName = rule.getClass().getSimpleName().substring(rule.getClass().getSimpleName().indexOf("_") + 1);
+
 					if (! (rule instanceof Terminal_NumericValue || rule instanceof Terminal_StringValue)) {
 
 						if (parseTree.length() > 0) parseTree.append(System.lineSeparator());
 						for (int i=0; i<indent; i++) parseTree.append("  ");
-						parseTree.append(rule.getClass().getSimpleName().substring("Rule_".length()));
+						parseTree.append(ruleName);
 						parseTree.append(": " + "\"" + rule.spelling + "\"");
 					}
+
+					Integer ruleCount = parseRuleCount.get(ruleName);
+					ruleCount = ruleCount == null ? Integer.valueOf(1) : Integer.valueOf(ruleCount.intValue() + 1);
+					parseRuleCount.put(ruleName, ruleCount);
 
 					indent++;
 					rule.accept(this);
@@ -350,6 +364,18 @@ public class DID {
 	public final void setParseTree(String parseTree) {
 
 		this.parseTree = parseTree;
+	}
+
+	@JsonGetter
+	public final Map<String, Integer> getParseRuleCount() {
+
+		return this.parseRuleCount;
+	}
+
+	@JsonSetter
+	public final void setParseRuleCount(Map<String, Integer> parseRuleCount) {
+
+		this.parseRuleCount = parseRuleCount;
 	}
 
 	/*
