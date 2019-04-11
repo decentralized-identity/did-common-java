@@ -39,6 +39,7 @@ public class DID {
 	private String did;
 	private String method;
 	private String methodSpecificId;
+	private String parametersString;
 	private Map<String, String> parameters = new HashMap<String, String> ();
 	private String path;
 	private String query;
@@ -118,12 +119,14 @@ public class DID {
 		public Object visit(Rule_param_name rule) {
 
 			param_name = rule.spelling;
+			if (DID.this.parametersString == null) DID.this.parametersString = rule.spelling; else DID.this.parametersString += ";" + rule.spelling;
 			DID.this.parameters.put(rule.spelling, null);
 			return visitRules(rule.rules);
 		}
 
 		public Object visit(Rule_param_value rule) {
 
+			DID.this.parametersString += "=" + rule.spelling;
 			DID.this.parameters.put(param_name, rule.spelling);
 			return visitRules(rule.rules);
 		}
@@ -217,13 +220,25 @@ public class DID {
 	}
 
 	@JsonGetter
+	public final String getParametersString() {
+
+		return this.parametersString;
+	}
+
+	@JsonSetter
+	public final void setParametersString(String parametersString) {
+
+		this.parametersString = parametersString;
+	}
+
+	@JsonGetter
 	public final Map<String, String> getParameters() {
 
 		return this.parameters;
 	}
 
 	@JsonSetter
-	public final void setService(Map<String, String> parameters) {
+	public final void setParameters(Map<String, String> parameters) {
 
 		this.parameters = parameters;
 	}
