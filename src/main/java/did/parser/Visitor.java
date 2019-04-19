@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Apr 12 00:10:24 CEST 2019
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -13,10 +13,9 @@ package did.parser;
 public interface Visitor
 {
   public Object visit(Rule_did rule);
-  public Object visit(Rule_method rule);
+  public Object visit(Rule_method_name rule);
   public Object visit(Rule_method_char rule);
   public Object visit(Rule_method_specific_id rule);
-  public Object visit(Rule_idstring rule);
   public Object visit(Rule_idchar rule);
   public Object visit(Rule_did_url rule);
   public Object visit(Rule_param rule);

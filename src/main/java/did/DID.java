@@ -20,7 +20,7 @@ import did.parser.Rule;
 import did.parser.Rule_did;
 import did.parser.Rule_did_url;
 import did.parser.Rule_fragment;
-import did.parser.Rule_method;
+import did.parser.Rule_method_name;
 import did.parser.Rule_method_specific_id;
 import did.parser.Rule_param_name;
 import did.parser.Rule_param_value;
@@ -150,7 +150,7 @@ public class DID {
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_method rule) {
+		public Object visit(Rule_method_name rule) {
 
 			DID.this.method = rule.spelling;
 			return visitRules(rule.rules);

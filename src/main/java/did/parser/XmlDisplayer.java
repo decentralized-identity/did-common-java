@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Apr 12 00:10:24 CEST 2019
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -28,14 +28,14 @@ public class XmlDisplayer implements Visitor
     return null;
   }
 
-  public Object visit(Rule_method rule)
+  public Object visit(Rule_method_name rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<method>");
+    System.out.print("<method-name>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</method>");
+    System.out.print("</method-name>");
     terminal = false;
     return null;
   }
@@ -60,18 +60,6 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</method-specific-id>");
-    terminal = false;
-    return null;
-  }
-
-  public Object visit(Rule_idstring rule)
-  {
-    if (!terminal) System.out.println();
-    System.out.print("<idstring>");
-    terminal = false;
-    visitRules(rule.rules);
-    if (!terminal) System.out.println();
-    System.out.print("</idstring>");
     terminal = false;
     return null;
   }
