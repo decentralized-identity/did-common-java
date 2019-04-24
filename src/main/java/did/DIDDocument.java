@@ -175,6 +175,7 @@ public class DIDDocument {
 
 		int i = -1;
 		Map<Integer, Service> selectedServices = new HashMap<Integer, Service> ();
+		if (this.getServices() == null) return selectedServices;
 
 		for (Service service : this.getServices()) {
 
@@ -206,6 +207,7 @@ public class DIDDocument {
 
 		int i = -1;
 		Map<Integer, PublicKey> selectedKeys = new HashMap<Integer, PublicKey> ();
+		if (this.getPublicKeys() == null) return selectedKeys;
 
 		for (PublicKey publicKey : this.getPublicKeys()) {
 
