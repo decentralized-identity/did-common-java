@@ -18,42 +18,43 @@ import did.parser.Parser;
 import did.parser.ParserException;
 import did.parser.Rule;
 import did.parser.Rule_did;
-import did.parser.Rule_method_name;
-import did.parser.Rule_method_specific_id;
+import did.parser.Rule_did_url;
+import did.parser.Rule_fragment;
+import did.parser.Rule_param_name;
+import did.parser.Rule_param_value;
+import did.parser.Rule_path_abempty;
+import did.parser.Rule_query;
 import did.parser.Terminal_NumericValue;
 import did.parser.Terminal_StringValue;
 
-public class DID {
+public class DIDURL {
 
 	public static final String URI_SCHEME = "did";
 
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
-	private String didString;
-	private String method;
-	private String methodSpecificId;
+	private String didUrlString;
+	private DID did;
+	private String parametersString;
+	private Map<String, String> parameters = new HashMap<String, String> ();
+	private String path;
+	private String query;
+	private String fragment;
 	private String parseTree;
 	private Map<String, Integer> parseRuleCount;
 
-	private DID() {
+	private DIDURL() {
 
 	}
 
-	private DID(String didString, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+	private DIDURL(String didUrlString, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
-		this.didString = didString;
+		this.didUrlString = didUrlString;
 
-		this.parse((Rule_did) Parser.parse("did", this.didString), keepParseTree);
+		this.parse((Rule_did_url) Parser.parse("did-url", this.didUrlString), keepParseTree);
 	}
 
-	private DID(Rule_did rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		this.didString = rule.spelling;
-
-		this.parse(rule, keepParseTree);
-	}
-
-	private void parse(Rule_did rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+	private void parse(Rule_did_url rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
 		DIDVisitor visitor = new DIDVisitor(keepParseTree);
 		rule.accept(visitor);
@@ -69,43 +70,33 @@ public class DID {
 	 * Factory methods
 	 */
 
-	public static DID fromString(String string) throws IllegalArgumentException, ParserException {
+	public static DIDURL fromString(String string) throws IllegalArgumentException, ParserException {
 
-		return new DID(string, false);
+		return new DIDURL(string, false);
 	}
 
-	public static DID fromString(String string, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+	public static DIDURL fromString(String string, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
-		return new DID(string, keepParseTree);
+		return new DIDURL(string, keepParseTree);
 	}
 
-	public static DID fromUri(URI uri) throws IllegalArgumentException, ParserException {
+	public static DIDURL fromUri(URI uri) throws IllegalArgumentException, ParserException {
 
 		return fromString(uri.toString());
 	}
 
-	public static DID fromUri(URI uri, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+	public static DIDURL fromUri(URI uri, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
 		return fromString(uri.toString(), keepParseTree);
-	}
-
-	static DID fromRule(Rule_did rule) throws IllegalArgumentException, ParserException {
-
-		return new DID(rule, false);
-	}
-
-	static DID fromRule(Rule_did rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		return new DID(rule, keepParseTree);
 	}
 
 	/*
 	 * Serialization
 	 */
 
-	public static DID fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
+	public static DIDURL fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
 
-		return objectMapper.readValue(json, DID.class);
+		return objectMapper.readValue(json, DIDURL.class);
 	}
 
 	public String toJson() throws JsonProcessingException {
@@ -138,19 +129,49 @@ public class DID {
 
 		public Object visit(Rule_did rule) {
 
-			DID.this.didString = rule.spelling;
+			try {
+
+				DIDURL.this.did = DID.fromRule(rule, this.keepParseTree);
+			} catch (ParserException ex) {
+
+				throw new RuntimeException(ex.getMessage(), ex);
+			}
+
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_method_name rule) {
+		private String param_name = null;
 
-			DID.this.method = rule.spelling;
+		public Object visit(Rule_param_name rule) {
+
+			param_name = rule.spelling;
+			if (DIDURL.this.parametersString == null) DIDURL.this.parametersString = rule.spelling; else DIDURL.this.parametersString += ";" + rule.spelling;
+			DIDURL.this.parameters.put(rule.spelling, null);
 			return visitRules(rule.rules);
 		}
 
-		public Object visit(Rule_method_specific_id rule) {
+		public Object visit(Rule_param_value rule) {
 
-			DID.this.methodSpecificId = rule.spelling;
+			DIDURL.this.parametersString += "=" + rule.spelling;
+			DIDURL.this.parameters.put(param_name, rule.spelling);
+			return visitRules(rule.rules);
+		}
+
+		public Object visit(Rule_path_abempty rule) {
+
+			DIDURL.this.path = rule.spelling;
+			return visitRules(rule.rules);
+		}
+
+		public Object visit(Rule_query rule) {
+
+			DIDURL.this.query = rule.spelling;
+			return visitRules(rule.rules);
+		}
+
+		public Object visit(Rule_fragment rule) {
+
+			DIDURL.this.fragment = rule.spelling;
 			return visitRules(rule.rules);
 		}
 
@@ -204,39 +225,87 @@ public class DID {
 	 */
 
 	@JsonGetter
-	public final String getDidString() {
+	public final String getDidUrlString() {
 
-		return this.didString;
+		return this.didUrlString;
 	}
 
 	@JsonSetter
-	public final void setDidString(String didString) {
+	public final void setDidUrlString(String didUrlString) {
 
-		this.didString = didString;
+		this.didUrlString = didUrlString;
 	}
 
 	@JsonGetter
-	public final String getMethod() {
+	public final DID getDid() {
 
-		return this.method;
+		return this.did;
 	}
 
 	@JsonSetter
-	public final void setMethod(String method) {
+	public final void setDid(DID did) {
 
-		this.method = method;
+		this.did = did;
 	}
 
 	@JsonGetter
-	public final String getMethodSpecificId() {
+	public final String getParametersString() {
 
-		return this.methodSpecificId;
+		return this.parametersString;
 	}
 
 	@JsonSetter
-	public final void setMethodSpecificId(String methodSpecificId) {
+	public final void setParametersString(String parametersString) {
 
-		this.methodSpecificId = methodSpecificId;
+		this.parametersString = parametersString;
+	}
+
+	@JsonGetter
+	public final Map<String, String> getParameters() {
+
+		return this.parameters;
+	}
+
+	@JsonSetter
+	public final void setParameters(Map<String, String> parameters) {
+
+		this.parameters = parameters;
+	}
+
+	@JsonGetter
+	public final String getPath() {
+
+		return this.path;
+	}
+
+	@JsonSetter
+	public final void setPath(String path) {
+
+		this.path = path;
+	}
+
+	@JsonGetter
+	public final String getQuery() {
+
+		return this.query;
+	}
+
+	@JsonSetter
+	public final void setQuery(String query) {
+
+		this.query = query;
+	}
+
+	@JsonGetter
+	public final String getFragment() {
+
+		return this.fragment;
+	}
+
+	@JsonSetter
+	public final void setFragment(String fragment) {
+
+		this.fragment = fragment;
 	}
 
 	@JsonGetter
@@ -270,18 +339,18 @@ public class DID {
 	@Override
 	public int hashCode() {
 
-		return this.didString.hashCode();
+		return this.didUrlString.hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 
-		return this.didString.equals(obj);
+		return this.didUrlString.equals(obj);
 	}
 
 	@Override
 	public String toString() {
 
-		return this.didString.toString();
+		return this.didUrlString.toString();
 	}
 }

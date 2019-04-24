@@ -23,6 +23,8 @@ import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
 
+import did.parser.ParserException;
+
 public class DIDDocument {
 
 	public static final String MIME_TYPE = "application/json";
@@ -30,7 +32,6 @@ public class DIDDocument {
 	public static final String JSONLD_TERM_ID = "id";
 	public static final String JSONLD_TERM_TYPE = "type";
 	public static final String JSONLD_TERM_SERVICE = "service";
-	public static final String JSONLD_TERM_NAME = "name";
 	public static final String JSONLD_TERM_SERVICEENDPOINT = "serviceEndpoint";
 	public static final String JSONLD_TERM_PUBLICKEY = "publicKey";
 	public static final String JSONLD_TERM_PUBLICKEYBASE64 = "publicKeyBase64";
@@ -170,10 +171,10 @@ public class DIDDocument {
 	 * Service selection
 	 */
 
-	public Integer[] selectServices(String selectServiceName, String selectServiceType) {
+	public Map<Integer, Service> selectServices(String selectServiceName, String selectServiceType) {
 
 		int i = -1;
-		List<Integer> selectedServices = new ArrayList<Integer> ();
+		Map<Integer, Service> selectedServices = new HashMap<Integer, Service> ();
 
 		for (Service service : this.getServices()) {
 
@@ -181,8 +182,12 @@ public class DIDDocument {
 
 			if (selectServiceName != null) {
 
-				if (service.getName() == null) continue;
-				if (! service.getName().equals(selectServiceName)) continue;
+				DIDURL serviceDidUrl;
+				try { serviceDidUrl = DIDURL.fromString(service.getId()); } catch (ParserException ex) { serviceDidUrl = null; }
+				String serviceName = serviceDidUrl == null ? null : serviceDidUrl.getFragment();
+
+				if (serviceName == null) continue;
+				if (! serviceName.equals(selectServiceName)) continue;
 			}
 
 			if (selectServiceType != null) {
@@ -191,10 +196,41 @@ public class DIDDocument {
 				if (! Arrays.asList(service.getTypes()).contains(selectServiceType)) continue;
 			}
 
-			selectedServices.add(Integer.valueOf(i));
+			selectedServices.put(Integer.valueOf(i), service);
 		}
 
-		return selectedServices.toArray(new Integer[selectedServices.size()]);
+		return selectedServices;
+	}
+
+	public Map<Integer, PublicKey> selectKeys(String selectKeyName, String selectKeyType) {
+
+		int i = -1;
+		Map<Integer, PublicKey> selectedKeys = new HashMap<Integer, PublicKey> ();
+
+		for (PublicKey publicKey : this.getPublicKeys()) {
+
+			i++;
+
+			if (selectKeyName != null) {
+
+				DIDURL publicKeyDidUrl;
+				try { publicKeyDidUrl = DIDURL.fromString(publicKey.getId()); } catch (ParserException ex) { publicKeyDidUrl = null; }
+				String publicKeyName = publicKeyDidUrl == null ? null : publicKeyDidUrl.getFragment();
+
+				if (publicKeyName == null) continue;
+				if (! publicKeyName.equals(selectKeyName)) continue;
+			}
+
+			if (selectKeyType != null) {
+
+				if (publicKey.getTypes() == null) continue;
+				if (! Arrays.asList(publicKey.getTypes()).contains(selectKeyType)) continue;
+			}
+
+			selectedKeys.put(Integer.valueOf(i), publicKey);
+		}
+
+		return selectedKeys;
 	}
 
 	/*
