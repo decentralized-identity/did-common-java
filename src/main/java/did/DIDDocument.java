@@ -288,6 +288,30 @@ public class DIDDocument {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<Service> getServices() {
+
+		Object entry = this.jsonLdObject.get(JSONLD_TERM_SERVICE);
+		if (entry == null) return null;
+		if (entry instanceof LinkedHashMap<?, ?>) entry = Collections.singletonList(entry);
+		if (! (entry instanceof List<?>)) return null;
+
+		List<Object> servicesJsonLdArray = (List<Object>) entry;
+
+		List<Service> services = new ArrayList<Service> ();
+
+		for (Object entry2 : servicesJsonLdArray) {
+
+			if (! (entry2 instanceof LinkedHashMap<?, ?>)) continue;
+
+			Map<String, Object> serviceJsonLdObject = (Map<String, Object>) entry2;
+
+			services.add(Service.build(serviceJsonLdObject));
+		}
+
+		return services;
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<PublicKey> getPublicKeys() {
 
 		Object entry = this.jsonLdObject.get(JSONLD_TERM_PUBLICKEY);
@@ -333,30 +357,6 @@ public class DIDDocument {
 		}
 
 		return authentications;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Service> getServices() {
-
-		Object entry = this.jsonLdObject.get(JSONLD_TERM_SERVICE);
-		if (entry == null) return null;
-		if (entry instanceof LinkedHashMap<?, ?>) entry = Collections.singletonList(entry);
-		if (! (entry instanceof List<?>)) return null;
-
-		List<Object> servicesJsonLdArray = (List<Object>) entry;
-
-		List<Service> services = new ArrayList<Service> ();
-
-		for (Object entry2 : servicesJsonLdArray) {
-
-			if (! (entry2 instanceof LinkedHashMap<?, ?>)) continue;
-
-			Map<String, Object> serviceJsonLdObject = (Map<String, Object>) entry2;
-
-			services.add(Service.build(serviceJsonLdObject));
-		}
-
-		return services;
 	}
 
 	/*

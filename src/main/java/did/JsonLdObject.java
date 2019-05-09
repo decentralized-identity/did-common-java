@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public abstract class JsonLdObject {
 
 	protected final Map<String, Object> jsonLdObject;
@@ -13,11 +16,6 @@ public abstract class JsonLdObject {
 	protected JsonLdObject(Map<String, Object> jsonLdObject) {
 
 		this.jsonLdObject = jsonLdObject;
-	}
-
-	public final Map<String, Object> getJsonLdObject() {
-
-		return this.jsonLdObject;
 	}
 
 	protected static Map<String, Object> init(String id, String[] types) {
@@ -58,8 +56,20 @@ public abstract class JsonLdObject {
 	}
 
 	/*
-	 * Getters
+	 * Getters and setters
 	 */
+
+	@JsonValue
+	public Map<String, Object> getJsonLdObject() {
+
+		return this.jsonLdObject;
+	}
+
+	@JsonAnySetter
+	public void setJsonLdObjectKeyValue(String key, Object value) {
+
+		this.jsonLdObject.put(key, value);
+	}
 
 	public final String getId() {
 
