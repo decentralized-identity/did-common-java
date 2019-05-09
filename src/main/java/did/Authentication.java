@@ -2,6 +2,7 @@ package did;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,11 @@ public class Authentication extends JsonLdObject {
 	private Authentication(Map<String, Object> jsonLdObject) {
 
 		super(jsonLdObject);
+	}
+
+	private Authentication() {
+
+		this(new HashMap<String, Object> ());
 	}
 
 	public static Authentication build(Map<String, Object> jsonLdObject) {

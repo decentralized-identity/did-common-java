@@ -1,5 +1,6 @@
 package did;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Service extends JsonLdObject {
@@ -7,6 +8,11 @@ public class Service extends JsonLdObject {
 	private Service(Map<String, Object> jsonLdObject) {
 
 		super(jsonLdObject);
+	}
+
+	private Service() {
+
+		this(new HashMap<String, Object> ());
 	}
 
 	public static Service build(Map<String, Object> jsonLdObject) {

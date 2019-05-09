@@ -1,5 +1,6 @@
 package did;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class PublicKey extends JsonLdObject {
@@ -7,6 +8,11 @@ public class PublicKey extends JsonLdObject {
 	private PublicKey(Map<String, Object> jsonLdObject) {
 
 		super(jsonLdObject);
+	}
+
+	private PublicKey() {
+
+		this(new HashMap<String, Object> ());
 	}
 
 	public static PublicKey build(Map<String, Object> jsonLdObject) {
