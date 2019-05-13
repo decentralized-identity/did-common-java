@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -15,18 +15,6 @@ import java.util.ArrayList;
 public class XmlDisplayer implements Visitor
 {
   private boolean terminal = true;
-
-  public Object visit(Rule_did_reference rule)
-  {
-    if (!terminal) System.out.println();
-    System.out.print("<did-reference>");
-    terminal = false;
-    visitRules(rule.rules);
-    if (!terminal) System.out.println();
-    System.out.print("</did-reference>");
-    terminal = false;
-    return null;
-  }
 
   public Object visit(Rule_did rule)
   {
@@ -40,50 +28,38 @@ public class XmlDisplayer implements Visitor
     return null;
   }
 
-  public Object visit(Rule_method rule)
+  public Object visit(Rule_method_name rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<method>");
+    System.out.print("<method-name>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</method>");
+    System.out.print("</method-name>");
     terminal = false;
     return null;
   }
 
-  public Object visit(Rule_namechar rule)
+  public Object visit(Rule_method_char rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<namechar>");
+    System.out.print("<method-char>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</namechar>");
+    System.out.print("</method-char>");
     terminal = false;
     return null;
   }
 
-  public Object visit(Rule_specific_idstring rule)
+  public Object visit(Rule_method_specific_id rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<specific-idstring>");
+    System.out.print("<method-specific-id>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</specific-idstring>");
-    terminal = false;
-    return null;
-  }
-
-  public Object visit(Rule_idstring rule)
-  {
-    if (!terminal) System.out.println();
-    System.out.print("<idstring>");
-    terminal = false;
-    visitRules(rule.rules);
-    if (!terminal) System.out.println();
-    System.out.print("</idstring>");
+    System.out.print("</method-specific-id>");
     terminal = false;
     return null;
   }
@@ -100,62 +76,74 @@ public class XmlDisplayer implements Visitor
     return null;
   }
 
-  public Object visit(Rule_service rule)
+  public Object visit(Rule_did_url rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<service>");
+    System.out.print("<did-url>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</service>");
+    System.out.print("</did-url>");
     terminal = false;
     return null;
   }
 
-  public Object visit(Rule_did_path rule)
+  public Object visit(Rule_param rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<did-path>");
+    System.out.print("<param>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</did-path>");
+    System.out.print("</param>");
     terminal = false;
     return null;
   }
 
-  public Object visit(Rule_did_query rule)
+  public Object visit(Rule_param_name rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<did-query>");
+    System.out.print("<param-name>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</did-query>");
+    System.out.print("</param-name>");
     terminal = false;
     return null;
   }
 
-  public Object visit(Rule_did_fragment rule)
+  public Object visit(Rule_param_value rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<did-fragment>");
+    System.out.print("<param-value>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</did-fragment>");
+    System.out.print("</param-value>");
     terminal = false;
     return null;
   }
 
-  public Object visit(Rule_path_rootless rule)
+  public Object visit(Rule_param_char rule)
   {
     if (!terminal) System.out.println();
-    System.out.print("<path-rootless>");
+    System.out.print("<param-char>");
     terminal = false;
     visitRules(rule.rules);
     if (!terminal) System.out.println();
-    System.out.print("</path-rootless>");
+    System.out.print("</param-char>");
+    terminal = false;
+    return null;
+  }
+
+  public Object visit(Rule_path_abempty rule)
+  {
+    if (!terminal) System.out.println();
+    System.out.print("<path-abempty>");
+    terminal = false;
+    visitRules(rule.rules);
+    if (!terminal) System.out.println();
+    System.out.print("</path-abempty>");
     terminal = false;
     return null;
   }
@@ -168,30 +156,6 @@ public class XmlDisplayer implements Visitor
     visitRules(rule.rules);
     if (!terminal) System.out.println();
     System.out.print("</segment>");
-    terminal = false;
-    return null;
-  }
-
-  public Object visit(Rule_segment_nz rule)
-  {
-    if (!terminal) System.out.println();
-    System.out.print("<segment-nz>");
-    terminal = false;
-    visitRules(rule.rules);
-    if (!terminal) System.out.println();
-    System.out.print("</segment-nz>");
-    terminal = false;
-    return null;
-  }
-
-  public Object visit(Rule_segment_nz_nc rule)
-  {
-    if (!terminal) System.out.println();
-    System.out.print("<segment-nz-nc>");
-    terminal = false;
-    visitRules(rule.rules);
-    if (!terminal) System.out.println();
-    System.out.print("</segment-nz-nc>");
     terminal = false;
     return null;
   }

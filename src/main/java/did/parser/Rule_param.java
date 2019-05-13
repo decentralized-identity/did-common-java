@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_specific_idstring.java
+ * Rule_param.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_specific_idstring extends Rule
+final public class Rule_param extends Rule
 {
-  public Rule_specific_idstring(String spelling, ArrayList<Rule> rules)
+  public Rule_param(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_specific_idstring extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_specific_idstring parse(ParserContext context)
+  public static Rule_param parse(ParserContext context)
   {
-    context.push("specific-idstring");
+    context.push("param");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -44,7 +44,7 @@ final public class Rule_specific_idstring extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Rule_idstring.parse(context);
+          Rule rule = Rule_param_name.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -58,7 +58,7 @@ final public class Rule_specific_idstring extends Rule
         boolean f1 = true;
         @SuppressWarnings("unused")
         int c1 = 0;
-        while (f1)
+        for (int i1 = 0; i1 < 1 && f1; i1++)
         {
           int g1 = context.index;
           ArrayList<ParserAlternative> as2 = new ArrayList<ParserAlternative>();
@@ -73,7 +73,7 @@ final public class Rule_specific_idstring extends Rule
               int c2 = 0;
               for (int i2 = 0; i2 < 1 && f2; i2++)
               {
-                Rule rule = Terminal_StringValue.parse(context, ":");
+                Rule rule = Terminal_StringValue.parse(context, "=");
                 if ((f2 = rule != null))
                 {
                   a2.add(rule, context.index);
@@ -88,7 +88,7 @@ final public class Rule_specific_idstring extends Rule
               int c2 = 0;
               for (int i2 = 0; i2 < 1 && f2; i2++)
               {
-                Rule rule = Rule_idstring.parse(context);
+                Rule rule = Rule_param_value.parse(context);
                 if ((f2 = rule != null))
                 {
                   a2.add(rule, context.index);
@@ -139,16 +139,16 @@ final public class Rule_specific_idstring extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_specific_idstring(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_param(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("specific-idstring", parsed);
+    context.pop("param", parsed);
 
-    return (Rule_specific_idstring)rule;
+    return (Rule_param)rule;
   }
 }
 

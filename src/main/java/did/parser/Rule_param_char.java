@@ -1,5 +1,5 @@
 /* -----------------------------------------------------------------------------
- * Rule_sub_delims.java
+ * Rule_param_char.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_sub_delims extends Rule
+final public class Rule_param_char extends Rule
 {
-  public Rule_sub_delims(String spelling, ArrayList<Rule> rules)
+  public Rule_param_char(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_sub_delims extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_sub_delims parse(ParserContext context)
+  public static Rule_param_char parse(ParserContext context)
   {
-    context.push("sub-delims");
+    context.push("param-char");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -44,7 +44,7 @@ final public class Rule_sub_delims extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Terminal_StringValue.parse(context, "!");
+          Rule rule = Rule_ALPHA.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -69,7 +69,7 @@ final public class Rule_sub_delims extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Terminal_StringValue.parse(context, "$");
+          Rule rule = Rule_DIGIT.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -94,7 +94,7 @@ final public class Rule_sub_delims extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Terminal_StringValue.parse(context, "&");
+          Rule rule = Terminal_StringValue.parse(context, ".");
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -119,7 +119,7 @@ final public class Rule_sub_delims extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Terminal_StringValue.parse(context, "'");
+          Rule rule = Terminal_StringValue.parse(context, "-");
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -144,7 +144,7 @@ final public class Rule_sub_delims extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Terminal_StringValue.parse(context, "(");
+          Rule rule = Terminal_StringValue.parse(context, "_");
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -169,7 +169,7 @@ final public class Rule_sub_delims extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Terminal_StringValue.parse(context, ")");
+          Rule rule = Terminal_StringValue.parse(context, ":");
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -194,107 +194,7 @@ final public class Rule_sub_delims extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Terminal_StringValue.parse(context, "*");
-          if ((f1 = rule != null))
-          {
-            a1.add(rule, context.index);
-            c1++;
-          }
-        }
-        parsed = c1 == 1;
-      }
-      if (parsed)
-      {
-        as1.add(a1);
-      }
-      context.index = s1;
-    }
-    {
-      int s1 = context.index;
-      ParserAlternative a1 = new ParserAlternative(s1);
-      parsed = true;
-      if (parsed)
-      {
-        boolean f1 = true;
-        int c1 = 0;
-        for (int i1 = 0; i1 < 1 && f1; i1++)
-        {
-          Rule rule = Terminal_StringValue.parse(context, "+");
-          if ((f1 = rule != null))
-          {
-            a1.add(rule, context.index);
-            c1++;
-          }
-        }
-        parsed = c1 == 1;
-      }
-      if (parsed)
-      {
-        as1.add(a1);
-      }
-      context.index = s1;
-    }
-    {
-      int s1 = context.index;
-      ParserAlternative a1 = new ParserAlternative(s1);
-      parsed = true;
-      if (parsed)
-      {
-        boolean f1 = true;
-        int c1 = 0;
-        for (int i1 = 0; i1 < 1 && f1; i1++)
-        {
-          Rule rule = Terminal_StringValue.parse(context, ",");
-          if ((f1 = rule != null))
-          {
-            a1.add(rule, context.index);
-            c1++;
-          }
-        }
-        parsed = c1 == 1;
-      }
-      if (parsed)
-      {
-        as1.add(a1);
-      }
-      context.index = s1;
-    }
-    {
-      int s1 = context.index;
-      ParserAlternative a1 = new ParserAlternative(s1);
-      parsed = true;
-      if (parsed)
-      {
-        boolean f1 = true;
-        int c1 = 0;
-        for (int i1 = 0; i1 < 1 && f1; i1++)
-        {
-          Rule rule = Terminal_StringValue.parse(context, ";");
-          if ((f1 = rule != null))
-          {
-            a1.add(rule, context.index);
-            c1++;
-          }
-        }
-        parsed = c1 == 1;
-      }
-      if (parsed)
-      {
-        as1.add(a1);
-      }
-      context.index = s1;
-    }
-    {
-      int s1 = context.index;
-      ParserAlternative a1 = new ParserAlternative(s1);
-      parsed = true;
-      if (parsed)
-      {
-        boolean f1 = true;
-        int c1 = 0;
-        for (int i1 = 0; i1 < 1 && f1; i1++)
-        {
-          Rule rule = Terminal_StringValue.parse(context, "=");
+          Rule rule = Rule_pct_encoded.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
@@ -323,16 +223,16 @@ final public class Rule_sub_delims extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_sub_delims(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_param_char(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("sub-delims", parsed);
+    context.pop("param-char", parsed);
 
-    return (Rule_sub_delims)rule;
+    return (Rule_param_char)rule;
   }
 }
 

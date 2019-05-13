@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_path_rootless.java
+ * Rule_method_specific_id.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_path_rootless extends Rule
+final public class Rule_method_specific_id extends Rule
 {
-  public Rule_path_rootless(String spelling, ArrayList<Rule> rules)
+  public Rule_method_specific_id(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_path_rootless extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_path_rootless parse(ParserContext context)
+  public static Rule_method_specific_id parse(ParserContext context)
   {
-    context.push("path-rootless");
+    context.push("method-specific-id");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -41,17 +41,18 @@ final public class Rule_path_rootless extends Rule
       if (parsed)
       {
         boolean f1 = true;
+        @SuppressWarnings("unused")
         int c1 = 0;
-        for (int i1 = 0; i1 < 1 && f1; i1++)
+        while (f1)
         {
-          Rule rule = Rule_segment_nz.parse(context);
+          Rule rule = Rule_idchar.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
             c1++;
           }
         }
-        parsed = c1 == 1;
+        parsed = true;
       }
       if (parsed)
       {
@@ -73,7 +74,7 @@ final public class Rule_path_rootless extends Rule
               int c2 = 0;
               for (int i2 = 0; i2 < 1 && f2; i2++)
               {
-                Rule rule = Terminal_StringValue.parse(context, "/");
+                Rule rule = Terminal_StringValue.parse(context, ":");
                 if ((f2 = rule != null))
                 {
                   a2.add(rule, context.index);
@@ -85,17 +86,18 @@ final public class Rule_path_rootless extends Rule
             if (parsed)
             {
               boolean f2 = true;
+              @SuppressWarnings("unused")
               int c2 = 0;
-              for (int i2 = 0; i2 < 1 && f2; i2++)
+              while (f2)
               {
-                Rule rule = Rule_segment.parse(context);
+                Rule rule = Rule_idchar.parse(context);
                 if ((f2 = rule != null))
                 {
                   a2.add(rule, context.index);
                   c2++;
                 }
               }
-              parsed = c2 == 1;
+              parsed = true;
             }
             if (parsed)
             {
@@ -139,16 +141,16 @@ final public class Rule_path_rootless extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_path_rootless(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_method_specific_id(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("path-rootless", parsed);
+    context.pop("method-specific-id", parsed);
 
-    return (Rule_path_rootless)rule;
+    return (Rule_method_specific_id)rule;
   }
 }
 

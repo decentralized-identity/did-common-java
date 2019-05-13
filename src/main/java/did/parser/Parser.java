@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -31,7 +31,7 @@ public class Parser
     if (ok)
     {
       arguments.setProperty("Trace", "Off");
-      arguments.setProperty("Rule", "did-reference");
+      arguments.setProperty("Rule", "did");
 
       for (int i = 0; i < args.length; i++)
       {
@@ -160,21 +160,18 @@ public class Parser
     ParserContext context = new ParserContext(string, trace);
 
     Rule rule = null;
-    if (rulename.equalsIgnoreCase("did-reference")) rule = Rule_did_reference.parse(context);
-    else if (rulename.equalsIgnoreCase("did")) rule = Rule_did.parse(context);
-    else if (rulename.equalsIgnoreCase("method")) rule = Rule_method.parse(context);
-    else if (rulename.equalsIgnoreCase("namechar")) rule = Rule_namechar.parse(context);
-    else if (rulename.equalsIgnoreCase("specific-idstring")) rule = Rule_specific_idstring.parse(context);
-    else if (rulename.equalsIgnoreCase("idstring")) rule = Rule_idstring.parse(context);
+    if (rulename.equalsIgnoreCase("did")) rule = Rule_did.parse(context);
+    else if (rulename.equalsIgnoreCase("method-name")) rule = Rule_method_name.parse(context);
+    else if (rulename.equalsIgnoreCase("method-char")) rule = Rule_method_char.parse(context);
+    else if (rulename.equalsIgnoreCase("method-specific-id")) rule = Rule_method_specific_id.parse(context);
     else if (rulename.equalsIgnoreCase("idchar")) rule = Rule_idchar.parse(context);
-    else if (rulename.equalsIgnoreCase("service")) rule = Rule_service.parse(context);
-    else if (rulename.equalsIgnoreCase("did-path")) rule = Rule_did_path.parse(context);
-    else if (rulename.equalsIgnoreCase("did-query")) rule = Rule_did_query.parse(context);
-    else if (rulename.equalsIgnoreCase("did-fragment")) rule = Rule_did_fragment.parse(context);
-    else if (rulename.equalsIgnoreCase("path-rootless")) rule = Rule_path_rootless.parse(context);
+    else if (rulename.equalsIgnoreCase("did-url")) rule = Rule_did_url.parse(context);
+    else if (rulename.equalsIgnoreCase("param")) rule = Rule_param.parse(context);
+    else if (rulename.equalsIgnoreCase("param-name")) rule = Rule_param_name.parse(context);
+    else if (rulename.equalsIgnoreCase("param-value")) rule = Rule_param_value.parse(context);
+    else if (rulename.equalsIgnoreCase("param-char")) rule = Rule_param_char.parse(context);
+    else if (rulename.equalsIgnoreCase("path-abempty")) rule = Rule_path_abempty.parse(context);
     else if (rulename.equalsIgnoreCase("segment")) rule = Rule_segment.parse(context);
-    else if (rulename.equalsIgnoreCase("segment-nz")) rule = Rule_segment_nz.parse(context);
-    else if (rulename.equalsIgnoreCase("segment-nz-nc")) rule = Rule_segment_nz_nc.parse(context);
     else if (rulename.equalsIgnoreCase("pchar")) rule = Rule_pchar.parse(context);
     else if (rulename.equalsIgnoreCase("query")) rule = Rule_query.parse(context);
     else if (rulename.equalsIgnoreCase("fragment")) rule = Rule_fragment.parse(context);
@@ -252,14 +249,15 @@ public class Parser
     if (file == null)
       throw new IllegalArgumentException("null file");
 
-    try (BufferedReader in = new BufferedReader(new FileReader(file))) {
-      int ch;
-      StringBuilder out = new StringBuilder();
-      while ((ch = in.read()) != -1) {
-        out.append((char) ch);
-      }
-      return parse(rulename, out.toString(), trace);
-    }
+    BufferedReader in = new BufferedReader(new FileReader(file));
+    int ch = 0;
+    StringBuffer out = new StringBuffer();
+    while ((ch = in.read()) != -1)
+      out.append((char)ch);
+
+    in.close();
+
+    return parse(rulename, out.toString(), trace);
   }
 }
 

@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_did_fragment.java
+ * Rule_method_name.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_did_fragment extends Rule
+final public class Rule_method_name extends Rule
 {
-  public Rule_did_fragment(String spelling, ArrayList<Rule> rules)
+  public Rule_method_name(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_did_fragment extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_did_fragment parse(ParserContext context)
+  public static Rule_method_name parse(ParserContext context)
   {
-    context.push("did-fragment");
+    context.push("method-name");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -44,14 +44,23 @@ final public class Rule_did_fragment extends Rule
         int c1 = 0;
         for (int i1 = 0; i1 < 1 && f1; i1++)
         {
-          Rule rule = Rule_fragment.parse(context);
+          Rule rule = Rule_method_char.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);
             c1++;
           }
         }
-        parsed = c1 == 1;
+        while (f1)
+        {
+          Rule rule = Rule_method_char.parse(context);
+          if ((f1 = rule != null))
+          {
+            a1.add(rule, context.index);
+            c1++;
+          }
+        }
+        parsed = c1 >= 1;
       }
       if (parsed)
       {
@@ -73,16 +82,16 @@ final public class Rule_did_fragment extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_did_fragment(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_method_name(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("did-fragment", parsed);
+    context.pop("method-name", parsed);
 
-    return (Rule_did_fragment)rule;
+    return (Rule_method_name)rule;
   }
 }
 

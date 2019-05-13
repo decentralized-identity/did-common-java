@@ -23,6 +23,8 @@ import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
 import com.github.jsonldjava.utils.JsonUtils;
 
+import did.parser.ParserException;
+
 public class DIDDocument {
 
 	public static final String MIME_TYPE = "application/json";
@@ -30,7 +32,6 @@ public class DIDDocument {
 	public static final String JSONLD_TERM_ID = "id";
 	public static final String JSONLD_TERM_TYPE = "type";
 	public static final String JSONLD_TERM_SERVICE = "service";
-	public static final String JSONLD_TERM_NAME = "name";
 	public static final String JSONLD_TERM_SERVICEENDPOINT = "serviceEndpoint";
 	public static final String JSONLD_TERM_PUBLICKEY = "publicKey";
 	public static final String JSONLD_TERM_PUBLICKEYBASE64 = "publicKeyBase64";
@@ -38,7 +39,6 @@ public class DIDDocument {
 	public static final String JSONLD_TERM_PUBLICKEYHEX = "publicKeyHex";
 	public static final String JSONLD_TERM_PUBLICKEYPEM = "publicKeyPem";
 	public static final String JSONLD_TERM_AUTHENTICATION = "authentication";
-	public static final String JSONLD_TERM_ENCRYPTION = "encryption";
 
 	public static final Object JSONLD_CONTEXT;
 
@@ -74,7 +74,7 @@ public class DIDDocument {
 		return new DIDDocument(jsonLdObject);
 	}
 
-	public static DIDDocument build(String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Encryption> encryptions, List<Service> services) {
+	public static DIDDocument build(String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Service> services) {
 
 		// add 'id'
 
@@ -145,22 +145,6 @@ public class DIDDocument {
 			jsonLdObject.put(JSONLD_TERM_AUTHENTICATION, authenticationsJsonLdArray);
 		}
 
-		// add 'encryption'
-
-		if (encryptions != null && encryptions.size() > 0) {
-
-			LinkedList<Object> encryptionsJsonLdArray = new LinkedList<Object> ();
-
-			for (Encryption encryption : encryptions) {
-
-				Map<String, Object> encryptionJsonLdObject = encryption.getJsonLdObject();
-
-				encryptionsJsonLdArray.add(encryptionJsonLdObject);
-			}
-
-			jsonLdObject.put(JSONLD_TERM_ENCRYPTION, encryptionsJsonLdArray);
-		}
-
 		// done
 
 		return new DIDDocument(jsonLdObject);
@@ -170,10 +154,11 @@ public class DIDDocument {
 	 * Service selection
 	 */
 
-	public Integer[] selectServices(String selectServiceName, String selectServiceType) {
+	public Map<Integer, Service> selectServices(String selectServiceName, String selectServiceType) {
 
 		int i = -1;
-		List<Integer> selectedServices = new ArrayList<Integer> ();
+		Map<Integer, Service> selectedServices = new HashMap<Integer, Service> ();
+		if (this.getServices() == null) return selectedServices;
 
 		for (Service service : this.getServices()) {
 
@@ -181,8 +166,12 @@ public class DIDDocument {
 
 			if (selectServiceName != null) {
 
-				if (service.getName() == null) continue;
-				if (! service.getName().equals(selectServiceName)) continue;
+				DIDURL serviceDidUrl;
+				try { serviceDidUrl = DIDURL.fromString(service.getId()); } catch (ParserException ex) { serviceDidUrl = null; }
+				String serviceName = serviceDidUrl == null ? null : serviceDidUrl.getFragment();
+
+				if (serviceName == null) continue;
+				if (! serviceName.equals(selectServiceName)) continue;
 			}
 
 			if (selectServiceType != null) {
@@ -191,22 +180,59 @@ public class DIDDocument {
 				if (! Arrays.asList(service.getTypes()).contains(selectServiceType)) continue;
 			}
 
-			selectedServices.add(Integer.valueOf(i));
+			selectedServices.put(Integer.valueOf(i), service);
 		}
 
-		return selectedServices.toArray(new Integer[selectedServices.size()]);
+		return selectedServices;
+	}
+
+	public Map<Integer, PublicKey> selectKeys(String selectKeyName, String selectKeyType) {
+
+		int i = -1;
+		Map<Integer, PublicKey> selectedKeys = new HashMap<Integer, PublicKey> ();
+		if (this.getPublicKeys() == null) return selectedKeys;
+
+		for (PublicKey publicKey : this.getPublicKeys()) {
+
+			i++;
+
+			if (selectKeyName != null) {
+
+				DIDURL publicKeyDidUrl;
+				try { publicKeyDidUrl = DIDURL.fromString(publicKey.getId()); } catch (ParserException ex) { publicKeyDidUrl = null; }
+				String publicKeyName = publicKeyDidUrl == null ? null : publicKeyDidUrl.getFragment();
+
+				if (publicKeyName == null) continue;
+				if (! publicKeyName.equals(selectKeyName)) continue;
+			}
+
+			if (selectKeyType != null) {
+
+				if (publicKey.getTypes() == null) continue;
+				if (! Arrays.asList(publicKey.getTypes()).contains(selectKeyType)) continue;
+			}
+
+			selectedKeys.put(Integer.valueOf(i), publicKey);
+		}
+
+		return selectedKeys;
 	}
 
 	/*
 	 * Serialization
 	 */
 
+	public static DIDDocument fromJson(Map<String, Object> jsonLdObject) throws IOException {
+
+		return build(jsonLdObject);
+	}
+
 	@SuppressWarnings("unchecked")
 	public static DIDDocument fromJson(String jsonString) throws IOException {
 
 		Map<String, Object> jsonLdObject = (LinkedHashMap<String, Object>) JsonUtils.fromString(jsonString);
 
-		return build(jsonLdObject);
+		return fromJson(jsonLdObject);
 	}
 
 	public static DIDDocument fromJson(InputStream input, String enc) throws IOException {
@@ -262,6 +288,30 @@ public class DIDDocument {
 	}
 
 	@SuppressWarnings("unchecked")
+	public List<Service> getServices() {
+
+		Object entry = this.jsonLdObject.get(JSONLD_TERM_SERVICE);
+		if (entry == null) return null;
+		if (entry instanceof LinkedHashMap<?, ?>) entry = Collections.singletonList(entry);
+		if (! (entry instanceof List<?>)) return null;
+
+		List<Object> servicesJsonLdArray = (List<Object>) entry;
+
+		List<Service> services = new ArrayList<Service> ();
+
+		for (Object entry2 : servicesJsonLdArray) {
+
+			if (! (entry2 instanceof LinkedHashMap<?, ?>)) continue;
+
+			Map<String, Object> serviceJsonLdObject = (Map<String, Object>) entry2;
+
+			services.add(Service.build(serviceJsonLdObject));
+		}
+
+		return services;
+	}
+
+	@SuppressWarnings("unchecked")
 	public List<PublicKey> getPublicKeys() {
 
 		Object entry = this.jsonLdObject.get(JSONLD_TERM_PUBLICKEY);
@@ -307,54 +357,6 @@ public class DIDDocument {
 		}
 
 		return authentications;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Encryption> getEncryptions() {
-
-		Object entry = this.jsonLdObject.get(JSONLD_TERM_ENCRYPTION);
-		if (entry == null) return null;
-		if (entry instanceof LinkedHashMap<?, ?>) entry = Collections.singletonList(entry);
-		if (! (entry instanceof List<?>)) return null;
-
-		List<Object> encryptionsJsonLdArray = (List<Object>) entry;
-
-		List<Encryption> encryptions = new ArrayList<Encryption> ();
-
-		for (Object entry2 : encryptionsJsonLdArray) {
-
-			if (! (entry2 instanceof LinkedHashMap<?, ?>)) continue;
-
-			LinkedHashMap<String, Object> encryptionJsonLdObject = (LinkedHashMap<String, Object>) entry2;
-
-			encryptions.add(Encryption.build(encryptionJsonLdObject));
-		}
-
-		return encryptions;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Service> getServices() {
-
-		Object entry = this.jsonLdObject.get(JSONLD_TERM_SERVICE);
-		if (entry == null) return null;
-		if (entry instanceof LinkedHashMap<?, ?>) entry = Collections.singletonList(entry);
-		if (! (entry instanceof List<?>)) return null;
-
-		List<Object> servicesJsonLdArray = (List<Object>) entry;
-
-		List<Service> services = new ArrayList<Service> ();
-
-		for (Object entry2 : servicesJsonLdArray) {
-
-			if (! (entry2 instanceof LinkedHashMap<?, ?>)) continue;
-
-			Map<String, Object> serviceJsonLdObject = (Map<String, Object>) entry2;
-
-			services.add(Service.build(serviceJsonLdObject));
-		}
-
-		return services;
 	}
 
 	/*

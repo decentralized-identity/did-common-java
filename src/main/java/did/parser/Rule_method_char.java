@@ -1,9 +1,9 @@
 /* -----------------------------------------------------------------------------
- * Rule_namechar.java
+ * Rule_method_char.java
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Feb 09 17:16:10 CET 2018
+ * Produced : Fri Apr 19 22:09:52 CEST 2019
  *
  * -----------------------------------------------------------------------------
  */
@@ -12,9 +12,9 @@ package did.parser;
 
 import java.util.ArrayList;
 
-final public class Rule_namechar extends Rule
+final public class Rule_method_char extends Rule
 {
-  public Rule_namechar(String spelling, ArrayList<Rule> rules)
+  public Rule_method_char(String spelling, ArrayList<Rule> rules)
   {
     super(spelling, rules);
   }
@@ -24,9 +24,9 @@ final public class Rule_namechar extends Rule
     return visitor.visit(this);
   }
 
-  public static Rule_namechar parse(ParserContext context)
+  public static Rule_method_char parse(ParserContext context)
   {
-    context.push("namechar");
+    context.push("method-char");
 
     boolean parsed = true;
     int s0 = context.index;
@@ -98,16 +98,16 @@ final public class Rule_namechar extends Rule
     Rule rule = null;
     if (parsed)
     {
-        rule = new Rule_namechar(context.text.substring(a0.start, a0.end), a0.rules);
+        rule = new Rule_method_char(context.text.substring(a0.start, a0.end), a0.rules);
     }
     else
     {
         context.index = s0;
     }
 
-    context.pop("namechar", parsed);
+    context.pop("method-char", parsed);
 
-    return (Rule_namechar)rule;
+    return (Rule_method_char)rule;
   }
 }
 
