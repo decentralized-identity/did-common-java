@@ -1,7 +1,12 @@
 [
   {
     "Content-Location": "https://w3id.org/did/v1",
-    "X-Classpath": "did/diddocument-context-w3id.jsonld",
+    "X-Classpath": "did/diddocument-context-w3id-v1.jsonld",
+    "Content-Type": "application/ld+json"
+  },
+  {
+    "Content-Location": "https://w3id.org/did/v0.11",
+    "X-Classpath": "did/diddocument-context-w3id-v0.11.jsonld",
     "Content-Type": "application/ld+json"
   },
   {
