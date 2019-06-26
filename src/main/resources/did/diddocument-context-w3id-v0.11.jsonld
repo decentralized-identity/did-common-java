@@ -48,6 +48,8 @@
     "proofValue": "sec:proofValue",
     "publicKey": {"@id": "sec:publicKey", "@type": "@id", "@container": "@set"},
     "publicKeyBase58": "sec:publicKeyBase58",
+    "publicKeyBase64": "sec:publicKeyBase64",
+    "publicKeyHex": "sec:publicKeyHex",
     "publicKeyPem": "sec:publicKeyPem",
     "revoked": {"@id": "sec:revoked", "@type": "xsd:dateTime"},
     "service": {"@id": "didv:service", "@type": "@id", "@container": "@set"},
