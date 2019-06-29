@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import did.parser.Displayer;
 import did.parser.Parser;
@@ -27,6 +29,7 @@ import did.parser.Rule_query;
 import did.parser.Terminal_NumericValue;
 import did.parser.Terminal_StringValue;
 
+@JsonSerialize(using = ToStringSerializer.class)
 public class DIDURL {
 
 	public static final String URI_SCHEME = "did";
@@ -34,14 +37,14 @@ public class DIDURL {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	private String didUrlString;
-	private DID did;
-	private String parametersString;
-	private Map<String, String> parameters = new HashMap<String, String> ();
-	private String path;
-	private String query;
-	private String fragment;
-	private String parseTree;
-	private Map<String, Integer> parseRuleCount;
+	private transient DID did;
+	private transient String parametersString;
+	private transient Map<String, String> parameters = new HashMap<String, String> ();
+	private transient String path;
+	private transient String query;
+	private transient String fragment;
+	private transient String parseTree;
+	private transient Map<String, Integer> parseRuleCount;
 
 	private DIDURL() {
 
@@ -345,7 +348,10 @@ public class DIDURL {
 	@Override
 	public boolean equals(Object obj) {
 
-		return this.didUrlString.equals(obj);
+		if (obj == null || ! (obj instanceof DIDURL)) return false;
+		if (obj == this) return true;
+
+		return this.didUrlString.equals(((DIDURL) obj).didUrlString);
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 
 import did.parser.Displayer;
 import did.parser.Parser;
@@ -23,6 +25,7 @@ import did.parser.Rule_method_specific_id;
 import did.parser.Terminal_NumericValue;
 import did.parser.Terminal_StringValue;
 
+@JsonSerialize(using = ToStringSerializer.class)
 public class DID {
 
 	public static final String URI_SCHEME = "did";
@@ -30,10 +33,10 @@ public class DID {
 	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	private String didString;
-	private String method;
-	private String methodSpecificId;
-	private String parseTree;
-	private Map<String, Integer> parseRuleCount;
+	private transient String method;
+	private transient String methodSpecificId;
+	private transient String parseTree;
+	private transient Map<String, Integer> parseRuleCount;
 
 	private DID() {
 
@@ -276,7 +279,10 @@ public class DID {
 	@Override
 	public boolean equals(Object obj) {
 
-		return this.didString.equals(obj);
+		if (obj == null || ! (obj instanceof DID)) return false;
+		if (obj == this) return true;
+
+		return this.didString.equals(((DID) obj).didString);
 	}
 
 	@Override

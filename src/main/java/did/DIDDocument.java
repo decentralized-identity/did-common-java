@@ -278,13 +278,10 @@ public class DIDDocument {
 
 	public String getId() {
 
-		Object entry = this.jsonLdObject.get(JSONLD_TERM_ID);
-		if (entry == null) return null;
-		if (! (entry instanceof URI)) return null;
-
-		String id = (String) entry;
-
-		return id;
+		Object object = this.jsonLdObject.get(JSONLD_TERM_ID);
+		if (object instanceof URI) return ((URI) object).toString();
+		if (object instanceof String) return (String) object;
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")

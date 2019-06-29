@@ -19,7 +19,7 @@ import java.util.Stack;
  * Produced : Fri Apr 19 22:09:52 CEST 2019</p>
  */
 
-public class ParserException extends Exception
+public class ParserException extends RuntimeException
 {
   private String reason;
   private String text60;
