@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -35,17 +35,23 @@ public class DIDURL {
 
 	public static final String URI_SCHEME = "did";
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+	private static final ObjectMapper objectMapper;
 
 	private String didUrlString;
 	private transient DID did;
-	private transient String parametersString;
-	private transient Map<String, String> parameters = new HashMap<String, String> ();
+	private transient String parameters;
+	private transient Map<String, String> parametersMap = new HashMap<String, String> ();
 	private transient String path;
 	private transient String query;
 	private transient String fragment;
 	private transient String parseTree;
 	private transient Map<String, Integer> parseRuleCount;
+
+	static {
+
+		objectMapper = new ObjectMapper();
+		objectMapper.disable(MapperFeature.USE_ANNOTATIONS);
+	}
 
 	private DIDURL() {
 
@@ -108,9 +114,10 @@ public class DIDURL {
 		return objectMapper.writeValueAsString(this);
 	}
 
-	public JsonNode toJsonObject() {
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> toJsonObject() {
 
-		return objectMapper.valueToTree(this);
+		return (Map<String, Object>) objectMapper.convertValue(this, Map.class);
 	}
 
 	/*
@@ -154,15 +161,15 @@ public class DIDURL {
 		public Object visit(Rule_param_name rule) {
 
 			param_name = rule.spelling;
-			if (DIDURL.this.parametersString == null) DIDURL.this.parametersString = rule.spelling; else DIDURL.this.parametersString += ";" + rule.spelling;
-			DIDURL.this.parameters.put(rule.spelling, null);
+			if (DIDURL.this.parameters == null) DIDURL.this.parameters = rule.spelling; else DIDURL.this.parameters += ";" + rule.spelling;
+			DIDURL.this.parametersMap.put(rule.spelling, null);
 			return visitRules(rule.rules);
 		}
 
 		public Object visit(Rule_param_value rule) {
 
-			DIDURL.this.parametersString += "=" + rule.spelling;
-			DIDURL.this.parameters.put(param_name, rule.spelling);
+			DIDURL.this.parameters += "=" + rule.spelling;
+			DIDURL.this.parametersMap.put(param_name, rule.spelling);
 			return visitRules(rule.rules);
 		}
 
@@ -258,27 +265,27 @@ public class DIDURL {
 	}
 
 	@JsonGetter
-	public final String getParametersString() {
-
-		return this.parametersString;
-	}
-
-	@JsonSetter
-	public final void setParametersString(String parametersString) {
-
-		this.parametersString = parametersString;
-	}
-
-	@JsonGetter
-	public final Map<String, String> getParameters() {
+	public final String getParameters() {
 
 		return this.parameters;
 	}
 
 	@JsonSetter
-	public final void setParameters(Map<String, String> parameters) {
+	public final void setParameters(String parameters) {
 
 		this.parameters = parameters;
+	}
+
+	@JsonGetter
+	public final Map<String, String> getParametersMap() {
+
+		return this.parametersMap;
+	}
+
+	@JsonSetter
+	public final void setParametersMap(Map<String, String> parametersMap) {
+
+		this.parametersMap = parametersMap;
 	}
 
 	@JsonGetter

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -30,13 +31,19 @@ public class DID {
 
 	public static final String URI_SCHEME = "did";
 
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+	private static final ObjectMapper objectMapper;
 
 	private String didString;
 	private transient String method;
 	private transient String methodSpecificId;
 	private transient String parseTree;
 	private transient Map<String, Integer> parseRuleCount;
+
+	static {
+
+		objectMapper = new ObjectMapper();
+		objectMapper.disable(MapperFeature.USE_ANNOTATIONS);
+	}
 
 	private DID() {
 
@@ -114,6 +121,12 @@ public class DID {
 	public String toJson() throws JsonProcessingException {
 
 		return objectMapper.writeValueAsString(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> toJsonObject() {
+
+		return (Map<String, Object>) objectMapper.convertValue(this, Map.class);
 	}
 
 	/*
