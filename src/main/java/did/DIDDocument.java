@@ -18,6 +18,7 @@ import org.apache.commons.io.IOUtils;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.github.jsonldjava.core.JsonLdConsts;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
 import com.github.jsonldjava.core.JsonLdProcessor;
@@ -40,29 +41,11 @@ public class DIDDocument {
 	public static final String JSONLD_TERM_PUBLICKEYPEM = "publicKeyPem";
 	public static final String JSONLD_TERM_AUTHENTICATION = "authentication";
 
-	public static final Object JSONLD_CONTEXT;
-
 	private final Map<String, Object> jsonLdObject;
-
-	static {
-
-		try {
-
-			JSONLD_CONTEXT = JsonUtils.fromInputStream(DIDDocument.class.getResourceAsStream("diddocument-context.jsonld"));
-		} catch (IOException ex) {
-
-			throw new ExceptionInInitializerError(ex);
-		}
-	}
 
 	private DIDDocument(Map<String, Object> jsonLdObject) {
 
 		this.jsonLdObject = jsonLdObject;
-	}
-
-	private DIDDocument() {
-
-		this(new HashMap<String, Object> ());
 	}
 
 	/*
@@ -74,11 +57,19 @@ public class DIDDocument {
 		return new DIDDocument(jsonLdObject);
 	}
 
-	public static DIDDocument build(String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Service> services) {
+	public static DIDDocument build(Object context, String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Service> services) {
+
+		Map<String, Object> jsonLdObject = newJsonLdObject(context == null);
+
+		// add '@context'
+
+		if (context != null) {
+
+			jsonLdObject.put(JsonLdConsts.CONTEXT, context);
+		}
 
 		// add 'id'
 
-		Map<String, Object> jsonLdObject = new LinkedHashMap<String, Object> ();
 		jsonLdObject.put(JSONLD_TERM_ID, id);
 
 		// add 'publicKey'
@@ -148,6 +139,11 @@ public class DIDDocument {
 		// done
 
 		return new DIDDocument(jsonLdObject);
+	}
+
+	public static DIDDocument build(String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Service> services) {
+
+		return build(null, id, publicKeys, authentications, services);
 	}
 
 	/*
@@ -245,19 +241,57 @@ public class DIDDocument {
 		return fromJson(IOUtils.toString(reader));
 	}
 
-	@SuppressWarnings("unchecked")
 	public String toJson() throws IOException, JsonLdError {
 
 		if (this.jsonLdObject == null) return "null";
 
-		Map<String, Object> jsonLdObject = (LinkedHashMap<String, Object>) JsonUtils.fromInputStream(DIDDocument.class.getResourceAsStream("diddocument-skeleton.jsonld"));
-		jsonLdObject.putAll(this.jsonLdObject);
+		Object context = this.jsonLdObject.get(JsonLdConsts.CONTEXT);
+		if (context == null) throw new IllegalStateException("No @context.");
 
 		JsonLdOptions options = new JsonLdOptions();
-		Object rdf = JsonLdProcessor.compact(jsonLdObject, JSONLD_CONTEXT, options);
-		String result = JsonUtils.toPrettyString(rdf);
+
+		HashMap<String, Object> compacted = (HashMap<String, Object>) JsonLdProcessor.compact(this.jsonLdObject, context, options);
+		compacted.remove(JsonLdConsts.CONTEXT);
+
+		LinkedHashMap<String, Object> json = new LinkedHashMap<String, Object> ();
+		json.put(JsonLdConsts.CONTEXT, context);
+		json.putAll(compacted);
+
+		// done
+
+		String result = JsonUtils.toPrettyString(json);
 
 		return result;
+	}
+
+	/*
+	 * Helper methods
+	 */
+
+	public static final Object DID_DOCUMENT_SKELETON;
+
+	static {
+
+		try {
+
+			DID_DOCUMENT_SKELETON = JsonUtils.fromInputStream(DIDDocument.class.getResourceAsStream("diddocument-skeleton.jsonld"));
+		} catch (IOException ex) {
+
+			throw new ExceptionInInitializerError(ex);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static HashMap<String, Object> newJsonLdObject(boolean defaultContext) {
+
+		if (defaultContext) {
+
+			return new LinkedHashMap<String, Object> ((Map<String, Object>) DID_DOCUMENT_SKELETON);
+		} else {
+
+			return new LinkedHashMap<String, Object> ();
+
+		}
 	}
 
 	/*
@@ -276,11 +310,23 @@ public class DIDDocument {
 		this.jsonLdObject.put(key, value);
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Object> getContexts() {
+
+		Object entry = this.jsonLdObject.get(JsonLdConsts.CONTEXT);
+		if (entry == null) return null;
+		if (entry instanceof URI) entry = Collections.singletonList(entry);
+		if (entry instanceof String) entry = Collections.singletonList(entry);
+		if (! (entry instanceof List<?>)) return null;
+
+		return (List<Object>) entry;
+	}
+
 	public String getId() {
 
-		Object object = this.jsonLdObject.get(JSONLD_TERM_ID);
-		if (object instanceof URI) return ((URI) object).toString();
-		if (object instanceof String) return (String) object;
+		Object entry = this.jsonLdObject.get(JSONLD_TERM_ID);
+		if (entry instanceof URI) return ((URI) entry).toString();
+		if (entry instanceof String) return (String) entry;
 		return null;
 	}
 
