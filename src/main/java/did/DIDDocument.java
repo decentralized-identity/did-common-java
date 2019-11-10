@@ -1,10 +1,8 @@
 package did;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Reader;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,10 +12,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.jsonldjava.core.JsonLdConsts;
 import com.github.jsonldjava.core.JsonLdError;
 import com.github.jsonldjava.core.JsonLdOptions;
@@ -41,6 +41,8 @@ public class DIDDocument {
 	public static final String JSONLD_TERM_PUBLICKEYPEM = "publicKeyPem";
 	public static final String JSONLD_TERM_AUTHENTICATION = "authentication";
 
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
 	private final Map<String, Object> jsonLdObject;
 
 	private DIDDocument(Map<String, Object> jsonLdObject) {
@@ -55,6 +57,12 @@ public class DIDDocument {
 	public static DIDDocument build(Map<String, Object> jsonLdObject) {
 
 		return new DIDDocument(jsonLdObject);
+	}
+
+	@JsonCreator
+	public static DIDDocument build() {
+
+		return new DIDDocument(newJsonLdObject(false));
 	}
 
 	public static DIDDocument build(Object context, String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Service> services) {
@@ -147,6 +155,43 @@ public class DIDDocument {
 	}
 
 	/*
+	 * Serialization
+	 */
+
+	public static DIDDocument fromJson(String json) throws IOException {
+
+		return objectMapper.readValue(json, DIDDocument.class);
+	}
+
+	public static DIDDocument fromJson(Reader reader) throws JsonParseException, JsonMappingException, IOException {
+
+		return objectMapper.readValue(reader, DIDDocument.class);
+	}
+
+	public String toJson() throws IOException, JsonLdError {
+
+		if (this.jsonLdObject == null) return "null";
+
+		Object context = this.jsonLdObject.get(JsonLdConsts.CONTEXT);
+		if (context == null) throw new IllegalStateException("No @context.");
+
+		JsonLdOptions options = new JsonLdOptions();
+
+		HashMap<String, Object> compacted = (HashMap<String, Object>) JsonLdProcessor.compact(this.jsonLdObject, context, options);
+		compacted.remove(JsonLdConsts.CONTEXT);
+
+		LinkedHashMap<String, Object> json = new LinkedHashMap<String, Object> ();
+		json.put(JsonLdConsts.CONTEXT, context);
+		json.putAll(compacted);
+
+		// done
+
+		String result = JsonUtils.toPrettyString(json);
+
+		return result;
+	}
+
+	/*
 	 * Service selection
 	 */
 
@@ -212,56 +257,6 @@ public class DIDDocument {
 		}
 
 		return selectedKeys;
-	}
-
-	/*
-	 * Serialization
-	 */
-
-	public static DIDDocument fromJson(Map<String, Object> jsonLdObject) throws IOException {
-
-		return build(jsonLdObject);
-	}
-
-	@SuppressWarnings("unchecked")
-	public static DIDDocument fromJson(String jsonString) throws IOException {
-
-		Map<String, Object> jsonLdObject = (LinkedHashMap<String, Object>) JsonUtils.fromString(jsonString);
-
-		return fromJson(jsonLdObject);
-	}
-
-	public static DIDDocument fromJson(InputStream input, String enc) throws IOException {
-
-		return fromJson(IOUtils.toString(input, StandardCharsets.UTF_8));
-	}
-
-	public static DIDDocument fromJson(Reader reader) throws IOException {
-
-		return fromJson(IOUtils.toString(reader));
-	}
-
-	public String toJson() throws IOException, JsonLdError {
-
-		if (this.jsonLdObject == null) return "null";
-
-		Object context = this.jsonLdObject.get(JsonLdConsts.CONTEXT);
-		if (context == null) throw new IllegalStateException("No @context.");
-
-		JsonLdOptions options = new JsonLdOptions();
-
-		HashMap<String, Object> compacted = (HashMap<String, Object>) JsonLdProcessor.compact(this.jsonLdObject, context, options);
-		compacted.remove(JsonLdConsts.CONTEXT);
-
-		LinkedHashMap<String, Object> json = new LinkedHashMap<String, Object> ();
-		json.put(JsonLdConsts.CONTEXT, context);
-		json.putAll(compacted);
-
-		// done
-
-		String result = JsonUtils.toPrettyString(json);
-
-		return result;
 	}
 
 	/*
