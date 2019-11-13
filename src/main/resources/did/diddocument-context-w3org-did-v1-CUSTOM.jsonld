@@ -8,6 +8,7 @@
     "sec": "https://w3id.org/security#",
     "didv": "https://w3id.org/did#",
     "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "jwk": "https://tools.ietf.org/html/rfc7517#",
 
     "EcdsaSecp256k1Signature2019": "sec:EcdsaSecp256k1Signature2019",
     "EcdsaSecp256k1VerificationKey2019": "sec:EcdsaSecp256k1VerificationKey2019",
@@ -57,6 +58,15 @@
     "revoked": {"@id": "sec:revoked", "@type": "xsd:dateTime"},
     "service": {"@id": "didv:service", "@type": "@id", "@container": "@set"},
     "serviceEndpoint": {"@id": "didv:serviceEndpoint", "@type": "@id"},
-    "verificationMethod": {"@id": "sec:verificationMethod", "@type": "@id"}
+    "verificationMethod": {"@id": "sec:verificationMethod", "@type": "@id"},
+
+    "kty": "jwk:kty",
+    "alg": "jwk:alg",
+    "crv": "jwk:crv",
+    "kid": "jwk:kid",
+    "use": "jwk:use",
+    "x": "jwk:x",
+    "y": "jwk:y",
+    "d": "jwk:d"
   }
 }
