@@ -57,6 +57,15 @@
     "revoked": {"@id": "sec:revoked", "@type": "xsd:dateTime"},
     "service": {"@id": "didv:service", "@type": "@id", "@container": "@set"},
     "serviceEndpoint": {"@id": "didv:serviceEndpoint", "@type": "@id"},
-    "verificationMethod": {"@id": "sec:verificationMethod", "@type": "@id"}
+    "verificationMethod": {"@id": "sec:verificationMethod", "@type": "@id"},
+
+    "kty": "jwk:kty",
+    "alg": "jwk:alg",
+    "crv": "jwk:crv",
+    "kid": "jwk:kid",
+    "use": "jwk:use",
+    "x": "jwk:x",
+    "y": "jwk:y",
+    "d": "jwk:d"
   }
 }
