@@ -43,7 +43,7 @@
     "keyAgreement": {"@id": "sec:keyAgreementMethod", "@type": "@id", "@container": "@set"},
     "nonce": "sec:nonce",
     "owner": {"@id": "sec:owner", "@type": "@id"},
-    "proof": {"@id": "sec:proof", "@type": "@id", "@container": "@graph"},
+    "proof": {"@id": "sec:proof", "@type": "@id"},
     "proofPurpose": {"@id": "sec:proofPurpose", "@type": "@vocab"},
     "proofValue": "sec:proofValue",
     "publicKey": {"@id": "sec:publicKey", "@type": "@id", "@container": "@set"},
