@@ -1,6 +1,6 @@
 name: CI/CD Workflow for did-common-java
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
