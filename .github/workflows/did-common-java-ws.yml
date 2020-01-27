@@ -10,6 +10,6 @@ jobs:
     - name: Set up JDK
       uses: danubetech/github-action-maven@master
     - name: Build with Maven
-      run: mvn install
+      run: mvn compile
     - name: Run Tests
       run: mvn test
