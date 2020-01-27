@@ -1,0 +1,15 @@
+name: CI/CD Workflow for did-common-java
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Set up JDK
+      uses: danubetech/github-action-maven@master
+    - name: Build with Maven
+      run: mvn install
+    - name: Run Tests
+      run: mvn test
