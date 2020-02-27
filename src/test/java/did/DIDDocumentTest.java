@@ -74,6 +74,23 @@ class DIDDocumentTest {
         assertNull(didDocument.getServices());
     }
 
+    @DisplayName("Context URI allowed")
+    @Test
+    void given_URIContext_when_getContextsCalled_then_contextIsReturned() {}
+
+    @DisplayName("Context List<?> allowed")
+    @Test
+    void given_AnyListContext_when_getContextsCalled_then_contextIsReturned() {
+        Object context = new ArrayList<>();
+        ((ArrayList<Integer>) context).add(123);
+    }
+
+    @DisplayName("Context int not allowed")
+    @Test
+    void given_intContext_when_getContextsCalled_then_NullPointerExceptionThrown() {}
+
+
+    // Task DIDDocumentTest Parser method
     @DisplayName("selectServices both params empty String")
     @Test
     void given_validServiceEntry_when_selectServicesWithBothParamsEmptyString_then_emptyHashMapReturned(){
@@ -92,19 +109,4 @@ class DIDDocumentTest {
         List<Service> services = createServices(serviceJsonLdObject);
         return DIDDocument.build("documentId", null, null, services);
     }
-
-    @DisplayName("Context URI allowed")
-    @Test
-    void given_URIContext_when_getContextsCalled_then_contextIsReturned() {}
-
-    @DisplayName("Context List<?> allowed")
-    @Test
-    void given_AnyListContext_when_getContextsCalled_then_contextIsReturned() {
-        Object context = new ArrayList<>();
-        ((ArrayList<Integer>) context).add(123);
-    }
-
-    @DisplayName("Context int not allowed")
-    @Test
-    void given_intContext_when_getContextsCalled_then_NullPointerExceptionThrown() {}
 }
