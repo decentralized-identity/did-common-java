@@ -87,7 +87,12 @@ class DIDDocumentTest {
 
     @DisplayName("Context int not allowed")
     @Test
-    void given_intContext_when_getContextsCalled_then_NullPointerExceptionThrown() {}
+    void given_intContext_when_getContextsCalled_then_NullPointerExceptionThrown() {
+        int cnt = 111111 ;
+        String documentId = "documentId";
+        DIDDocument didDocument = DIDDocument.build(cnt, documentId, null,null,null);
+        assertEquals(didDocument,null);
+    }
 
 
     // Task DIDDocumentTest Parser method
@@ -100,6 +105,14 @@ class DIDDocumentTest {
 
         Map<Integer, Object> expectedEmptyMap = new HashMap<>();
         assertEquals(expectedEmptyMap, selectedServices);
+    }
+
+    @DisplayName("Map type which is not a LinkedHashMap and verify")
+    @Test
+    void give_hashmap_and_return_null(){
+        String documentId = "documentId";
+
+        DIDDocument didDocumen;
     }
 
     private DIDDocument createDIDDocumentWithValidService() {
