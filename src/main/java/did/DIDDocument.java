@@ -96,22 +96,6 @@ public class DIDDocument {
 			jsonLdObject.put(JSONLD_TERM_PUBLICKEY, publicKeysJsonLdArray);
 		}
 
-		// add 'publicKey'
-
-		if (publicKeys != null) {
-
-			LinkedList<Object> publicKeysJsonLdArray = new LinkedList<Object> ();
-
-			for (PublicKey publicKey : publicKeys) {
-
-				Map<String, Object> publicKeyJsonLdObject = publicKey.getJsonLdObject();
-
-				publicKeysJsonLdArray.add(publicKeyJsonLdObject);
-			}
-
-			jsonLdObject.put(JSONLD_TERM_PUBLICKEY, publicKeysJsonLdArray);
-		}
-
 		// add 'service'
 
 		if (services != null) {
