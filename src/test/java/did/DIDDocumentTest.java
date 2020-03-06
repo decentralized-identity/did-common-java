@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,7 +68,6 @@ class DIDDocumentTest {
     @Test
     void given_rawDIDDocument_when_gettersAreCalled_then_nullReturned() {
         DIDDocument didDocument = DIDDocument.build();
-
         assertNull(didDocument.getContexts());
         assertNull(didDocument.getPublicKeys());
         assertNull(didDocument.getId());
@@ -76,22 +77,38 @@ class DIDDocumentTest {
 
     @DisplayName("Context URI allowed")
     @Test
-    void given_URIContext_when_getContextsCalled_then_contextIsReturned() {}
+    void given_URIContext_when_getContextsCalled_then_contextIsReturned() {
+        URI context = null;
+        try {
+             context = new URI("www.danubetech.com");
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        final String documentId = "documentId";
+        DIDDocument didDocument = DIDDocument.build(context, documentId, null,null,null);
+        assertEquals(context,didDocument.getContexts());
+    }
 
     @DisplayName("Context List<?> allowed")
     @Test
     void given_AnyListContext_when_getContextsCalled_then_contextIsReturned() {
         Object context = new ArrayList<>();
         ((ArrayList<Integer>) context).add(123);
+        final String documentId = "documentId";
+        DIDDocument didDocument = DIDDocument.build(context, documentId, null,null,null);
     }
 
     @DisplayName("Context int not allowed")
     @Test
     void given_intContext_when_getContextsCalled_then_NullPointerExceptionThrown() {
-        int cnt = 111111 ;
-        String documentId = "documentId";
-        DIDDocument didDocument = DIDDocument.build(cnt, documentId, null,null,null);
-        assertEquals(didDocument,null);
+        int context = 111111 ;
+        final String documentId = "documentId";
+        String exception_thrown = "java.lang.RuntimeException";
+        DIDDocument didDocument = DIDDocument.build(context, documentId, null,null,null);
+        RuntimeException exception =assertThrows( RuntimeException.class ,
+                ()-> didDocument.toString()
+        );
+        assertTrue(exception.getMessage().contains(exception_thrown));
     }
 
 
@@ -111,8 +128,26 @@ class DIDDocumentTest {
     @Test
     void give_hashmap_and_return_null(){
         String documentId = "documentId";
+        Map<String, Object> serviceJsonLdObject = new HashMap<>();
+        serviceJsonLdObject.put("id", "did:method:123456#openId");
+        serviceJsonLdObject.put("type", "serviceType");
+        List<Service> services = createServices(serviceJsonLdObject);
+        DIDDocument didDocument = DIDDocument.build(documentId,null,null,services);
+        didDocument.getServices();
 
-        DIDDocument didDocumen;
+    }
+
+    @DisplayName("Map type which is not a LinkedHashMap and verify")
+    @Test
+    void give_hashmap_for_public_key_and_return_null(){
+        String documentId = "documentId";
+        Map<String, Object> serviceJsonLdObject = new HashMap<>();
+        serviceJsonLdObject.put("id", "did:method:123456#openId");
+        serviceJsonLdObject.put("type", "serviceType");
+        List<Service> services = createServices(serviceJsonLdObject);
+        DIDDocument didDocument = DIDDocument.build(documentId,null,null,services);
+        didDocument.getServices();
+
     }
 
     private DIDDocument createDIDDocumentWithValidService() {
