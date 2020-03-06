@@ -86,7 +86,7 @@ class DIDDocumentTest {
         }
         final String documentId = "documentId";
         DIDDocument didDocument = DIDDocument.build(context, documentId, null,null,null);
-        assertEquals(context,didDocument.getContexts());
+        assertEquals(context,didDocument.getContexts().get(0));
     }
 
     @DisplayName("Context List<?> allowed")
@@ -96,6 +96,7 @@ class DIDDocumentTest {
         ((ArrayList<Integer>) context).add(123);
         final String documentId = "documentId";
         DIDDocument didDocument = DIDDocument.build(context, documentId, null,null,null);
+        assertEquals(didDocument.getContexts(),context);
     }
 
     @DisplayName("Context int not allowed")
@@ -103,12 +104,12 @@ class DIDDocumentTest {
     void given_intContext_when_getContextsCalled_then_NullPointerExceptionThrown() {
         int context = 111111 ;
         final String documentId = "documentId";
-        String exception_thrown = "java.lang.RuntimeException";
+        String exception_expected = "invalid local context";
         DIDDocument didDocument = DIDDocument.build(context, documentId, null,null,null);
         RuntimeException exception =assertThrows( RuntimeException.class ,
                 ()-> didDocument.toString()
         );
-        assertTrue(exception.getMessage().contains(exception_thrown));
+        assertTrue(exception.getMessage().contains(exception_expected));
     }
 
 
@@ -133,21 +134,29 @@ class DIDDocumentTest {
         serviceJsonLdObject.put("type", "serviceType");
         List<Service> services = createServices(serviceJsonLdObject);
         DIDDocument didDocument = DIDDocument.build(documentId,null,null,services);
-        didDocument.getServices();
+        assertNull(didDocument.getServices());
 
     }
 
-    @DisplayName("Map type which is not a LinkedHashMap and verify")
+    @DisplayName("Public Key type which is not a LinkedHashMap and verify")
     @Test
     void give_hashmap_for_public_key_and_return_null(){
         String documentId = "documentId";
-        Map<String, Object> serviceJsonLdObject = new HashMap<>();
-        serviceJsonLdObject.put("id", "did:method:123456#openId");
-        serviceJsonLdObject.put("type", "serviceType");
-        List<Service> services = createServices(serviceJsonLdObject);
-        DIDDocument didDocument = DIDDocument.build(documentId,null,null,services);
-        didDocument.getServices();
-
+        Map<String, Object> publicKeyJsonLdObject = new HashMap<>();
+        publicKeyJsonLdObject.put("id", "anyKey");
+        List<PublicKey> publicKeys = createPublicKeys(publicKeyJsonLdObject);
+        DIDDocument didDocument = DIDDocument.build(documentId,publicKeys,null,null);
+        assertNull(didDocument.getPublicKeys());
+    }
+    @DisplayName("Public Key type which is not a LinkedHashMap and verify")
+    @Test
+    void give_hashmap_for_authentication_key_and_return_null(){
+        String documentId = "documentId";
+        Map<String, Object> authenticationJsonLdObject = new HashMap<>();
+        authenticationJsonLdObject.put("id", "anyKey");
+        List<Authentication> authenticationJsonLD = createAuthentications(authenticationJsonLdObject);
+        DIDDocument didDocument = DIDDocument.build(documentId,null,authenticationJsonLD,null);
+        assertNull(didDocument.getAuthentications());
     }
 
     private DIDDocument createDIDDocumentWithValidService() {

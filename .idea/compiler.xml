@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="did-common-java" />
+        <module name="ld-signatures-java" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="did-common-java" target="1.7" />
+      <module name="did-common-java" target="8" />
+      <module name="ld-signatures-java" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>
