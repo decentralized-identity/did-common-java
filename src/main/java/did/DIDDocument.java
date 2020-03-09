@@ -202,9 +202,7 @@ public class DIDDocument {
 		if (this.getServices() == null) return selectedServices;
 
 		for (Service service : this.getServices()) {
-
 			i++;
-
 			if (selectServiceName != null) {
 
 				DIDURL serviceDidUrl;
