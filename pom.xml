@@ -109,7 +109,7 @@
 		<dependency>
 			<groupId>com.github.jsonld-java</groupId>
 			<artifactId>jsonld-java</artifactId>
-			<version>0.13.1-CUSTOM</version>
+			<version>0.13.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
 
