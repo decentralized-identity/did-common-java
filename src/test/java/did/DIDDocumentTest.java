@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -156,8 +155,44 @@ class DIDDocumentTest {
         List<Service> services = createServices(serviceJsonLdObject);
         return DIDDocument.build("documentId", null, null, services);
     }
+    private DIDDocument createDIDDocumentWithValidPublicKey() {
 
-    // Task DIDDocumentTest Parser method
+        Map<String, Object> publicKeyJsonLdObject = new LinkedHashMap<>();
+        publicKeyJsonLdObject.put("id", "did:example:123456789abcdefghi#keys-1");
+        publicKeyJsonLdObject.put("type","anyType");
+        List<PublicKey> publicKeys = createPublicKeys(publicKeyJsonLdObject);
+
+        return DIDDocument.build("documentId", publicKeys, null, null);
+    }
+    private DIDDocument createDIDDocumentWithTwoValidService() {
+        Map<String, Object> serviceJsonLdObject = new LinkedHashMap<>();
+        Map<String, Object> serviceJsonLdObject2 = new LinkedHashMap<>();
+        serviceJsonLdObject.put("id", "did:method:123456#openId");
+        serviceJsonLdObject.put("type", "serviceType");
+        List<Service> services = createServices(serviceJsonLdObject);
+        serviceJsonLdObject2.put("id", "did:method:888888888#openId");
+        serviceJsonLdObject2.put("type", "serviceType");
+        List<Service> services2 = createServices(serviceJsonLdObject2);
+        services.add(services2.get(0));
+        return DIDDocument.build("documentId", null, null, services);
+    }
+    private DIDDocument createDIDDocumentWithTwoValidPublicKey() {
+
+        Map<String, Object> publicKeyJsonLdObject = new LinkedHashMap<>();
+        Map<String, Object> publicKeyJsonLdObject2 = new LinkedHashMap<>();
+        publicKeyJsonLdObject.put("id", "did:example:123456789abcdefghi#keys-1");
+        publicKeyJsonLdObject.put("type","anyType");
+        List<PublicKey> publicKeys = createPublicKeys(publicKeyJsonLdObject);
+        publicKeyJsonLdObject2.put("id", "did:example:testKeys#keys-1");
+        publicKeyJsonLdObject2.put("type","anyType");
+        List<PublicKey> publicKeys2 = createPublicKeys(publicKeyJsonLdObject2);
+        publicKeys.add(publicKeys2.get(0));
+
+        return DIDDocument.build("documentId", publicKeys, null, null);
+    }
+
+    // Task DIDDocumentTest Parser method bad cases
+
     @DisplayName("selectServices both params empty String")
     @Test
     void given_validServiceEntry_when_selectServicesWithBothParamsEmptyString_then_emptyHashMapReturned(){
@@ -168,4 +203,231 @@ class DIDDocumentTest {
         Map<Integer, Object> expectedEmptyMap = new HashMap<>();
         assertEquals(expectedEmptyMap, selectedServices);
     }
+
+    @DisplayName("selectServiceType with empty String")
+    @Test
+    void given_validServiceEntry_when_selectServiceTypeWithEmptyString_then_emptyHashMapReturned(){
+        DIDDocument didDocument = createDIDDocumentWithValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("openId", "");
+
+        Map<Integer, Object> expectedEmptyMap = new HashMap<>();
+        assertEquals(expectedEmptyMap, selectedServices);
+    }
+
+    @DisplayName("selectServiceName with empty String")
+    @Test
+    void given_validServiceEntry_when_selectServiceNameWithEmptyString_then_emptyHashMapReturned(){
+        DIDDocument didDocument = createDIDDocumentWithValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("", "serviceType");
+
+        Map<Integer, Object> expectedEmptyMap = new HashMap<>();
+        assertEquals(expectedEmptyMap, selectedServices);
+    }
+
+    @DisplayName("selectServiceName with wrong name")
+    @Test
+    void given_validServiceEntry_when_selectServiceNameWithWrongName_then_emptyHashMapReturned(){
+        DIDDocument didDocument = createDIDDocumentWithValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("xxxx", null);
+
+        Map<Integer, Object> expectedEmptyMap = new HashMap<>();
+        assertEquals(expectedEmptyMap, selectedServices);
+    }
+
+    @DisplayName("selectServiceType with wrong Type")
+    @Test
+    void given_validServiceEntry_when_selectServiceTypeWithWrongType_then_emptyHashMapReturned(){
+        DIDDocument didDocument = createDIDDocumentWithValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices(null, "xxxx");
+
+        Map<Integer, Object> expectedEmptyMap = new HashMap<>();
+        assertEquals(expectedEmptyMap, selectedServices);
+    }
+
+    @DisplayName("selectServiceType with wrong Type")
+    @Test
+    void given_emptyServiceEntry_inDIDDocument_then_emptyHashMapReturned(){
+        Map<String, Object> serviceJsonLdObject = new LinkedHashMap<>();
+        serviceJsonLdObject.put("id", "did:method:123456#openId");
+        serviceJsonLdObject.put("type", "serviceType");
+        DIDDocument didDocument =DIDDocument.build("documentId", null, null, null);
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("", "");
+        Map<Integer, Object> expectedEmptyMap = new HashMap<>();
+        assertEquals(expectedEmptyMap, selectedServices);
+    }
+
+
+
+
+
+    /////----GOOD Cases
+
+    @Test
+    void given_serviceName_and_serviceType_then_Service_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("openId", "serviceType");
+
+        assertNotNull(selectedServices);
+        assertEquals(1,selectedServices.size());
+        assertEquals( "did:method:123456#openId", selectedServices.get(0).getId());
+    }
+
+    @Test
+    void given_publicKeyName_and_publicKeyType_then_PubKey_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithValidPublicKey();
+
+        Map<Integer, PublicKey> selectedKeys = didDocument.selectKeys("keys-1","anyType");
+
+        assertNotNull(selectedKeys);
+        assertEquals(1,selectedKeys.size());
+        assertEquals("did:example:123456789abcdefghi#keys-1", selectedKeys.get(0).getId());
+    }
+
+    @Test
+    void given_serviceName_and_empty_serviceType_then_Service_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("openId", null);
+
+        assertNotNull(selectedServices);
+        assertEquals(1,selectedServices.size());
+        assertEquals( "did:method:123456#openId", selectedServices.get(0).getId());
+    }
+
+    @Test
+    void given_serviceType_and_empty_serviceName_then_Service_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices(null, "serviceType");
+
+        assertNotNull(selectedServices);
+        assertEquals(1,selectedServices.size());
+        assertEquals( "serviceType", selectedServices.get(0).getType());
+    }
+
+    @Test
+    void given_publicKeyName_and_empty_publicKeyType_then_PubKey_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithValidPublicKey();
+
+        Map<Integer, PublicKey> selectedKeys = didDocument.selectKeys("keys-1",null);
+
+        assertNotNull(selectedKeys);
+        assertEquals(1,selectedKeys.size());
+        assertEquals("did:example:123456789abcdefghi#keys-1", selectedKeys.get(0).getId());
+    }
+
+    @Test
+    void given_publicKeyType_and_empty_publicKeyName_then_PubKey_found(){
+        String expectedType = "anyType";
+        DIDDocument didDocument = createDIDDocumentWithValidPublicKey();
+
+        Map<Integer, PublicKey> selectedKeys = didDocument.selectKeys(null,"anyType");
+
+        assertNotNull(selectedKeys);
+        assertEquals(1,selectedKeys.size());
+        assertEquals( expectedType, selectedKeys.get(0).getType());
+    }
+
+    @Test
+    void given_two_services_with_serviceName_and_serviceType_then_Service_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithTwoValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("openId", "serviceType");
+
+        assertNotNull(selectedServices);
+        assertEquals(2,selectedServices.size());
+        assertEquals( "did:method:123456#openId", selectedServices.get(0).getId());
+        assertEquals( "did:method:888888888#openId", selectedServices.get(1).getId());
+    }
+
+    @Test
+    void given_two_services_with_serviceName_and_empty_serviceType_then_Service_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithTwoValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices("openId", null);
+
+        assertNotNull(selectedServices);
+        assertEquals(2,selectedServices.size());
+        assertEquals( "did:method:123456#openId", selectedServices.get(0).getId());
+        assertEquals( "did:method:888888888#openId", selectedServices.get(1).getId());
+    }
+
+    @Test
+    void given_two_services_with_serviceType_and_empty_serviceName_then_Service_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithTwoValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices(null, "serviceType");
+
+        assertNotNull(selectedServices);
+        assertEquals(2,selectedServices.size());
+        assertEquals( "did:method:123456#openId", selectedServices.get(0).getId());
+        assertEquals( "did:method:888888888#openId", selectedServices.get(1).getId());
+    }
+
+    @Test
+    void given_two_publicKeys_with_publicKeyName_and_publicKeyType_then_PubKey_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithTwoValidPublicKey();
+
+        Map<Integer, PublicKey> selectedKeys = didDocument.selectKeys("keys-1","anyType");
+
+        assertNotNull(selectedKeys);
+        assertEquals(2,selectedKeys.size());
+        assertEquals("did:example:123456789abcdefghi#keys-1", selectedKeys.get(0).getId());
+        assertEquals("did:example:testKeys#keys-1", selectedKeys.get(1).getId());
+    }
+
+    @Test
+    void given_Two_publicKeys_with_publicKeyName_and_empty_publicKeyType_then_PubKey_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithTwoValidPublicKey();
+
+        Map<Integer, PublicKey> selectedKeys = didDocument.selectKeys("keys-1",null);
+
+        assertNotNull(selectedKeys);
+        assertEquals(2,selectedKeys.size());
+        assertEquals("did:example:123456789abcdefghi#keys-1", selectedKeys.get(0).getId());
+        assertEquals("did:example:testKeys#keys-1", selectedKeys.get(1).getId());
+    }
+
+    @Test
+    void given_Two_publicKeys_with_publicKeyType_and_empty_publicKeyName_then_PubKey_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithTwoValidPublicKey();
+
+        Map<Integer, PublicKey> selectedKeys = didDocument.selectKeys(null,"anyType");
+
+        assertNotNull(selectedKeys);
+        assertEquals(2,selectedKeys.size());
+        assertEquals("did:example:123456789abcdefghi#keys-1", selectedKeys.get(0).getId());
+        assertEquals("did:example:testKeys#keys-1", selectedKeys.get(1).getId());
+    }
+
+    @Test
+    void given_two_services_with_Null_serviceName_and_serviceType_then_all_Services_found(){
+
+        DIDDocument didDocument = createDIDDocumentWithTwoValidService();
+
+        Map<Integer, Service> selectedServices = didDocument.selectServices(null, null);
+
+        assertNotNull(selectedServices);
+        assertEquals(2,selectedServices.size());
+        assertEquals( "did:method:123456#openId", selectedServices.get(0).getId());
+        assertEquals( "did:method:888888888#openId", selectedServices.get(1).getId());
+    }
+
 }
