@@ -191,8 +191,6 @@ class DIDDocumentTest {
         return DIDDocument.build("documentId", publicKeys, null, null);
     }
 
-    // Task DIDDocumentTest Parser method bad cases
-
     @DisplayName("selectServices both params empty String")
     @Test
     void given_validServiceEntry_when_selectServicesWithBothParamsEmptyString_then_emptyHashMapReturned(){
@@ -260,12 +258,6 @@ class DIDDocumentTest {
         Map<Integer, Object> expectedEmptyMap = new HashMap<>();
         assertEquals(expectedEmptyMap, selectedServices);
     }
-
-
-
-
-
-    /////----GOOD Cases
 
     @Test
     void given_serviceName_and_serviceType_then_Service_found(){
