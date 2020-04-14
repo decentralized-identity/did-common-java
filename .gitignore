@@ -4,4 +4,4 @@
 /target/
 /bin/
 .idea
-did-common-java.iml
+*.iml
