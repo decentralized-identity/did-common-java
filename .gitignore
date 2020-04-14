@@ -1,6 +1,8 @@
-*.iml
 .project
 .classpath
 /.settings/
 /target/
 /bin/
+.idea
+did-common-java (1).iml
+did-common-java (2).iml
