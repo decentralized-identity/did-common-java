@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Apr 19 22:09:52 CEST 2019
+ * Produced : Mon Jul 13 23:12:39 CEST 2020
  *
  * -----------------------------------------------------------------------------
  */
@@ -45,7 +45,7 @@ final public class Rule_param_value extends Rule
         int c1 = 0;
         while (f1)
         {
-          Rule rule = Rule_param_char.parse(context);
+          Rule rule = Rule_pchar.parse(context);
           if ((f1 = rule != null))
           {
             a1.add(rule, context.index);

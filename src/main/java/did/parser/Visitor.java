@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Apr 19 22:09:52 CEST 2019
+ * Produced : Mon Jul 13 23:12:39 CEST 2020
  *
  * -----------------------------------------------------------------------------
  */
@@ -18,10 +18,10 @@ public interface Visitor
   public Object visit(Rule_method_specific_id rule);
   public Object visit(Rule_idchar rule);
   public Object visit(Rule_did_url rule);
+  public Object visit(Rule_did_query rule);
   public Object visit(Rule_param rule);
   public Object visit(Rule_param_name rule);
   public Object visit(Rule_param_value rule);
-  public Object visit(Rule_param_char rule);
   public Object visit(Rule_path_abempty rule);
   public Object visit(Rule_segment rule);
   public Object visit(Rule_pchar rule);

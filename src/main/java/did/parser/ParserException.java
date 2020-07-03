@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Apr 19 22:09:52 CEST 2019
+ * Produced : Mon Jul 13 23:12:39 CEST 2020
  *
  * -----------------------------------------------------------------------------
  */
@@ -16,10 +16,10 @@ import java.util.Stack;
  * <p>Signals that a parse failure has occurred.</p>
  * 
  * <p>Producer : com.parse2.aparse.Parser 2.5<br/>
- * Produced : Fri Apr 19 22:09:52 CEST 2019</p>
+ * Produced : Mon Jul 13 23:12:39 CEST 2020</p>
  */
 
-public class ParserException extends RuntimeException
+public class ParserException extends Exception
 {
   private String reason;
   private String text60;

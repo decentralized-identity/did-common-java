@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Fri Apr 19 22:09:52 CEST 2019
+ * Produced : Mon Jul 13 23:12:39 CEST 2020
  *
  * -----------------------------------------------------------------------------
  */
@@ -166,10 +166,10 @@ public class Parser
     else if (rulename.equalsIgnoreCase("method-specific-id")) rule = Rule_method_specific_id.parse(context);
     else if (rulename.equalsIgnoreCase("idchar")) rule = Rule_idchar.parse(context);
     else if (rulename.equalsIgnoreCase("did-url")) rule = Rule_did_url.parse(context);
+    else if (rulename.equalsIgnoreCase("did-query")) rule = Rule_did_query.parse(context);
     else if (rulename.equalsIgnoreCase("param")) rule = Rule_param.parse(context);
     else if (rulename.equalsIgnoreCase("param-name")) rule = Rule_param_name.parse(context);
     else if (rulename.equalsIgnoreCase("param-value")) rule = Rule_param_value.parse(context);
-    else if (rulename.equalsIgnoreCase("param-char")) rule = Rule_param_char.parse(context);
     else if (rulename.equalsIgnoreCase("path-abempty")) rule = Rule_path_abempty.parse(context);
     else if (rulename.equalsIgnoreCase("segment")) rule = Rule_segment.parse(context);
     else if (rulename.equalsIgnoreCase("pchar")) rule = Rule_pchar.parse(context);
