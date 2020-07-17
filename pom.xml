@@ -9,16 +9,16 @@
 	<version>0.2-SNAPSHOT</version>
 	<name>did-common-java</name>
 
-	<issueManagement>
-		<url>https://github.com/decentralized-identity/did-common-java/issues</url>
-		<system>GitHub Issues</system>
-	</issueManagement>
-
 	<scm>
 		<url>https://github.com/decentralized-identity/did-common-java</url>
 		<connection>scm:git:git://github.com/decentralized-identity/did-common-java.git</connection>
 		<developerConnection>scm:git:git@github.com:decentralized-identity/did-common-java.git</developerConnection>
 	</scm>
+
+	<issueManagement>
+		<url>https://github.com/decentralized-identity/did-common-java/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
 
 	<distributionManagement>
 		<snapshotRepository>
