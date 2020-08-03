@@ -1,44 +1,57 @@
 package did;
 
-import java.util.HashMap;
-import java.util.Map;
+import did.jsonld.JsonLDObject;
+import did.jsonld.JsonLDUtils;
 
-public class Service extends JsonLdObject {
+import javax.json.JsonObject;
+import java.util.Collections;
+import java.util.List;
 
-	private Service(Map<String, Object> jsonLdObject) {
-
-		super(jsonLdObject);
-	}
+public class Service extends JsonLDObject {
 
 	private Service() {
-
-		this(new HashMap<String, Object> ());
+		super();
 	}
 
-	public static Service build(Map<String, Object> jsonLdObject) {
-
-		return new Service(jsonLdObject);
+	private Service(JsonObject jsonObject) {
+		super(jsonObject);
 	}
 
-	public static Service build(String[] types, String serviceEndpoint) {
+	/*
+	 * Factory methods
+	 */
 
-		Map<String, Object> jsonLdObject = JsonLdObject.init(null, types);
+	public static Service build(String id, List<String> types, String serviceEndpoint) {
 
-		// add 'serviceEndpoint'
+		Service service = new Service();
+		service.build(null, id, types);
 
-		if (serviceEndpoint != null) {
+		// add JSON-LD properties
 
-			jsonLdObject.put(DIDDocument.JSONLD_TERM_SERVICEENDPOINT, serviceEndpoint);
-		}
+		if (serviceEndpoint != null) JsonLDUtils.jsonLdAddString(service.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_SERVICEENDPOINT, serviceEndpoint);
 
-		// done
+		service.build();
+		return service;
+	}
 
-		return new Service(jsonLdObject);
+	public static Service build(String id, String type, String serviceEndpoint) {
+
+		return build(id, Collections.singletonList(type), serviceEndpoint);
+	}
+
+	public static Service build(List<String> types, String serviceEndpoint) {
+
+		return build(null, types, serviceEndpoint);
 	}
 
 	public static Service build(String type, String serviceEndpoint) {
 
-		return build(new String[] { type }, serviceEndpoint);
+		return build(null, Collections.singletonList(type), serviceEndpoint);
+	}
+
+	public static Service build(JsonObject jsonObject) {
+
+		return new Service(jsonObject);
 	}
 
 	/*
@@ -47,12 +60,6 @@ public class Service extends JsonLdObject {
 
 	public String getServiceEndpoint() {
 
-		Object entry = this.jsonLdObject.get(DIDDocument.JSONLD_TERM_SERVICEENDPOINT);
-		if (entry == null) return null;
-		if (! (entry instanceof String)) return null;
-
-		String serviceEndpoint = (String) entry;
-
-		return serviceEndpoint;
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_SERVICEENDPOINT);
 	}
 }

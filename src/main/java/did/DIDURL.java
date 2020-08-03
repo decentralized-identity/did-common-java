@@ -2,9 +2,11 @@ package did;
 
 import java.io.IOException;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
@@ -23,12 +25,12 @@ import did.parser.Rule;
 import did.parser.Rule_did;
 import did.parser.Rule_did_url;
 import did.parser.Rule_fragment;
-import did.parser.Rule_param_name;
-import did.parser.Rule_param_value;
 import did.parser.Rule_path_abempty;
 import did.parser.Rule_query;
 import did.parser.Terminal_NumericValue;
 import did.parser.Terminal_StringValue;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
 
 @JsonSerialize(using = ToStringSerializer.class)
 public class DIDURL {
@@ -39,11 +41,10 @@ public class DIDURL {
 
 	private String didUrlString;
 	private transient DID did;
-	private transient String parameters;
-	private transient Map<String, String> parametersMap = new HashMap<String, String> ();
 	private transient String path;
 	private transient String query;
 	private transient String fragment;
+	private transient Map<String, String> parameters = new HashMap<String, String> ();
 	private transient String parseTree;
 	private transient Map<String, Integer> parseRuleCount;
 
@@ -156,23 +157,6 @@ public class DIDURL {
 			return visitRules(rule.rules);
 		}
 
-		private String param_name = null;
-
-		public Object visit(Rule_param_name rule) {
-
-			param_name = rule.spelling;
-			if (DIDURL.this.parameters == null) DIDURL.this.parameters = rule.spelling; else DIDURL.this.parameters += ";" + rule.spelling;
-			DIDURL.this.parametersMap.put(rule.spelling, null);
-			return visitRules(rule.rules);
-		}
-
-		public Object visit(Rule_param_value rule) {
-
-			DIDURL.this.parameters += "=" + rule.spelling;
-			DIDURL.this.parametersMap.put(param_name, rule.spelling);
-			return visitRules(rule.rules);
-		}
-
 		public Object visit(Rule_path_abempty rule) {
 
 			DIDURL.this.path = rule.spelling;
@@ -182,6 +166,7 @@ public class DIDURL {
 		public Object visit(Rule_query rule) {
 
 			DIDURL.this.query = rule.spelling;
+			DIDURL.this.parameters = URLEncodedUtils.parse(rule.spelling, StandardCharsets.UTF_8).stream().collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
 			return visitRules(rule.rules);
 		}
 
@@ -265,27 +250,15 @@ public class DIDURL {
 	}
 
 	@JsonGetter
-	public final String getParameters() {
+	public final Map<String, String> getParameters() {
 
 		return this.parameters;
 	}
 
 	@JsonSetter
-	public final void setParameters(String parameters) {
+	public final void setParameters(Map<String, String> parameters) {
 
 		this.parameters = parameters;
-	}
-
-	@JsonGetter
-	public final Map<String, String> getParametersMap() {
-
-		return this.parametersMap;
-	}
-
-	@JsonSetter
-	public final void setParametersMap(Map<String, String> parametersMap) {
-
-		this.parametersMap = parametersMap;
 	}
 
 	@JsonGetter

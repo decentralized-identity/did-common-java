@@ -1,81 +1,71 @@
 package did;
 
-import java.util.ArrayList;
+import did.jsonld.JsonLDObject;
+import did.jsonld.JsonLDUtils;
+
+import javax.json.JsonObject;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-public class Authentication extends JsonLdObject {
-
-	private Authentication(Map<String, Object> jsonLdObject) {
-
-		super(jsonLdObject);
-	}
+public class Authentication extends JsonLDObject {
 
 	private Authentication() {
-
-		this(new HashMap<String, Object> ());
+		super();
 	}
 
-	public static Authentication build(Map<String, Object> jsonLdObject) {
-
-		return new Authentication(jsonLdObject);
+	private Authentication(JsonObject jsonObject) {
+		super(jsonObject);
 	}
 
-	public static Authentication build(String id, String[] types, String publicKey) {
+	/*
+	 * Factory methods
+	 */
 
-		Map<String, Object> jsonLdObject = JsonLdObject.init(id, types);
+	public static Authentication build(String id, List<String> types, String publicKey) {
 
-		// add 'publicKey'
+		Authentication authentication = new Authentication();
+		authentication.build(null, id, types);
 
-		if (publicKey != null) {
+		// add JSON-LD properties
 
-			jsonLdObject.put(DIDDocument.JSONLD_TERM_PUBLICKEY, publicKey);
-		}
+		if (publicKey != null) JsonLDUtils.jsonLdAddString(authentication.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY, publicKey);
 
-		// done
+		authentication.build();
+		return authentication;
+	}
 
-		return new Authentication(jsonLdObject);
+	public static Authentication build(String id, String type, String publicKey) {
+
+		return build(id, Collections.singletonList(type), publicKey);
+	}
+
+	public static Authentication build(List<String> types, String publicKey) {
+
+		return build(null, types, publicKey);
+	}
+
+	public static Authentication build(String type, String publicKey) {
+
+		return build(null, Collections.singletonList(type), publicKey);
+	}
+
+	public static Authentication build(JsonObject jsonObject) {
+
+		return new Authentication(jsonObject);
 	}
 
 	/*
 	 * Getters
 	 */
 
-	@SuppressWarnings("unchecked")
 	public List<PublicKey> getPublicKeys() {
 
-		Object entry = this.jsonLdObject.get(DIDDocument.JSONLD_TERM_PUBLICKEY);
-		if (entry == null) return null;
-		if (entry instanceof LinkedHashMap<?, ?>) entry = Collections.singletonList(entry);
-		if (! (entry instanceof List<?>)) return null;
-
-		List<Object> publicKeysJsonLdArray = (List<Object>) entry;
-
-		List<PublicKey> publicKeys = new ArrayList<PublicKey> ();
-
-		for (Object entry2 : publicKeysJsonLdArray) {
-
-			if (! (entry2 instanceof LinkedHashMap<?, ?>)) continue;
-
-			LinkedHashMap<String, Object> publicKeyJsonLdObject = (LinkedHashMap<String, Object>) entry2;
-
-			publicKeys.add(PublicKey.build(publicKeyJsonLdObject));
-		}
-
-		return publicKeys;
+		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY).stream().map(x -> PublicKey.build((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public String getPublicKey() {
 
-		Object entry = this.jsonLdObject.get(DIDDocument.JSONLD_TERM_PUBLICKEY);
-		if (entry == null) return null;
-		if (! (entry instanceof String)) return null;
-
-		String publicKey = (String) entry;
-
-		return publicKey;
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY);
 	}
 }
