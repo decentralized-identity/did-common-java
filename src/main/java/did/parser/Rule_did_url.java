@@ -3,7 +3,7 @@
  * -----------------------------------------------------------------------------
  *
  * Producer : com.parse2.aparse.Parser 2.5
- * Produced : Mon Jul 13 23:12:39 CEST 2020
+ * Produced : Sat Aug 01 22:06:56 CEST 2020
  *
  * -----------------------------------------------------------------------------
  */
@@ -103,7 +103,7 @@ final public class Rule_did_url extends Rule
               int c2 = 0;
               for (int i2 = 0; i2 < 1 && f2; i2++)
               {
-                Rule rule = Rule_did_query.parse(context);
+                Rule rule = Rule_query.parse(context);
                 if ((f2 = rule != null))
                 {
                   a2.add(rule, context.index);

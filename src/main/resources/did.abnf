@@ -4,12 +4,7 @@ method-char        = %x61-7A / DIGIT ;
 method-specific-id = *( *idchar ":" ) 1*idchar ;
 idchar             = ALPHA / DIGIT / "." / "-" / "_" ;
 
-did-url            = did path-abempty [ "?" did-query ]
-                     [ "#" fragment ] ;
-did-query          = param *( "&" param ) ;
-param              = param-name "=" param-value ;
-param-name         = 1*pchar ;
-param-value        = *pchar ;
+did-url = did path-abempty [ "?" query ] [ "#" fragment ] ;
 
    path-abempty  = *( "/" segment ) ;
 
