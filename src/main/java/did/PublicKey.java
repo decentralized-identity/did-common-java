@@ -1,5 +1,6 @@
 package did;
 
+import did.jsonld.DIDKeywords;
 import did.jsonld.JsonLDObject;
 import did.jsonld.JsonLDUtils;
 
@@ -13,7 +14,7 @@ public class PublicKey extends JsonLDObject {
 		super();
 	}
 
-	private PublicKey(JsonObject jsonObject) {
+	public PublicKey(JsonObject jsonObject) {
 		super(jsonObject);
 	}
 
@@ -21,41 +22,62 @@ public class PublicKey extends JsonLDObject {
 	 * Factory methods
 	 */
 
-	public static PublicKey build(String id, List<String> types, String publicKeyBase64, String publicKeyBase58, String publicKeyHex, String publicKeyPem, JsonObject publicKeyJwk) {
+	public static class Builder extends JsonLDObject.Builder<Builder, PublicKey> {
 
-		PublicKey publicKey = new PublicKey();
-		publicKey.build(null, id, types);
+		private String publicKeyBase64;
+		private String publicKeyBase58;
+		private String publicKeyHex;
+		private String publicKeyPem;
+		private JsonObject publicKeyJwk;
 
-		// add JSON-LD properties
+		public Builder() {
+			super(new PublicKey());
+		}
 
-		if (publicKeyBase64 != null) JsonLDUtils.jsonLdAddString(publicKey.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYBASE64, publicKeyBase64);
-		if (publicKeyBase58 != null) JsonLDUtils.jsonLdAddString(publicKey.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYBASE58, publicKeyBase58);
-		if (publicKeyHex != null) JsonLDUtils.jsonLdAddString(publicKey.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYHEX, publicKeyHex);
-		if (publicKeyPem != null) JsonLDUtils.jsonLdAddString(publicKey.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYPEM, publicKeyPem);
-		if (publicKeyJwk != null) JsonLDUtils.jsonLdAddJsonValue(publicKey.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYJWK, publicKeyJwk);
+		@Override
+		public PublicKey build() {
 
-		publicKey.build();
-		return publicKey;
+			super.build();
+
+			// add JSON-LD properties
+			if (this.publicKeyBase64 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
+			if (this.publicKeyBase58 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
+			if (this.publicKeyHex != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
+			if (this.publicKeyPem != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
+			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAddJsonValue(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
+
+			return this.jsonLDObject;
+		}
+
+		public Builder publicKeyBase64(String publicKeyBase64) {
+			this.publicKeyBase64 = publicKeyBase64;
+			return this;
+		}
+
+		public Builder publicKeyBase58(String publicKeyBase58) {
+			this.publicKeyBase58 = publicKeyBase58;
+			return this;
+		}
+
+		public Builder publicKeyHex(String publicKeyHex) {
+			this.publicKeyHex = publicKeyHex;
+			return this;
+		}
+
+		public Builder publicKeyPem(String publicKeyPem) {
+			this.publicKeyPem = publicKeyPem;
+			return this;
+		}
+
+		public Builder publicKeyJwk(JsonObject publicKeyJwk) {
+			this.publicKeyJwk = publicKeyJwk;
+			return this;
+		}
 	}
 
-	public static PublicKey build(String id, String type, String publicKeyBase64, String publicKeyBase58, String publicKeyHex, String publicKeyPem, JsonObject publicKeyJwk) {
+	public static Builder builder() {
 
-		return build(id, Collections.singletonList(type), publicKeyBase64, publicKeyBase58, publicKeyHex, publicKeyPem, publicKeyJwk);
-	}
-
-	public static PublicKey build(List<String> types, String publicKeyBase64, String publicKeyBase58, String publicKeyHex, String publicKeyPem, JsonObject publicKeyJwk) {
-
-		return build(null, types, publicKeyBase64, publicKeyBase58, publicKeyHex, publicKeyPem, publicKeyJwk);
-	}
-
-	public static PublicKey build(String type, String publicKeyBase64, String publicKeyBase58, String publicKeyHex, String publicKeyPem, JsonObject publicKeyJwk) {
-
-		return build(null, Collections.singletonList(type), publicKeyBase64, publicKeyBase58, publicKeyHex, publicKeyPem, publicKeyJwk);
-	}
-
-	public static PublicKey build(JsonObject jsonObject) {
-
-		return new PublicKey(jsonObject);
+		return new Builder();
 	}
 
 	/*
@@ -64,26 +86,26 @@ public class PublicKey extends JsonLDObject {
 
 	public String getPublicKeyBase64() {
 
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYBASE64);
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64);
 	}
 
 	public String getPublicKeyBase58() {
 
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYBASE58);
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58);
 	}
 
 	public String getPublicKeyHex() {
 
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYHEX);
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYHEX);
 	}
 
 	public String getPublicKeyPem() {
 
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYPEM);
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYPEM);
 	}
 
 	public JsonObject getPublicKeyJwk() {
 
-		return JsonLDUtils.jsonLdGetJsonObject(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEYJWK);
+		return JsonLDUtils.jsonLdGetJsonObject(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYJWK);
 	}
 }

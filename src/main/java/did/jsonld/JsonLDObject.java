@@ -9,7 +9,6 @@ import com.apicatalog.jsonld.lang.Keywords;
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.apicatalog.rdf.RdfDataset;
 import com.apicatalog.rdf.io.nquad.NQuadsWriter;
-import did.DIDDocumentKeywords;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
@@ -17,12 +16,12 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.*;
 
-public abstract class JsonLDObject {
+public class JsonLDObject {
 
 	private JsonObjectBuilder jsonObjectBuilder;
 	private JsonObject jsonObject;
 
-	protected DocumentLoader documentLoader = new DIDContextDocumentLoader();
+	protected DocumentLoader documentLoader = new ConfigurableDocumentLoader(DIDContexts.CONTEXTS);
 
 	protected JsonLDObject() {
 
@@ -30,32 +29,65 @@ public abstract class JsonLDObject {
 		this.jsonObject = null;
 	}
 
-	protected JsonLDObject(JsonObject jsonObject) {
+	public JsonLDObject(JsonObject jsonObject) {
 
 		this.jsonObjectBuilder = null;
 		this.jsonObject = jsonObject;
 	}
 
-	protected void build(List<String> contexts, String id, List<String> types) {
+	public static class Builder<T extends Builder<T, J>, J extends JsonLDObject> {
 
-		// add JSON-LD properties
+		private List<String> contexts;
+		private String id;
+		private List<String> types;
 
-		if (contexts != null) JsonLDUtils.jsonLdAddStringList(this.getJsonObjectBuilder(), Keywords.CONTEXT, contexts);
-		if (id != null) JsonLDUtils.jsonLdAddString(this.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_ID, id);
-		if (types != null) JsonLDUtils.jsonLdAddStringList(this.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_TYPE, types);
+		protected J jsonLDObject;
+
+		private Builder() {
+			this((J) new JsonLDObject());
+		}
+
+		protected Builder(J jsonLDObject) {
+			this.jsonLDObject = jsonLDObject;
+		}
+
+		public J build() {
+
+			// add JSON-LD properties
+			if (this.contexts != null) JsonLDUtils.jsonLdAddStringList(this.jsonLDObject.getJsonObjectBuilder(), Keywords.CONTEXT, this.contexts);
+			if (this.id != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), JsonLDKeywords.JSONLD_TERM_ID, this.id);
+			if (this.types != null) JsonLDUtils.jsonLdAddStringList(this.jsonLDObject.getJsonObjectBuilder(), JsonLDKeywords.JSONLD_TERM_TYPE, this.types);
+
+			return this.jsonLDObject;
+		}
+
+		public T contexts(List<String> contexts) {
+			this.contexts = new ArrayList<String> (contexts);
+			return (T) this;
+		}
+
+		public T context(String context) {
+			return this.types(Collections.singletonList(context));
+		}
+
+		public T id(String id) {
+			this.id = id;
+			return (T) this;
+		}
+
+		public T types(List<String> types) {
+			this.types = new ArrayList<String> (types);
+			return (T) this;
+		}
+
+		public T type(String type) {
+			return this.types(Collections.singletonList(type));
+		}
 	}
 
-	/*
-	 * Building
-	 */
+	public static Builder builder() {
 
-	public boolean isBuilt() {
-		return this.jsonObject != null;
-	}
-
-	public void build() {
-		this.jsonObject = this.jsonObjectBuilder.build();
-		this.jsonObjectBuilder = null;
+		return new Builder();
 	}
 
 	/*
@@ -71,13 +103,15 @@ public abstract class JsonLDObject {
 	}
 
 	public JsonObjectBuilder getJsonObjectBuilder() {
-		if (this.isBuilt()) throw new IllegalStateException("JSON-LD object has already been built.");
 		return this.jsonObjectBuilder;
 	}
 
 	public JsonObject getJsonObject() {
-		if (! this.isBuilt()) throw new IllegalStateException("JSON-LD object has not been built yet.");
-		return this.jsonObject;
+		if (this.jsonObject != null) return this.jsonObject;
+		JsonObject jsonObject = this.jsonObjectBuilder.build();
+		this.jsonObjectBuilder = Json.createObjectBuilder();
+		JsonLDUtils.jsonLdAddAll(this.jsonObjectBuilder, jsonObject);
+		return jsonObject;
 	}
 
 	public List<String> getContexts() {
@@ -85,15 +119,15 @@ public abstract class JsonLDObject {
 	}
 
 	public final String getId() {
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_ID);
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), JsonLDKeywords.JSONLD_TERM_ID);
 	}
 
 	public final List<String> getTypes() {
-		return JsonLDUtils.jsonLdGetStringList(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_TYPE);
+		return JsonLDUtils.jsonLdGetStringList(this.getJsonObject(), JsonLDKeywords.JSONLD_TERM_TYPE);
 	}
 
 	public final String getType() {
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_TYPE);
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), JsonLDKeywords.JSONLD_TERM_TYPE);
 	}
 
 	public final boolean isType(String type) {
@@ -122,7 +156,7 @@ public abstract class JsonLDObject {
 		JsonDocument jsonDocument = JsonDocument.of(MediaType.JSON_LD, this.getJsonObject());
 		ToRdfApi toRdfApi = JsonLd.toRdf(jsonDocument);
 		toRdfApi.loader(this.getDocumentLoader());
-//		toRdfApi.ordered(true);
+		toRdfApi.ordered(true);
 		RdfDataset rdfDataset = toRdfApi.get();
 
 		StringWriter stringWriter = new StringWriter();
@@ -155,13 +189,11 @@ public abstract class JsonLDObject {
 
 	@Override
 	public String toString() {
-		if (! this.isBuilt()) return super.toString();
 		return this.toJson(false);
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (! this.isBuilt()) return super.equals(o);
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		JsonLDObject that = (JsonLDObject) o;
@@ -170,7 +202,6 @@ public abstract class JsonLDObject {
 
 	@Override
 	public int hashCode() {
-		if (! this.isBuilt()) return super.hashCode();
 		return Objects.hash(this.getJsonObject());
 	}
 }

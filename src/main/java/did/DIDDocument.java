@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import did.jsonld.DIDKeywords;
 import did.jsonld.JsonLDObject;
 import did.jsonld.JsonLDUtils;
 
@@ -23,7 +24,7 @@ public class DIDDocument extends JsonLDObject {
 		super();
 	}
 
-	private DIDDocument(JsonObject jsonObject) {
+	public DIDDocument(JsonObject jsonObject) {
 		super(jsonObject);
 	}
 
@@ -31,34 +32,59 @@ public class DIDDocument extends JsonLDObject {
 	 * Factory methods
 	 */
 
-	public static DIDDocument build(List<String> contexts, String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Service> services) {
+	public static class Builder extends JsonLDObject.Builder<Builder, DIDDocument> {
 
-		DIDDocument didDocument = new DIDDocument();
-		didDocument.build(contexts, id, null);
+		private List<PublicKey> publicKeys;
+		private List<Authentication> authentications;
+		private List<Service> services;
 
-		// add JSON-LD properties
+		public Builder() {
+			super(new DIDDocument());
+		}
 
-		if (publicKeys != null) JsonLDUtils.jsonLdAddJsonValueList(didDocument.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY, publicKeys.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
-		if (authentications != null) JsonLDUtils.jsonLdAddJsonValueList(didDocument.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_AUTHENTICATION, authentications.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
-		if (services != null) JsonLDUtils.jsonLdAddJsonValueList(didDocument.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_SERVICE, services.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
+		public DIDDocument build() {
 
-		didDocument.build();
-		return didDocument;
+			super.build();
+
+			// add JSON-LD properties
+			if (this.publicKeys != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEY, this.publicKeys.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
+			if (this.authentications != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_AUTHENTICATION, this.authentications.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
+			if (this.services != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_SERVICE, this.services.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
+
+			return this.jsonLDObject;
+		}
+
+		public Builder publicKeys(List<PublicKey> publicKeys) {
+			this.publicKeys = new ArrayList<PublicKey> (publicKeys);
+			return this;
+		}
+
+		public Builder publicKey(PublicKey publicKey) {
+			return this.publicKeys(Collections.singletonList(publicKey));
+		}
+
+		public Builder authentications(List<Authentication> authentications) {
+			this.authentications = new ArrayList<Authentication> (authentications);
+			return this;
+		}
+
+		public Builder authentication(Authentication authentication) {
+			return this.authentications(Collections.singletonList(authentication));
+		}
+
+		public Builder services(List<Service> services) {
+			this.services = new ArrayList<Service> (services);
+			return this;
+		}
+
+		public Builder service(Service service) {
+			return this.services(Collections.singletonList(service));
+		}
 	}
 
-	public static DIDDocument build(String id, List<PublicKey> publicKeys, List<Authentication> authentications, List<Service> services) {
+	public static Builder builder() {
 
-		return build(DEFAULT_CONTEXTS, id, publicKeys, authentications, services);
-	}
-
-	public static DIDDocument build(String id) {
-
-		return build(DEFAULT_CONTEXTS, id, null, null, null);
-	}
-
-	public static DIDDocument build(JsonObject jsonObject) {
-
-		return new DIDDocument(jsonObject);
+		return new Builder().contexts(DEFAULT_CONTEXTS);
 	}
 
 	/*
@@ -83,17 +109,17 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<PublicKey> getPublicKeys() {
 
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY).stream().map(x -> PublicKey.build((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEY).stream().map(x -> new PublicKey((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public List<Authentication> getAuthentications() {
 
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_AUTHENTICATION).stream().map(x -> Authentication.build((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION).stream().map(x -> new Authentication((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public List<Service> getServices() {
 
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_SERVICE).stream().map(x -> Service.build((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE).stream().map(x -> new Service((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	/*

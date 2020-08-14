@@ -1,18 +1,63 @@
 package did.jsonld;
 
-import did.DIDDocumentKeywords;
-
 import javax.json.*;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.net.URI;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class JsonLDUtils {
 
 	/*
+	 * convert
+	 */
+
+	public static final SimpleDateFormat DATE_FORMAT;
+	public static final SimpleDateFormat DATE_FORMAT_MILLIS;
+
+	static {
+
+		DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+		DATE_FORMAT_MILLIS = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+		DATE_FORMAT_MILLIS.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
+
+	public static URI stringToUri(String string) {
+		return string == null ? null : URI.create(string);
+	}
+
+	public static String uriToString(URI uri) {
+		return uri == null ? null : uri.toString();
+	}
+
+	public static Date stringToDate(String string) {
+		try {
+			return string == null ? null : DATE_FORMAT.parse(string);
+		} catch (ParseException ex) {
+			try {
+				return DATE_FORMAT_MILLIS.parse(string);
+			} catch (ParseException ex2) {
+				throw new RuntimeException(ex.getMessage(), ex);
+			}
+		}
+	}
+
+	public static String dateToString(Date date) {
+		return date == null ? null : DATE_FORMAT.format(date);
+	}
+
+	/*
 	 * add
 	 */
+
+	public static void jsonLdAddAll(JsonObjectBuilder jsonObjectBuilder, JsonObject jsonObject) {
+
+		for (Map.Entry<String, JsonValue> entry : jsonObject.entrySet())
+			jsonObjectBuilder.add(entry.getKey(), entry.getValue());
+	}
 
 	public static void jsonLdAddJsonValue(JsonObjectBuilder jsonObjectBuilder, String term, JsonValue jsonValue) {
 
@@ -81,6 +126,15 @@ public class JsonLDUtils {
 	}
 
 	/*
+	 * remove
+	 */
+
+	public static void jsonLdRemove(JsonObjectBuilder jsonObjectBuilder, String term) {
+
+		jsonObjectBuilder.remove(term);
+	}
+
+	/*
 	 * get
 	 */
 
@@ -145,7 +199,7 @@ public class JsonLDUtils {
 
 	public static List<String> jsonLdGetStringList(JsonObject jsonObject, String term) {
 
-		JsonValue entry = jsonObject.get(DIDDocumentKeywords.JSONLD_TERM_TYPE);
+		JsonValue entry = jsonObject.get(JsonLDKeywords.JSONLD_TERM_TYPE);
 		if (entry == null) return null;
 
 		if (entry instanceof JsonString) {
@@ -163,7 +217,7 @@ public class JsonLDUtils {
 
 	public static boolean jsonLdContainsString(JsonObject jsonObject, String value) {
 
-		JsonValue entry = jsonObject.get(DIDDocumentKeywords.JSONLD_TERM_TYPE);
+		JsonValue entry = jsonObject.get(JsonLDKeywords.JSONLD_TERM_TYPE);
 		if (entry == null) return false;
 
 		if (entry instanceof JsonString)

@@ -1,5 +1,6 @@
 package did;
 
+import did.jsonld.DIDKeywords;
 import did.jsonld.JsonLDObject;
 import did.jsonld.JsonLDUtils;
 
@@ -14,7 +15,7 @@ public class Authentication extends JsonLDObject {
 		super();
 	}
 
-	private Authentication(JsonObject jsonObject) {
+	public Authentication(JsonObject jsonObject) {
 		super(jsonObject);
 	}
 
@@ -22,37 +23,33 @@ public class Authentication extends JsonLDObject {
 	 * Factory methods
 	 */
 
-	public static Authentication build(String id, List<String> types, String publicKey) {
+	public static class Builder extends JsonLDObject.Builder<Builder, Authentication> {
 
-		Authentication authentication = new Authentication();
-		authentication.build(null, id, types);
+		private String publicKey;
 
-		// add JSON-LD properties
+		public Builder() {
+			super(new Authentication());
+		}
 
-		if (publicKey != null) JsonLDUtils.jsonLdAddString(authentication.getJsonObjectBuilder(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY, publicKey);
+		public Authentication build() {
 
-		authentication.build();
-		return authentication;
+			super.build();
+
+			// add JSON-LD properties
+			if (this.publicKey != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEY, this.publicKey);
+
+			return this.jsonLDObject;
+		}
+
+		public Builder publicKey(String publicKey) {
+			this.publicKey = publicKey;
+			return this;
+		}
 	}
 
-	public static Authentication build(String id, String type, String publicKey) {
+	public static Builder builder() {
 
-		return build(id, Collections.singletonList(type), publicKey);
-	}
-
-	public static Authentication build(List<String> types, String publicKey) {
-
-		return build(null, types, publicKey);
-	}
-
-	public static Authentication build(String type, String publicKey) {
-
-		return build(null, Collections.singletonList(type), publicKey);
-	}
-
-	public static Authentication build(JsonObject jsonObject) {
-
-		return new Authentication(jsonObject);
+		return new Builder();
 	}
 
 	/*
@@ -61,11 +58,11 @@ public class Authentication extends JsonLDObject {
 
 	public List<PublicKey> getPublicKeys() {
 
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY).stream().map(x -> PublicKey.build((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEY).stream().map(x -> new PublicKey((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public String getPublicKey() {
 
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDDocumentKeywords.JSONLD_TERM_PUBLICKEY);
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEY);
 	}
 }

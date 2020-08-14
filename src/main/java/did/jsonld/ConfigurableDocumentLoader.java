@@ -3,12 +3,10 @@ package did.jsonld;
 import com.apicatalog.jsonld.api.JsonLdError;
 import com.apicatalog.jsonld.document.Document;
 import com.apicatalog.jsonld.document.JsonDocument;
-import com.apicatalog.jsonld.http.media.MediaType;
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.apicatalog.jsonld.loader.DocumentLoaderOptions;
 import com.apicatalog.jsonld.loader.FileLoader;
 import com.apicatalog.jsonld.loader.HttpLoader;
-import did.jsonld.JsonLDObject;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -17,33 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DIDContextDocumentLoader implements DocumentLoader {
-
-    public static Map<URI, JsonDocument> LOCAL_CACHE = new HashMap<URI, JsonDocument>();
-
-    static {
-
-        try {
-
-            LOCAL_CACHE.put(URI.create("https://www.w3.org/ns/did/v1"),
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3org-ns-did-v1.jsonld")));
-            LOCAL_CACHE.put(URI.create("https://www.w3.org/2019/did/v1"),
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3org-did-v1.jsonld")));
-            LOCAL_CACHE.put(URI.create("https://w3id.org/did/v1"),
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3idorg-did-v1.jsonld")));
-            LOCAL_CACHE.put(URI.create("https://w3id.org/did/v0.11"),
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3idorg-did-v0.11.jsonld")));
-            LOCAL_CACHE.put(URI.create("https://w3id.org/veres-one/v1"),
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3idorg-veresone-v1.jsonld")));
-
-            for (Map.Entry<URI, JsonDocument> localCachedContext : LOCAL_CACHE.entrySet()) {
-                localCachedContext.getValue().setDocumentUrl(localCachedContext.getKey());
-            }
-        } catch (JsonLdError ex) {
-
-            throw new ExceptionInInitializerError(ex);
-        }
-    }
+public class ConfigurableDocumentLoader implements DocumentLoader {
 
     private HttpClient httpClient = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.NEVER).build();
     private DocumentLoader httpLoader = new HttpLoader(this.httpClient);
@@ -54,10 +26,18 @@ public class DIDContextDocumentLoader implements DocumentLoader {
     private boolean enableHttps = false;
     private boolean enableFile = false;
 
-    private Map<URI, JsonDocument> localCache = new HashMap<URI, JsonDocument> (LOCAL_CACHE);
+    private Map<URI, JsonDocument> localCache = new HashMap<URI, JsonDocument> ();
     private List<URI> httpContexts = new ArrayList<URI>();
     private List<URI> httpsContexts = new ArrayList<URI>();
     private List<URI> fileContexts = new ArrayList<URI>();
+
+    public ConfigurableDocumentLoader() {
+
+    }
+
+    public ConfigurableDocumentLoader(Map<URI, JsonDocument> localCache) {
+        this.localCache = localCache;
+    }
 
     @Override
     public Document loadDocument(URI url, DocumentLoaderOptions options) throws JsonLdError {

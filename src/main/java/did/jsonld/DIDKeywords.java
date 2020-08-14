@@ -1,9 +1,7 @@
-package did;
+package did.jsonld;
 
-public class DIDDocumentKeywords {
+public class DIDKeywords {
 
-    public static final String JSONLD_TERM_ID = "id";
-    public static final String JSONLD_TERM_TYPE = "type";
     public static final String JSONLD_TERM_SERVICE = "service";
     public static final String JSONLD_TERM_SERVICEENDPOINT = "serviceEndpoint";
     public static final String JSONLD_TERM_PUBLICKEY = "publicKey";
