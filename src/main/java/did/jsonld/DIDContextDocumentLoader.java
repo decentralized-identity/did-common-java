@@ -25,10 +25,10 @@ public class DIDContextDocumentLoader implements DocumentLoader {
 
         try {
 
-            LOCAL_CACHE.put(URI.create("https://www.w3.org/2019/did/v1"),
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3org-did-v1.jsonld")));
             LOCAL_CACHE.put(URI.create("https://www.w3.org/ns/did/v1"),
                     JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3org-ns-did-v1.jsonld")));
+            LOCAL_CACHE.put(URI.create("https://www.w3.org/2019/did/v1"),
+                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3org-did-v1.jsonld")));
             LOCAL_CACHE.put(URI.create("https://w3id.org/did/v1"),
                     JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3idorg-did-v1.jsonld")));
             LOCAL_CACHE.put(URI.create("https://w3id.org/did/v0.11"),
