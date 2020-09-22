@@ -6,6 +6,8 @@ on:
       - '.gitignore'
       - 'README.md'
       - 'LICENSE'
+    branches-ignore:
+      - 'release-**'
 
 jobs:
   build:
