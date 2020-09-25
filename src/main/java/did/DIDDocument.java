@@ -28,7 +28,9 @@ import did.parser.ParserException;
 
 public class DIDDocument {
 
-	public static final String MIME_TYPE = "application/did+ld+json";
+	public static final String MIME_TYPE_JSON_LD = "application/did+ld+json";
+	public static final String MIME_TYPE_JSON = "application/did+json";
+	public static final String MIME_TYPE_CBOR = "application/did+cbor";
 
 	public static final String JSONLD_TERM_ID = "id";
 	public static final String JSONLD_TERM_TYPE = "type";
