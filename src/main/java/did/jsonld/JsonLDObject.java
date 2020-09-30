@@ -67,7 +67,7 @@ public class JsonLDObject {
 		}
 
 		public T context(String context) {
-			return this.types(Collections.singletonList(context));
+			return this.contexts(Collections.singletonList(context));
 		}
 
 		public T id(String id) {
