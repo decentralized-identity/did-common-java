@@ -91,13 +91,13 @@ public class DIDDocument extends JsonLDObject {
 	 * Serialization
 	 */
 
-	public static DIDDocument fromJson(String json) throws JsonLdError {
+	public static DIDDocument fromJson(String json) {
 
 		JsonObject jsonObject = Json.createParser(new StringReader(json)).getObject();
 		return new DIDDocument(jsonObject);
 	}
 
-	public static DIDDocument fromJson(Reader reader) throws JsonLdError {
+	public static DIDDocument fromJson(Reader reader) {
 
 		JsonObject jsonObject = Json.createParser(reader).getObject();
 		return new DIDDocument(jsonObject);
@@ -129,10 +129,6 @@ public class DIDDocument extends JsonLDObject {
 	@Override
 	public String toString() {
 
-		try {
-			return this.toJson();
-		} catch (JsonLdError ex) {
-			throw new RuntimeException(ex.getMessage(), ex);
-		}
+		return this.toJson();
 	}
 }

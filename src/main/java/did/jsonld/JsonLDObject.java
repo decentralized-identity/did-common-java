@@ -178,9 +178,9 @@ public class JsonLDObject {
 		return stringWriter.toString();
 	}
 
-	public String toJson() throws JsonLdError {
+	public String toJson() {
 
-		return toJson(false);
+		return this.toJson(false);
 	}
 
 	/*
