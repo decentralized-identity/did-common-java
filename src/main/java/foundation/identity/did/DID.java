@@ -1,49 +1,29 @@
-package did;
+package foundation.identity.did;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import foundation.identity.did.parser.Displayer;
+import foundation.identity.did.parser.Parser;
+import foundation.identity.did.parser.ParserException;
+import foundation.identity.did.parser.Rule;
+import foundation.identity.did.parser.Rule_did;
+import foundation.identity.did.parser.Rule_method_name;
+import foundation.identity.did.parser.Rule_method_specific_id;
+import foundation.identity.did.parser.Terminal_NumericValue;
+import foundation.identity.did.parser.Terminal_StringValue;
 
-import did.parser.Displayer;
-import did.parser.Parser;
-import did.parser.ParserException;
-import did.parser.Rule;
-import did.parser.Rule_did;
-import did.parser.Rule_method_name;
-import did.parser.Rule_method_specific_id;
-import did.parser.Terminal_NumericValue;
-import did.parser.Terminal_StringValue;
-
-@JsonSerialize(using = ToStringSerializer.class)
 public class DID {
 
 	public static final String URI_SCHEME = "did";
-
-	private static final ObjectMapper objectMapper;
 
 	private String didString;
 	private transient String method;
 	private transient String methodSpecificId;
 	private transient String parseTree;
 	private transient Map<String, Integer> parseRuleCount;
-
-	static {
-
-		objectMapper = new ObjectMapper();
-		objectMapper.disable(MapperFeature.USE_ANNOTATIONS);
-	}
 
 	private DID() {
 
@@ -107,26 +87,6 @@ public class DID {
 	static DID fromRule(Rule_did rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
 		return new DID(rule, keepParseTree);
-	}
-
-	/*
-	 * Serialization
-	 */
-
-	public static DID fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
-
-		return objectMapper.readValue(json, DID.class);
-	}
-
-	public String toJson() throws JsonProcessingException {
-
-		return objectMapper.writeValueAsString(this);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> toJsonObject() {
-
-		return (Map<String, Object>) objectMapper.convertValue(this, Map.class);
 	}
 
 	/*
@@ -219,63 +179,43 @@ public class DID {
 	 * Getters
 	 */
 
-	@JsonGetter
 	public final String getDidString() {
-
 		return this.didString;
 	}
 
-	@JsonSetter
 	public final void setDidString(String didString) {
-
 		this.didString = didString;
 	}
 
-	@JsonGetter
 	public final String getMethod() {
-
 		return this.method;
 	}
 
-	@JsonSetter
 	public final void setMethod(String method) {
-
 		this.method = method;
 	}
 
-	@JsonGetter
 	public final String getMethodSpecificId() {
-
 		return this.methodSpecificId;
 	}
 
-	@JsonSetter
 	public final void setMethodSpecificId(String methodSpecificId) {
-
 		this.methodSpecificId = methodSpecificId;
 	}
 
-	@JsonGetter
 	public final String getParseTree() {
-
 		return this.parseTree;
 	}
 
-	@JsonSetter
 	public final void setParseTree(String parseTree) {
-
 		this.parseTree = parseTree;
 	}
 
-	@JsonGetter
 	public final Map<String, Integer> getParseRuleCount() {
-
 		return this.parseRuleCount;
 	}
 
-	@JsonSetter
 	public final void setParseRuleCount(Map<String, Integer> parseRuleCount) {
-
 		this.parseRuleCount = parseRuleCount;
 	}
 

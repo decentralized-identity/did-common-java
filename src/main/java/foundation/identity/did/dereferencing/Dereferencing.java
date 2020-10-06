@@ -1,10 +1,10 @@
-package did.dereferencing;
+package foundation.identity.did.dereferencing;
 
-import did.DIDDocument;
-import did.DIDURL;
-import did.PublicKey;
-import did.Service;
-import did.parser.ParserException;
+import foundation.identity.did.DIDDocument;
+import foundation.identity.did.DIDURL;
+import foundation.identity.did.VerificationMethod;
+import foundation.identity.did.Service;
+import foundation.identity.did.parser.ParserException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,13 +48,13 @@ public class Dereferencing {
         return selectedServices;
     }
 
-    public Map<Integer, PublicKey> selectKeys(DIDDocument didDocument, String selectKeyName, String selectKeyType) {
+    public Map<Integer, VerificationMethod> selectKeys(DIDDocument didDocument, String selectKeyName, String selectKeyType) {
 
         int i = -1;
-        Map<Integer, PublicKey> selectedKeys = new HashMap<Integer, PublicKey> ();
-        if (didDocument.getPublicKeys() == null) return selectedKeys;
+        Map<Integer, VerificationMethod> selectedKeys = new HashMap<Integer, VerificationMethod> ();
+        if (didDocument.getVerificationMethods() == null) return selectedKeys;
 
-        for (PublicKey publicKey : didDocument.getPublicKeys()) {
+        for (VerificationMethod publicKey : didDocument.getVerificationMethods()) {
 
             i++;
 

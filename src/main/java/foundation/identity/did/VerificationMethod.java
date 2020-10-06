@@ -1,20 +1,18 @@
-package did;
+package foundation.identity.did;
 
-import did.jsonld.DIDKeywords;
-import did.jsonld.JsonLDObject;
-import did.jsonld.JsonLDUtils;
+import foundation.identity.did.jsonld.DIDKeywords;
+import foundation.identity.jsonld.JsonLDObject;
+import foundation.identity.jsonld.JsonLDUtils;
 
 import javax.json.JsonObject;
-import java.util.Collections;
-import java.util.List;
 
-public class PublicKey extends JsonLDObject {
+public class VerificationMethod extends JsonLDObject {
 
-	private PublicKey() {
+	private VerificationMethod() {
 		super();
 	}
 
-	public PublicKey(JsonObject jsonObject) {
+	public VerificationMethod(JsonObject jsonObject) {
 		super(jsonObject);
 	}
 
@@ -22,7 +20,7 @@ public class PublicKey extends JsonLDObject {
 	 * Factory methods
 	 */
 
-	public static class Builder extends JsonLDObject.Builder<Builder, PublicKey> {
+	public static class Builder extends JsonLDObject.Builder<Builder, VerificationMethod> {
 
 		private String publicKeyBase64;
 		private String publicKeyBase58;
@@ -31,11 +29,11 @@ public class PublicKey extends JsonLDObject {
 		private JsonObject publicKeyJwk;
 
 		public Builder() {
-			super(new PublicKey());
+			super(new VerificationMethod());
 		}
 
 		@Override
-		public PublicKey build() {
+		public VerificationMethod build() {
 
 			super.build();
 

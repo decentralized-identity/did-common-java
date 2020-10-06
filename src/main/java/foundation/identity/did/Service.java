@@ -1,12 +1,10 @@
-package did;
+package foundation.identity.did;
 
-import did.jsonld.DIDKeywords;
-import did.jsonld.JsonLDObject;
-import did.jsonld.JsonLDUtils;
+import foundation.identity.did.jsonld.DIDKeywords;
+import foundation.identity.jsonld.JsonLDObject;
+import foundation.identity.jsonld.JsonLDUtils;
 
 import javax.json.JsonObject;
-import java.util.Collections;
-import java.util.List;
 
 public class Service extends JsonLDObject {
 

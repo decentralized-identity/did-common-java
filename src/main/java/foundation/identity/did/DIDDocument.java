@@ -1,31 +1,38 @@
-package did;
+package foundation.identity.did;
 
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import did.jsonld.DIDKeywords;
-import did.jsonld.JsonLDObject;
-import did.jsonld.JsonLDUtils;
+import foundation.identity.did.jsonld.DIDContexts;
+import foundation.identity.did.jsonld.DIDKeywords;
+import foundation.identity.did.validation.Validation;
+import foundation.identity.jsonld.JsonLDObject;
+import foundation.identity.jsonld.JsonLDUtils;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 
 public class DIDDocument extends JsonLDObject {
 
-	public static final List<String> DEFAULT_CONTEXTS = Collections.singletonList("https://www.w3.org/ns/did/v1");
+	public static final String DEFAULT_JSONLD_CONTEXT = "https://www.w3.org/ns/did/v1";
 
 	public static final String MIME_TYPE_JSON_LD = "application/did+ld+json";
 	public static final String MIME_TYPE_JSON = "application/did+json";
 	public static final String MIME_TYPE_CBOR = "application/did+cbor";
 
 	private DIDDocument() {
-		super();
+		super(DIDContexts.DOCUMENT_LOADER);
+	}
+
+	private DIDDocument(JsonObject jsonObject, boolean validate) {
+		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
+		if (validate) Validation.validate(this);
 	}
 
 	public DIDDocument(JsonObject jsonObject) {
-		super(jsonObject);
+		this(jsonObject, true);
 	}
 
 	/*
@@ -34,7 +41,7 @@ public class DIDDocument extends JsonLDObject {
 
 	public static class Builder extends JsonLDObject.Builder<Builder, DIDDocument> {
 
-		private List<PublicKey> publicKeys;
+		private List<VerificationMethod> verificationMethods;
 		private List<Authentication> authentications;
 		private List<Service> services;
 
@@ -47,20 +54,20 @@ public class DIDDocument extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.publicKeys != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEY, this.publicKeys.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
+			if (this.verificationMethods != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, this.verificationMethods.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
 			if (this.authentications != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_AUTHENTICATION, this.authentications.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
 			if (this.services != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_SERVICE, this.services.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
 
 			return this.jsonLDObject;
 		}
 
-		public Builder publicKeys(List<PublicKey> publicKeys) {
-			this.publicKeys = new ArrayList<PublicKey> (publicKeys);
+		public Builder verificationMethods(List<VerificationMethod> verificationMethods) {
+			this.verificationMethods = new ArrayList<VerificationMethod> (verificationMethods);
 			return this;
 		}
 
-		public Builder publicKey(PublicKey publicKey) {
-			return this.publicKeys(Collections.singletonList(publicKey));
+		public Builder verificationMethod(VerificationMethod verificationMethod) {
+			return this.verificationMethods(Collections.singletonList(verificationMethod));
 		}
 
 		public Builder authentications(List<Authentication> authentications) {
@@ -84,32 +91,38 @@ public class DIDDocument extends JsonLDObject {
 
 	public static Builder builder() {
 
-		return new Builder().contexts(DEFAULT_CONTEXTS);
+		return new Builder()
+				.context(DEFAULT_JSONLD_CONTEXT);
 	}
 
 	/*
 	 * Serialization
 	 */
 
-	public static DIDDocument fromJson(String json) {
+	public static DIDDocument fromJson(Reader reader, boolean validate) {
+		JsonObject jsonObject = Json.createReader(reader).readObject();
+		return new DIDDocument(jsonObject, validate);
+	}
 
-		JsonObject jsonObject = Json.createParser(new StringReader(json)).getObject();
-		return new DIDDocument(jsonObject);
+	public static DIDDocument fromJson(String json, boolean validate) {
+		return fromJson(new StringReader(json), validate);
 	}
 
 	public static DIDDocument fromJson(Reader reader) {
+		return fromJson(reader, true);
+	}
 
-		JsonObject jsonObject = Json.createParser(reader).getObject();
-		return new DIDDocument(jsonObject);
+	public static DIDDocument fromJson(String json) {
+		return fromJson(json, true);
 	}
 
 	/*
 	 * Getters
 	 */
 
-	public List<PublicKey> getPublicKeys() {
+	public List<VerificationMethod> getVerificationMethods() {
 
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEY).stream().map(x -> new PublicKey((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public List<Authentication> getAuthentications() {
@@ -120,15 +133,5 @@ public class DIDDocument extends JsonLDObject {
 	public List<Service> getServices() {
 
 		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE).stream().map(x -> new Service((JsonObject) x)).collect(Collectors.toList());
-	}
-
-	/*
-	 * Object methods
-	 */
-
-	@Override
-	public String toString() {
-
-		return this.toJson();
 	}
 }

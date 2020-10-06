@@ -1,15 +1,19 @@
-package did.jsonld;
+package foundation.identity.did.jsonld;
 
 import com.apicatalog.jsonld.api.JsonLdError;
 import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.http.media.MediaType;
-import did.jsonld.JsonLDObject;
+import com.apicatalog.jsonld.loader.DocumentLoader;
+import foundation.identity.jsonld.ConfigurableDocumentLoader;
+import foundation.identity.jsonld.JsonLDObject;
 
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
 public class DIDContexts {
+
+    public static DocumentLoader DOCUMENT_LOADER = new ConfigurableDocumentLoader(DIDContexts.CONTEXTS);
 
     public static Map<URI, JsonDocument> CONTEXTS = new HashMap<URI, JsonDocument>();
 
@@ -28,8 +32,8 @@ public class DIDContexts {
             CONTEXTS.put(URI.create("https://w3id.org/veres-one/v1"),
                     JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3idorg-veresone-v1.jsonld")));
 
-            for (Map.Entry<URI, JsonDocument> localCachedContext : CONTEXTS.entrySet()) {
-                localCachedContext.getValue().setDocumentUrl(localCachedContext.getKey());
+            for (Map.Entry<URI, JsonDocument> context : CONTEXTS.entrySet()) {
+                context.getValue().setDocumentUrl(context.getKey());
             }
         } catch (JsonLdError ex) {
 

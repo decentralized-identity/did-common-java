@@ -1,6 +1,5 @@
-package did;
+package foundation.identity.did;
 
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -8,36 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.MapperFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-
-import did.parser.Displayer;
-import did.parser.Parser;
-import did.parser.ParserException;
-import did.parser.Rule;
-import did.parser.Rule_did;
-import did.parser.Rule_did_url;
-import did.parser.Rule_fragment;
-import did.parser.Rule_path_abempty;
-import did.parser.Rule_query;
-import did.parser.Terminal_NumericValue;
-import did.parser.Terminal_StringValue;
+import foundation.identity.did.parser.Displayer;
+import foundation.identity.did.parser.Parser;
+import foundation.identity.did.parser.ParserException;
+import foundation.identity.did.parser.Rule;
+import foundation.identity.did.parser.Rule_did;
+import foundation.identity.did.parser.Rule_did_url;
+import foundation.identity.did.parser.Rule_fragment;
+import foundation.identity.did.parser.Rule_path_abempty;
+import foundation.identity.did.parser.Rule_query;
+import foundation.identity.did.parser.Terminal_NumericValue;
+import foundation.identity.did.parser.Terminal_StringValue;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
-@JsonSerialize(using = ToStringSerializer.class)
 public class DIDURL {
 
 	public static final String URI_SCHEME = "did";
-
-	private static final ObjectMapper objectMapper;
 
 	private String didUrlString;
 	private transient DID did;
@@ -47,12 +33,6 @@ public class DIDURL {
 	private transient Map<String, String> parameters = new HashMap<String, String> ();
 	private transient String parseTree;
 	private transient Map<String, Integer> parseRuleCount;
-
-	static {
-
-		objectMapper = new ObjectMapper();
-		objectMapper.disable(MapperFeature.USE_ANNOTATIONS);
-	}
 
 	private DIDURL() {
 
@@ -99,26 +79,6 @@ public class DIDURL {
 	public static DIDURL fromUri(URI uri, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
 		return fromString(uri.toString(), keepParseTree);
-	}
-
-	/*
-	 * Serialization
-	 */
-
-	public static DIDURL fromJson(String json) throws JsonParseException, JsonMappingException, IOException {
-
-		return objectMapper.readValue(json, DIDURL.class);
-	}
-
-	public String toJson() throws JsonProcessingException {
-
-		return objectMapper.writeValueAsString(this);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> toJsonObject() {
-
-		return (Map<String, Object>) objectMapper.convertValue(this, Map.class);
 	}
 
 	/*
@@ -225,99 +185,67 @@ public class DIDURL {
 	 * Getters
 	 */
 
-	@JsonGetter
 	public final String getDidUrlString() {
-
 		return this.didUrlString;
 	}
 
-	@JsonSetter
 	public final void setDidUrlString(String didUrlString) {
-
 		this.didUrlString = didUrlString;
 	}
 
-	@JsonGetter
 	public final DID getDid() {
-
 		return this.did;
 	}
 
-	@JsonSetter
 	public final void setDid(DID did) {
-
 		this.did = did;
 	}
 
-	@JsonGetter
 	public final Map<String, String> getParameters() {
-
 		return this.parameters;
 	}
 
-	@JsonSetter
 	public final void setParameters(Map<String, String> parameters) {
-
 		this.parameters = parameters;
 	}
 
-	@JsonGetter
 	public final String getPath() {
-
 		return this.path;
 	}
 
-	@JsonSetter
 	public final void setPath(String path) {
-
 		this.path = path;
 	}
 
-	@JsonGetter
 	public final String getQuery() {
-
 		return this.query;
 	}
 
-	@JsonSetter
 	public final void setQuery(String query) {
-
 		this.query = query;
 	}
 
-	@JsonGetter
 	public final String getFragment() {
-
 		return this.fragment;
 	}
 
-	@JsonSetter
 	public final void setFragment(String fragment) {
-
 		this.fragment = fragment;
 	}
 
-	@JsonGetter
 	public final String getParseTree() {
-
 		return this.parseTree;
 	}
 
-	@JsonSetter
 	public final void setParseTree(String parseTree) {
-
 		this.parseTree = parseTree;
 	}
 
-	@JsonGetter
 	public final Map<String, Integer> getParseRuleCount() {
-
 		return this.parseRuleCount;
 	}
 
-	@JsonSetter
 	public final void setParseRuleCount(Map<String, Integer> parseRuleCount) {
-
 		this.parseRuleCount = parseRuleCount;
 	}
 
