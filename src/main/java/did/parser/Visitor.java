@@ -8,7 +8,7 @@
  * -----------------------------------------------------------------------------
  */
 
-package did.parser;
+package foundation.identity.did.parser;
 
 public interface Visitor
 {
