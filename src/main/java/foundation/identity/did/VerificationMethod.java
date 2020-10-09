@@ -1,19 +1,23 @@
 package foundation.identity.did;
 
+import foundation.identity.did.jsonld.DIDContexts;
 import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import java.io.Reader;
+import java.io.StringReader;
 
 public class VerificationMethod extends JsonLDObject {
 
 	private VerificationMethod() {
-		super();
+		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
 	public VerificationMethod(JsonObject jsonObject) {
-		super(jsonObject);
+		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
 	/*
@@ -73,9 +77,36 @@ public class VerificationMethod extends JsonLDObject {
 		}
 	}
 
-	public static Builder builder() {
+	public static Builder builder(boolean addContext) {
+		Builder builder = new Builder();
+		if (addContext) builder.context(DIDDocument.DEFAULT_JSONLD_CONTEXT.toString());
+		return builder;
+	}
 
-		return new Builder();
+	public static Builder builder() {
+		return builder(false);
+	}
+
+	public static VerificationMethod getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		JsonObject jsonObject = JsonLDUtils.jsonLdGetJsonObject(jsonLdObject.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
+		return jsonObject == null ? null : new VerificationMethod(jsonObject);
+	}
+
+	public void addToJsonLDObject(JsonLDObject jsonLdObject) {
+		JsonLDUtils.jsonLdAddJsonValue(jsonLdObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, jsonLdObject.getJsonObject());
+	}
+
+	/*
+	 * Serialization
+	 */
+
+	public static VerificationMethod fromJson(Reader reader) {
+		JsonObject jsonObject = Json.createReader(reader).readObject();
+		return new VerificationMethod(jsonObject);
+	}
+
+	public static VerificationMethod fromJson(String json) {
+		return fromJson(new StringReader(json));
 	}
 
 	/*

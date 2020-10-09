@@ -1,10 +1,14 @@
 package foundation.identity.did;
 
+import foundation.identity.did.jsonld.DIDContexts;
 import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
+import javax.json.Json;
 import javax.json.JsonObject;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +19,7 @@ public class Authentication extends JsonLDObject {
 	}
 
 	public Authentication(JsonObject jsonObject) {
-		super(jsonObject);
+		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
 	/*
@@ -46,9 +50,36 @@ public class Authentication extends JsonLDObject {
 		}
 	}
 
-	public static Builder builder() {
+	public static Service.Builder builder(boolean addContext) {
+		Service.Builder builder = new Service.Builder();
+		if (addContext) builder.context(DIDDocument.DEFAULT_JSONLD_CONTEXT.toString());
+		return builder;
+	}
 
-		return new Builder();
+	public static Service.Builder builder() {
+		return builder(false);
+	}
+
+	public static Authentication getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		JsonObject jsonObject = JsonLDUtils.jsonLdGetJsonObject(jsonLdObject.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION);
+		return jsonObject == null ? null : new Authentication(jsonObject);
+	}
+
+	public void addToJsonLDObject(JsonLDObject jsonLdObject) {
+		JsonLDUtils.jsonLdAddJsonValue(jsonLdObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_AUTHENTICATION, jsonLdObject.getJsonObject());
+	}
+
+	/*
+	 * Serialization
+	 */
+
+	public static Authentication fromJson(Reader reader) {
+		JsonObject jsonObject = Json.createReader(reader).readObject();
+		return new Authentication(jsonObject);
+	}
+
+	public static Authentication fromJson(String json) {
+		return fromJson(new StringReader(json));
 	}
 
 	/*

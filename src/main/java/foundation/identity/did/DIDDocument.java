@@ -2,6 +2,7 @@ package foundation.identity.did;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ import javax.json.JsonObject;
 
 public class DIDDocument extends JsonLDObject {
 
-	public static final String DEFAULT_JSONLD_CONTEXT = "https://www.w3.org/ns/did/v1";
+	public static final URI DEFAULT_JSONLD_CONTEXT = DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1;
 
 	public static final String MIME_TYPE_JSON_LD = "application/did+ld+json";
 	public static final String MIME_TYPE_JSON = "application/did+json";
@@ -54,9 +55,9 @@ public class DIDDocument extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.verificationMethods != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, this.verificationMethods.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
-			if (this.authentications != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_AUTHENTICATION, this.authentications.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
-			if (this.services != null) JsonLDUtils.jsonLdAddJsonValueList(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_SERVICE, this.services.stream().map(x -> x.getJsonObject()).collect(Collectors.toList()));
+			if (this.verificationMethods != null) for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObject(this.jsonLDObject);
+			if (this.authentications != null) for (Authentication authentication : this.authentications) authentication.addToJsonLDObject(this.jsonLDObject);
+			if (this.services != null) for (Service service : this.services) service.addToJsonLDObject(this.jsonLDObject);
 
 			return this.jsonLDObject;
 		}
@@ -89,10 +90,14 @@ public class DIDDocument extends JsonLDObject {
 		}
 	}
 
-	public static Builder builder() {
+	public static Builder builder(boolean addContext) {
+		Builder builder = new Builder();
+		if (addContext) builder.context(DEFAULT_JSONLD_CONTEXT.toString());
+		return builder;
+	}
 
-		return new Builder()
-				.context(DEFAULT_JSONLD_CONTEXT);
+	public static Builder builder() {
+		return builder(true);
 	}
 
 	/*
@@ -121,17 +126,14 @@ public class DIDDocument extends JsonLDObject {
 	 */
 
 	public List<VerificationMethod> getVerificationMethods() {
-
 		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public List<Authentication> getAuthentications() {
-
 		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION).stream().map(x -> new Authentication((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public List<Service> getServices() {
-
 		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE).stream().map(x -> new Service((JsonObject) x)).collect(Collectors.toList());
 	}
 }

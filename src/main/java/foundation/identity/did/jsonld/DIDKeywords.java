@@ -2,6 +2,10 @@ package foundation.identity.did.jsonld;
 
 public class DIDKeywords {
 
+    /*
+     * https://www.w3.org/ns/did/v1
+     */
+
     public static final String JSONLD_TERM_VERIFICATIONMETHOD = "verificationMethod";
     public static final String JSONLD_TERM_PUBLICKEYBASE64 = "publicKeyBase64";
     public static final String JSONLD_TERM_PUBLICKEYBASE58 = "publicKeyBase58";
