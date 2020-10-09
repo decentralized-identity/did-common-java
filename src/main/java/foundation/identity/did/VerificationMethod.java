@@ -9,8 +9,13 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
 
 public class VerificationMethod extends JsonLDObject {
+
+	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
+	public static final String[] DEFAULT_JSONLD_TYPES = { };
+	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD;
 
 	private VerificationMethod() {
 		super(DIDContexts.DOCUMENT_LOADER);
@@ -32,8 +37,8 @@ public class VerificationMethod extends JsonLDObject {
 		private String publicKeyPem;
 		private JsonObject publicKeyJwk;
 
-		public Builder() {
-			super(new VerificationMethod());
+		public Builder(VerificationMethod jsonLDObject) {
+			super(jsonLDObject);
 		}
 
 		@Override
@@ -77,36 +82,32 @@ public class VerificationMethod extends JsonLDObject {
 		}
 	}
 
-	public static Builder builder(boolean addContext) {
-		Builder builder = new Builder();
-		if (addContext) builder.context(DIDDocument.DEFAULT_JSONLD_CONTEXT.toString());
-		return builder;
-	}
-
 	public static Builder builder() {
-		return builder(false);
-	}
-
-	public static VerificationMethod getFromJsonLDObject(JsonLDObject jsonLdObject) {
-		JsonObject jsonObject = JsonLDUtils.jsonLdGetJsonObject(jsonLdObject.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
-		return jsonObject == null ? null : new VerificationMethod(jsonObject);
-	}
-
-	public void addToJsonLDObject(JsonLDObject jsonLdObject) {
-		JsonLDUtils.jsonLdAddJsonValue(jsonLdObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, jsonLdObject.getJsonObject());
+		return new Builder(new VerificationMethod());
 	}
 
 	/*
-	 * Serialization
+	 * Reading the JSON-LD object
 	 */
 
 	public static VerificationMethod fromJson(Reader reader) {
-		JsonObject jsonObject = Json.createReader(reader).readObject();
-		return new VerificationMethod(jsonObject);
+		return JsonLDObject.fromJson(VerificationMethod.class, reader);
 	}
 
 	public static VerificationMethod fromJson(String json) {
-		return fromJson(new StringReader(json));
+		return JsonLDObject.fromJson(VerificationMethod.class, json);
+	}
+
+	/*
+	 * Adding, getting, and removing the JSON-LD object
+	 */
+
+	public static VerificationMethod getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		return JsonLDObject.getFromJsonLDObject(VerificationMethod.class, jsonLdObject);
+	}
+
+	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
+		JsonLDObject.removeFromJsonLdObject(VerificationMethod.class, jsonLdObject);
 	}
 
 	/*
@@ -114,27 +115,22 @@ public class VerificationMethod extends JsonLDObject {
 	 */
 
 	public String getPublicKeyBase64() {
-
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64);
 	}
 
 	public String getPublicKeyBase58() {
-
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58);
 	}
 
 	public String getPublicKeyHex() {
-
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYHEX);
 	}
 
 	public String getPublicKeyPem() {
-
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYPEM);
 	}
 
 	public JsonObject getPublicKeyJwk() {
-
 		return JsonLDUtils.jsonLdGetJsonObject(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYJWK);
 	}
 }

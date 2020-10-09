@@ -12,11 +12,11 @@ public class Validation {
         if (! valid) throw new IllegalStateException();
     }
 
-    private static void validateUrl(String uri) {
+    private static void validateUrl(URI uri) {
 
         try {
 
-            if (! new URI(uri).isAbsolute()) throw new URISyntaxException("Not absolute.", uri);
+            if (! uri.isAbsolute()) throw new URISyntaxException("Not absolute.", uri.toString());
         } catch (URISyntaxException ex) {
 
             throw new RuntimeException(ex.getMessage());
@@ -39,7 +39,7 @@ public class Validation {
         validateRun(() -> { validateTrue(didDocument.getJsonObject() != null); }, "Bad or missing JSON object.");
         validateRun(() -> { validateTrue(didDocument.getContexts().size() > 0); }, "Bad or missing '@context'.");
         validateRun(() -> { validateUrl(didDocument.getContexts().get(0)); }, "@context must be a valid URI: " + didDocument.getContexts().get(0));
-        validateRun(() -> { validateTrue(DIDDocument.DEFAULT_JSONLD_CONTEXT.equals(didDocument.getContexts().get(0))); }, "First value of @context must be https://www.w3.org/ns/did/v1: " + didDocument.getContexts().get(0));
+        validateRun(() -> { validateTrue(DIDDocument.DEFAULT_JSONLD_CONTEXTS[0].equals(didDocument.getContexts().get(0))); }, "First value of @context must be " + DIDDocument.DEFAULT_JSONLD_CONTEXTS[0] + ": " + didDocument.getContexts().get(0));
         validateRun(() -> { if (didDocument.getId() != null) validateUrl(didDocument.getId()); }, "'id' must be a valid URI.");
     }
 }

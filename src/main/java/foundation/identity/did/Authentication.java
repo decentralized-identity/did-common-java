@@ -9,13 +9,19 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Authentication extends JsonLDObject {
 
+	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
+	public static final String[] DEFAULT_JSONLD_TYPES = { };
+	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_AUTHENTICATION;
+
 	private Authentication() {
-		super();
+		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
 	public Authentication(JsonObject jsonObject) {
@@ -30,10 +36,11 @@ public class Authentication extends JsonLDObject {
 
 		private String verificationMethod;
 
-		public Builder() {
-			super(new Authentication());
+		public Builder(Authentication jsonLDObject) {
+			super(jsonLDObject);
 		}
 
+		@Override
 		public Authentication build() {
 
 			super.build();
@@ -50,36 +57,32 @@ public class Authentication extends JsonLDObject {
 		}
 	}
 
-	public static Service.Builder builder(boolean addContext) {
-		Service.Builder builder = new Service.Builder();
-		if (addContext) builder.context(DIDDocument.DEFAULT_JSONLD_CONTEXT.toString());
-		return builder;
-	}
-
-	public static Service.Builder builder() {
-		return builder(false);
-	}
-
-	public static Authentication getFromJsonLDObject(JsonLDObject jsonLdObject) {
-		JsonObject jsonObject = JsonLDUtils.jsonLdGetJsonObject(jsonLdObject.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION);
-		return jsonObject == null ? null : new Authentication(jsonObject);
-	}
-
-	public void addToJsonLDObject(JsonLDObject jsonLdObject) {
-		JsonLDUtils.jsonLdAddJsonValue(jsonLdObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_AUTHENTICATION, jsonLdObject.getJsonObject());
+	public static Builder builder() {
+		return new Builder(new Authentication());
 	}
 
 	/*
-	 * Serialization
+	 * Reading the JSON-LD object
 	 */
 
 	public static Authentication fromJson(Reader reader) {
-		JsonObject jsonObject = Json.createReader(reader).readObject();
-		return new Authentication(jsonObject);
+		return JsonLDObject.fromJson(Authentication.class, reader);
 	}
 
 	public static Authentication fromJson(String json) {
-		return fromJson(new StringReader(json));
+		return JsonLDObject.fromJson(Authentication.class, json);
+	}
+
+	/*
+	 * Adding, getting, and removing the JSON-LD object
+	 */
+
+	public static Authentication getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		return JsonLDObject.getFromJsonLDObject(Authentication.class, jsonLdObject);
+	}
+
+	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
+		JsonLDObject.removeFromJsonLdObject(Authentication.class, jsonLdObject);
 	}
 
 	/*
@@ -87,12 +90,10 @@ public class Authentication extends JsonLDObject {
 	 */
 
 	public List<VerificationMethod> getPublicKeys() {
-
 		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((JsonObject) x)).collect(Collectors.toList());
 	}
 
 	public String getPublicKey() {
-
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
 	}
 }

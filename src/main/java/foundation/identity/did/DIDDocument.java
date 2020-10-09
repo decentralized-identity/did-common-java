@@ -17,7 +17,9 @@ import javax.json.JsonObject;
 
 public class DIDDocument extends JsonLDObject {
 
-	public static final URI DEFAULT_JSONLD_CONTEXT = DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1;
+	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
+	public static final String[] DEFAULT_JSONLD_TYPES = { };
+	public static final String DEFAULT_JSONLD_PREDICATE = null;
 
 	public static final String MIME_TYPE_JSON_LD = "application/did+ld+json";
 	public static final String MIME_TYPE_JSON = "application/did+json";
@@ -27,13 +29,8 @@ public class DIDDocument extends JsonLDObject {
 		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
-	private DIDDocument(JsonObject jsonObject, boolean validate) {
-		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
-		if (validate) Validation.validate(this);
-	}
-
 	public DIDDocument(JsonObject jsonObject) {
-		this(jsonObject, true);
+		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
 	/*
@@ -46,10 +43,11 @@ public class DIDDocument extends JsonLDObject {
 		private List<Authentication> authentications;
 		private List<Service> services;
 
-		public Builder() {
-			super(new DIDDocument());
+		public Builder(DIDDocument jsonLDObject) {
+			super(jsonLDObject);
 		}
 
+		@Override
 		public DIDDocument build() {
 
 			super.build();
@@ -90,35 +88,34 @@ public class DIDDocument extends JsonLDObject {
 		}
 	}
 
-	public static Builder builder(boolean addContext) {
-		Builder builder = new Builder();
-		if (addContext) builder.context(DEFAULT_JSONLD_CONTEXT.toString());
-		return builder;
-	}
-
 	public static Builder builder() {
-		return builder(true);
+		return new Builder(new DIDDocument())
+				.defaultContexts(true)
+				.defaultTypes(true);
 	}
 
 	/*
-	 * Serialization
+	 * Reading the JSON-LD object
 	 */
 
-	public static DIDDocument fromJson(Reader reader, boolean validate) {
-		JsonObject jsonObject = Json.createReader(reader).readObject();
-		return new DIDDocument(jsonObject, validate);
-	}
-
-	public static DIDDocument fromJson(String json, boolean validate) {
-		return fromJson(new StringReader(json), validate);
-	}
-
 	public static DIDDocument fromJson(Reader reader) {
-		return fromJson(reader, true);
+		return JsonLDObject.fromJson(DIDDocument.class, reader);
 	}
 
 	public static DIDDocument fromJson(String json) {
-		return fromJson(json, true);
+		return JsonLDObject.fromJson(DIDDocument.class, json);
+	}
+
+	/*
+	 * Adding, getting, and removing the JSON-LD object
+	 */
+
+	public static DIDDocument getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		return JsonLDObject.getFromJsonLDObject(DIDDocument.class, jsonLdObject);
+	}
+
+	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
+		JsonLDObject.removeFromJsonLdObject(DIDDocument.class, jsonLdObject);
 	}
 
 	/*

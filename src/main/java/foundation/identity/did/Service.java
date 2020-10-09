@@ -9,11 +9,16 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.URI;
 
 public class Service extends JsonLDObject {
 
+	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
+	public static final String[] DEFAULT_JSONLD_TYPES = { };
+	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_SERVICE;
+
 	private Service() {
-		super();
+		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
 	public Service(JsonObject jsonObject) {
@@ -28,10 +33,11 @@ public class Service extends JsonLDObject {
 
 		private String serviceEndpoint;
 
-		public Builder() {
-			super(new Service());
+		public Builder(Service jsonLDObject) {
+			super(jsonLDObject);
 		}
 
+		@Override
 		public Service build() {
 
 			super.build();
@@ -48,36 +54,32 @@ public class Service extends JsonLDObject {
 		}
 	}
 
-	public static Builder builder(boolean addContext) {
-		Builder builder = new Builder();
-		if (addContext) builder.context(DIDDocument.DEFAULT_JSONLD_CONTEXT.toString());
-		return builder;
-	}
-
 	public static Builder builder() {
-		return builder(false);
-	}
-
-	public static Service getFromJsonLDObject(JsonLDObject jsonLdObject) {
-		JsonObject jsonObject = JsonLDUtils.jsonLdGetJsonObject(jsonLdObject.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE);
-		return jsonObject == null ? null : new Service(jsonObject);
-	}
-
-	public void addToJsonLDObject(JsonLDObject jsonLdObject) {
-		JsonLDUtils.jsonLdAddJsonValue(jsonLdObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_SERVICE, jsonLdObject.getJsonObject());
+		return new Builder(new Service());
 	}
 
 	/*
-	 * Serialization
+	 * Reading the JSON-LD object
 	 */
 
 	public static Service fromJson(Reader reader) {
-		JsonObject jsonObject = Json.createReader(reader).readObject();
-		return new Service(jsonObject);
+		return JsonLDObject.fromJson(Service.class, reader);
 	}
 
 	public static Service fromJson(String json) {
-		return fromJson(new StringReader(json));
+		return JsonLDObject.fromJson(Service.class, json);
+	}
+
+	/*
+	 * Adding, getting, and removing the JSON-LD object
+	 */
+
+	public static Service getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		return JsonLDObject.getFromJsonLDObject(Service.class, jsonLdObject);
+	}
+
+	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
+		JsonLDObject.removeFromJsonLdObject(Service.class, jsonLdObject);
 	}
 
 	/*
@@ -85,7 +87,6 @@ public class Service extends JsonLDObject {
 	 */
 
 	public String getServiceEndpoint() {
-
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICEENDPOINT);
 	}
 }

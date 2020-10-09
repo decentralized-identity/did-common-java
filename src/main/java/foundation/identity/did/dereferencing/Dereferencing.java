@@ -29,7 +29,7 @@ public class Dereferencing {
             if (selectServiceName != null) {
 
                 DIDURL serviceDidUrl;
-                try { serviceDidUrl = DIDURL.fromString(service.getId()); } catch (ParserException ex) { serviceDidUrl = null; }
+                try { serviceDidUrl = DIDURL.fromUri(service.getId()); } catch (ParserException ex) { serviceDidUrl = null; }
                 String serviceName = serviceDidUrl == null ? null : serviceDidUrl.getFragment();
 
                 if (serviceName == null) continue;
@@ -61,7 +61,7 @@ public class Dereferencing {
             if (selectKeyName != null) {
 
                 DIDURL publicKeyDidUrl;
-                try { publicKeyDidUrl = DIDURL.fromString(publicKey.getId()); } catch (ParserException ex) { publicKeyDidUrl = null; }
+                try { publicKeyDidUrl = DIDURL.fromUri(publicKey.getId()); } catch (ParserException ex) { publicKeyDidUrl = null; }
                 String publicKeyName = publicKeyDidUrl == null ? null : publicKeyDidUrl.getFragment();
 
                 if (publicKeyName == null) continue;

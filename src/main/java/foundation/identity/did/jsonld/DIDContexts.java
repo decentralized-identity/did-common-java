@@ -19,13 +19,14 @@ public class DIDContexts {
     public static final URI JSONLD_CONTEXT_W3ID_DID_V011 = URI.create("https://w3id.org/did/v0.11");
     public static final URI JSONLD_CONTEXT_W3ID_VERESONE_V1 = URI.create("https://w3id.org/veres-one/v1");
 
-    public static DocumentLoader DOCUMENT_LOADER = new ConfigurableDocumentLoader(DIDContexts.CONTEXTS);
-
-    public static Map<URI, JsonDocument> CONTEXTS = new HashMap<URI, JsonDocument>();
+    public static final Map<URI, JsonDocument> CONTEXTS;
+    public static final DocumentLoader DOCUMENT_LOADER;
 
     static {
 
         try {
+
+            CONTEXTS = new HashMap<>();
 
             CONTEXTS.put(JSONLD_CONTEXT_W3_NS_DID_V1,
                     JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3-ns-did-v1.jsonld")));
@@ -45,5 +46,7 @@ public class DIDContexts {
 
             throw new ExceptionInInitializerError(ex);
         }
+
+        DOCUMENT_LOADER = new ConfigurableDocumentLoader(CONTEXTS);
     }
 }
