@@ -5,12 +5,9 @@ import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
-import javax.json.Json;
 import javax.json.JsonObject;
 import java.io.Reader;
-import java.io.StringReader;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

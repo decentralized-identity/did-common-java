@@ -1,19 +1,11 @@
 package foundation.identity.did;
 
+import foundation.identity.did.parser.*;
+
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import foundation.identity.did.parser.Displayer;
-import foundation.identity.did.parser.Parser;
-import foundation.identity.did.parser.ParserException;
-import foundation.identity.did.parser.Rule;
-import foundation.identity.did.parser.Rule_did;
-import foundation.identity.did.parser.Rule_method_name;
-import foundation.identity.did.parser.Rule_method_specific_id;
-import foundation.identity.did.parser.Terminal_NumericValue;
-import foundation.identity.did.parser.Terminal_StringValue;
 
 public class DID {
 

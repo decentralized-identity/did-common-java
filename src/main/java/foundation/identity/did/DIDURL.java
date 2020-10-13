@@ -1,25 +1,15 @@
 package foundation.identity.did;
 
+import foundation.identity.did.parser.*;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.utils.URLEncodedUtils;
+
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import foundation.identity.did.parser.Displayer;
-import foundation.identity.did.parser.Parser;
-import foundation.identity.did.parser.ParserException;
-import foundation.identity.did.parser.Rule;
-import foundation.identity.did.parser.Rule_did;
-import foundation.identity.did.parser.Rule_did_url;
-import foundation.identity.did.parser.Rule_fragment;
-import foundation.identity.did.parser.Rule_path_abempty;
-import foundation.identity.did.parser.Rule_query;
-import foundation.identity.did.parser.Terminal_NumericValue;
-import foundation.identity.did.parser.Terminal_StringValue;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 
 public class DIDURL {
 

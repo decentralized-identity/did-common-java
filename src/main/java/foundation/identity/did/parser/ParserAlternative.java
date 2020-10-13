@@ -11,7 +11,6 @@
 package foundation.identity.did.parser;
 
 import java.util.ArrayList;
-
 import java.util.List;
 
 public class ParserAlternative

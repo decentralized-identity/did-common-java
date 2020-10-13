@@ -2,8 +2,8 @@ package foundation.identity.did.dereferencing;
 
 import foundation.identity.did.DIDDocument;
 import foundation.identity.did.DIDURL;
-import foundation.identity.did.VerificationMethod;
 import foundation.identity.did.Service;
+import foundation.identity.did.VerificationMethod;
 import foundation.identity.did.parser.ParserException;
 
 import java.util.Arrays;

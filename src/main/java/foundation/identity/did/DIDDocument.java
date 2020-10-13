@@ -1,19 +1,17 @@
 package foundation.identity.did;
 
-import java.io.Reader;
-import java.io.StringReader;
-import java.net.URI;
-import java.util.*;
-import java.util.stream.Collectors;
-
 import foundation.identity.did.jsonld.DIDContexts;
 import foundation.identity.did.jsonld.DIDKeywords;
-import foundation.identity.did.validation.Validation;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
-import javax.json.Json;
 import javax.json.JsonObject;
+import java.io.Reader;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class DIDDocument extends JsonLDObject {
 
