@@ -47,11 +47,11 @@ public class VerificationMethod extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.publicKeyBase64 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
-			if (this.publicKeyBase58 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
-			if (this.publicKeyHex != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
-			if (this.publicKeyPem != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
-			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAddJsonValue(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
+			if (this.publicKeyBase64 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
+			if (this.publicKeyBase58 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
+			if (this.publicKeyHex != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
+			if (this.publicKeyPem != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
+			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAddJsonValue(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
 
 			return this.jsonLDObject;
 		}

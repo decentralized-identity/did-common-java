@@ -46,7 +46,7 @@ public class Authentication extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.verificationMethod != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, this.verificationMethod);
+			if (this.verificationMethod != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, this.verificationMethod);
 
 			return this.jsonLDObject;
 		}

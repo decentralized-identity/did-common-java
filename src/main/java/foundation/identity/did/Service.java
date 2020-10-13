@@ -43,7 +43,7 @@ public class Service extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.serviceEndpoint != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject.getJsonObjectBuilder(), DIDKeywords.JSONLD_TERM_SERVICEENDPOINT, this.serviceEndpoint);
+			if (this.serviceEndpoint != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_SERVICEENDPOINT, this.serviceEndpoint);
 
 			return this.jsonLDObject;
 		}
