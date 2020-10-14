@@ -38,6 +38,7 @@ public class DIDDocument extends JsonLDObject {
 	public static class Builder extends JsonLDObject.Builder<Builder, DIDDocument> {
 
 		private List<VerificationMethod> verificationMethods;
+		private List<PublicKey> publicKeys;
 		private List<Authentication> authentications;
 		private List<Service> services;
 
@@ -52,6 +53,7 @@ public class DIDDocument extends JsonLDObject {
 
 			// add JSON-LD properties
 			if (this.verificationMethods != null) for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObject(this.jsonLDObject);
+			if (this.publicKeys != null) for (PublicKey publicKey : this.publicKeys) publicKey.addToJsonLDObject(this.jsonLDObject);
 			if (this.authentications != null) for (Authentication authentication : this.authentications) authentication.addToJsonLDObject(this.jsonLDObject);
 			if (this.services != null) for (Service service : this.services) service.addToJsonLDObject(this.jsonLDObject);
 
@@ -65,6 +67,15 @@ public class DIDDocument extends JsonLDObject {
 
 		public Builder verificationMethod(VerificationMethod verificationMethod) {
 			return this.verificationMethods(Collections.singletonList(verificationMethod));
+		}
+
+		public Builder publicKeys(List<PublicKey> publicKeys) {
+			this.publicKeys = new ArrayList<PublicKey> (publicKeys);
+			return this;
+		}
+
+		public Builder publicKey(PublicKey publicKey) {
+			return this.publicKeys(Collections.singletonList(publicKey));
 		}
 
 		public Builder authentications(List<Authentication> authentications) {

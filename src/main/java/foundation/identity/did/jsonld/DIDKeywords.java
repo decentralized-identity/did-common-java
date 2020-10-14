@@ -12,6 +12,7 @@ public class DIDKeywords {
     public static final String JSONLD_TERM_PUBLICKEYHEX = "publicKeyHex";
     public static final String JSONLD_TERM_PUBLICKEYPEM = "publicKeyPem";
     public static final String JSONLD_TERM_PUBLICKEYJWK = "publicKeyJwk";
+    public static final String JSONLD_TERM_PUBLICKEY = "publicKey";
     public static final String JSONLD_TERM_AUTHENTICATION = "authentication";
     public static final String JSONLD_TERM_SERVICE = "service";
     public static final String JSONLD_TERM_SERVICEENDPOINT = "serviceEndpoint";

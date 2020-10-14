@@ -31,7 +31,7 @@ public class Authentication extends JsonLDObject {
 
 	public static class Builder extends JsonLDObject.Builder<Builder, Authentication> {
 
-		private String verificationMethod;
+		private URI verificationMethod;
 
 		public Builder(Authentication jsonLDObject) {
 			super(jsonLDObject);
@@ -43,12 +43,12 @@ public class Authentication extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.verificationMethod != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, this.verificationMethod);
+			if (this.verificationMethod != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, JsonLDUtils.uriToString(this.verificationMethod));
 
 			return this.jsonLDObject;
 		}
 
-		public Builder publicKey(String verificationMethod) {
+		public Builder verificationMethod(URI verificationMethod) {
 			this.verificationMethod = verificationMethod;
 			return this;
 		}
@@ -86,11 +86,11 @@ public class Authentication extends JsonLDObject {
 	 * Getters
 	 */
 
-	public List<VerificationMethod> getPublicKeys() {
+	public List<VerificationMethod> getVerificationMethods() {
 		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((JsonObject) x)).collect(Collectors.toList());
 	}
 
-	public String getPublicKey() {
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
+	public URI URI() {
+		return JsonLDUtils.stringToUri(JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD));
 	}
 }

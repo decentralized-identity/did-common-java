@@ -9,17 +9,17 @@ import javax.json.JsonObject;
 import java.io.Reader;
 import java.net.URI;
 
-public class VerificationMethod extends JsonLDObject {
+public class PublicKey extends JsonLDObject {
 
 	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
 	public static final String[] DEFAULT_JSONLD_TYPES = { };
-	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD;
+	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_PUBLICKEY;
 
-	private VerificationMethod() {
+	private PublicKey() {
 		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
-	public VerificationMethod(JsonObject jsonObject) {
+	public PublicKey(JsonObject jsonObject) {
 		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
@@ -27,7 +27,7 @@ public class VerificationMethod extends JsonLDObject {
 	 * Factory methods
 	 */
 
-	public static class Builder extends JsonLDObject.Builder<Builder, VerificationMethod> {
+	public static class Builder extends JsonLDObject.Builder<Builder, PublicKey> {
 
 		private String publicKeyBase64;
 		private String publicKeyBase58;
@@ -35,12 +35,12 @@ public class VerificationMethod extends JsonLDObject {
 		private String publicKeyPem;
 		private JsonObject publicKeyJwk;
 
-		public Builder(VerificationMethod jsonLDObject) {
+		public Builder(PublicKey jsonLDObject) {
 			super(jsonLDObject);
 		}
 
 		@Override
-		public VerificationMethod build() {
+		public PublicKey build() {
 
 			super.build();
 
@@ -81,31 +81,31 @@ public class VerificationMethod extends JsonLDObject {
 	}
 
 	public static Builder builder() {
-		return new Builder(new VerificationMethod());
+		return new Builder(new PublicKey());
 	}
 
 	/*
 	 * Reading the JSON-LD object
 	 */
 
-	public static VerificationMethod fromJson(Reader reader) {
-		return JsonLDObject.fromJson(VerificationMethod.class, reader);
+	public static PublicKey fromJson(Reader reader) {
+		return JsonLDObject.fromJson(PublicKey.class, reader);
 	}
 
-	public static VerificationMethod fromJson(String json) {
-		return JsonLDObject.fromJson(VerificationMethod.class, json);
+	public static PublicKey fromJson(String json) {
+		return JsonLDObject.fromJson(PublicKey.class, json);
 	}
 
 	/*
 	 * Adding, getting, and removing the JSON-LD object
 	 */
 
-	public static VerificationMethod getFromJsonLDObject(JsonLDObject jsonLdObject) {
-		return JsonLDObject.getFromJsonLDObject(VerificationMethod.class, jsonLdObject);
+	public static PublicKey getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		return JsonLDObject.getFromJsonLDObject(PublicKey.class, jsonLdObject);
 	}
 
 	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
-		JsonLDObject.removeFromJsonLdObject(VerificationMethod.class, jsonLdObject);
+		JsonLDObject.removeFromJsonLdObject(PublicKey.class, jsonLdObject);
 	}
 
 	/*
