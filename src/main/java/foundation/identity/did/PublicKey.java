@@ -1,5 +1,7 @@
 package foundation.identity.did;
 
+import com.apicatalog.jsonld.loader.DocumentLoader;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import foundation.identity.did.jsonld.DIDContexts;
 import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
@@ -14,20 +16,22 @@ public class PublicKey extends JsonLDObject {
 	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
 	public static final String[] DEFAULT_JSONLD_TYPES = { };
 	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_PUBLICKEY;
+	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DIDContexts.DOCUMENT_LOADER;
 
-	private PublicKey() {
-		super(DIDContexts.DOCUMENT_LOADER);
+	@JsonCreator
+	public PublicKey() {
+		super();
 	}
 
-	public PublicKey(Map<String, Object> jsonObject) {
-		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
+	protected PublicKey(Map<String, Object> jsonObject) {
+		super(jsonObject);
 	}
 
 	/*
 	 * Factory methods
 	 */
 
-	public static class Builder extends JsonLDObject.Builder<Builder, PublicKey> {
+	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
 		private String publicKeyBase64;
 		private String publicKeyBase58;
@@ -51,36 +55,36 @@ public class PublicKey extends JsonLDObject {
 			if (this.publicKeyPem != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
 			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
 
-			return this.jsonLDObject;
+			return (PublicKey) this.jsonLDObject;
 		}
 
-		public Builder publicKeyBase64(String publicKeyBase64) {
+		public B publicKeyBase64(String publicKeyBase64) {
 			this.publicKeyBase64 = publicKeyBase64;
-			return this;
+			return (B) this;
 		}
 
-		public Builder publicKeyBase58(String publicKeyBase58) {
+		public B publicKeyBase58(String publicKeyBase58) {
 			this.publicKeyBase58 = publicKeyBase58;
-			return this;
+			return (B) this;
 		}
 
-		public Builder publicKeyHex(String publicKeyHex) {
+		public B publicKeyHex(String publicKeyHex) {
 			this.publicKeyHex = publicKeyHex;
-			return this;
+			return (B) this;
 		}
 
-		public Builder publicKeyPem(String publicKeyPem) {
+		public B publicKeyPem(String publicKeyPem) {
 			this.publicKeyPem = publicKeyPem;
-			return this;
+			return (B) this;
 		}
 
-		public Builder publicKeyJwk(Map<String, Object> publicKeyJwk) {
+		public B publicKeyJwk(Map<String, Object> publicKeyJwk) {
 			this.publicKeyJwk = publicKeyJwk;
-			return this;
+			return (B) this;
 		}
 	}
 
-	public static Builder builder() {
+	public static Builder<? extends Builder<?>> builder() {
 		return new Builder(new PublicKey());
 	}
 
@@ -89,11 +93,11 @@ public class PublicKey extends JsonLDObject {
 	 */
 
 	public static PublicKey fromJson(Reader reader) {
-		return JsonLDObject.fromJson(PublicKey.class, reader);
+		return new PublicKey(readJson(reader));
 	}
 
 	public static PublicKey fromJson(String json) {
-		return JsonLDObject.fromJson(PublicKey.class, json);
+		return new PublicKey(readJson(json));
 	}
 
 	/*

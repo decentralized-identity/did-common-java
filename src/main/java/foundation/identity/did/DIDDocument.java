@@ -1,5 +1,6 @@
 package foundation.identity.did;
 
+import com.apicatalog.jsonld.loader.DocumentLoader;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import foundation.identity.did.jsonld.DIDContexts;
 import foundation.identity.did.jsonld.DIDKeywords;
@@ -19,25 +20,26 @@ public class DIDDocument extends JsonLDObject {
 	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
 	public static final String[] DEFAULT_JSONLD_TYPES = { };
 	public static final String DEFAULT_JSONLD_PREDICATE = null;
+	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DIDContexts.DOCUMENT_LOADER;
 
 	public static final String MIME_TYPE_JSON_LD = "application/did+ld+json";
 	public static final String MIME_TYPE_JSON = "application/did+json";
 	public static final String MIME_TYPE_CBOR = "application/did+cbor";
 
 	@JsonCreator
-	private DIDDocument() {
-		super(DIDContexts.DOCUMENT_LOADER);
+	public DIDDocument() {
+		super();
 	}
 
-	public DIDDocument(Map<String, Object> jsonObject) {
-		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
+	protected DIDDocument(Map<String, Object> jsonObject) {
+		super(jsonObject);
 	}
 
 	/*
 	 * Factory methods
 	 */
 
-	public static class Builder extends JsonLDObject.Builder<Builder, DIDDocument> {
+	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
 		private List<VerificationMethod> verificationMethods;
 		private List<PublicKey> publicKeys;
@@ -46,6 +48,8 @@ public class DIDDocument extends JsonLDObject {
 
 		public Builder(DIDDocument jsonLDObject) {
 			super(jsonLDObject);
+			this.defaultContexts(true);
+			this.defaultTypes(true);
 		}
 
 		@Override
@@ -59,62 +63,60 @@ public class DIDDocument extends JsonLDObject {
 			if (this.authentications != null) for (Authentication authentication : this.authentications) authentication.addToJsonLDObject(this.jsonLDObject);
 			if (this.services != null) for (Service service : this.services) service.addToJsonLDObject(this.jsonLDObject);
 
-			return this.jsonLDObject;
+			return (DIDDocument) this.jsonLDObject;
 		}
 
-		public Builder verificationMethods(List<VerificationMethod> verificationMethods) {
+		public B verificationMethods(List<VerificationMethod> verificationMethods) {
 			this.verificationMethods = new ArrayList<VerificationMethod> (verificationMethods);
-			return this;
+			return (B) this;
 		}
 
-		public Builder verificationMethod(VerificationMethod verificationMethod) {
+		public B verificationMethod(VerificationMethod verificationMethod) {
 			return this.verificationMethods(Collections.singletonList(verificationMethod));
 		}
 
-		public Builder publicKeys(List<PublicKey> publicKeys) {
+		public B publicKeys(List<PublicKey> publicKeys) {
 			this.publicKeys = new ArrayList<PublicKey> (publicKeys);
-			return this;
+			return (B) this;
 		}
 
-		public Builder publicKey(PublicKey publicKey) {
+		public B publicKey(PublicKey publicKey) {
 			return this.publicKeys(Collections.singletonList(publicKey));
 		}
 
-		public Builder authentications(List<Authentication> authentications) {
+		public B authentications(List<Authentication> authentications) {
 			this.authentications = new ArrayList<Authentication> (authentications);
-			return this;
+			return (B) this;
 		}
 
-		public Builder authentication(Authentication authentication) {
+		public B authentication(Authentication authentication) {
 			return this.authentications(Collections.singletonList(authentication));
 		}
 
-		public Builder services(List<Service> services) {
+		public B services(List<Service> services) {
 			this.services = new ArrayList<Service> (services);
-			return this;
+			return (B) this;
 		}
 
-		public Builder service(Service service) {
+		public B service(Service service) {
 			return this.services(Collections.singletonList(service));
 		}
 	}
 
-	public static Builder builder() {
-		return new Builder(new DIDDocument())
-				.defaultContexts(true)
-				.defaultTypes(true);
+	public static Builder<? extends Builder<?>> builder() {
+		return new Builder(new DIDDocument());
 	}
 
-	/*
-	 * Reading the JSON-LD object
-	 */
+	public static DIDDocument fromJsonObject(Map<String, Object> jsonObject) {
+		return new DIDDocument(jsonObject);
+	}
 
 	public static DIDDocument fromJson(Reader reader) {
-		return JsonLDObject.fromJson(DIDDocument.class, reader);
+		return new DIDDocument(readJson(reader));
 	}
 
 	public static DIDDocument fromJson(String json) {
-		return JsonLDObject.fromJson(DIDDocument.class, json);
+		return new DIDDocument(readJson(json));
 	}
 
 	/*
