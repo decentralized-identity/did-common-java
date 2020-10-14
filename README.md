@@ -28,28 +28,29 @@ Dependency:
 
 Example code:
 
-    String id = "did:ex:1234";
+    URI did = URI.create("did:ex:1234");
 
     Service service = Service.builder()
             .type("XdiService")
             .serviceEndpoint("https://myservice.com/myxdi")
             .build();
 
-    PublicKey publicKey = PublicKey.builder()
+    VerificationMethod verificationMethod = VerificationMethod.builder()
+            .id(URI.create(did + "#key-1"))
             .type("Ed25519VerificationKey")
-            .publicKeyBase58("376387638638")
+            .publicKeyBase58("FyfKP2HvTKqDZQzvyL38yXH7bExmwofxHf2NR5BrcGf1")
             .build();
 
     DIDDocument diddoc = DIDDocument.builder()
-            .id(id)
+            .id(did)
             .service(service)
-            .publicKey(publicKey)
+            .verificationMethod(verificationMethod)
             .build();
 
     ((ConfigurableDocumentLoader) diddoc.getDocumentLoader()).setEnableLocalCache(true);
     ((ConfigurableDocumentLoader) diddoc.getDocumentLoader()).setEnableHttps(false);
 
-    System.out.println(diddoc.toString());
+    System.out.println(diddoc.toJson(true));
 
 ## About
 
