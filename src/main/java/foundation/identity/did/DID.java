@@ -2,6 +2,8 @@ package foundation.identity.did;
 
 import foundation.identity.did.parser.*;
 
+import javax.json.Json;
+import javax.json.JsonObject;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -165,6 +167,20 @@ public class DID {
 			}
 			return null;
 		}
+	}
+
+	/*
+	 * Helper methods
+	 */
+
+	public JsonObject toJsonObject() {
+
+		return Json.createObjectBuilder()
+				.add("method", this.getMethod())
+				.add("methodSpecificId", this.getMethodSpecificId())
+				.add("parseTree", this.getParseTree())
+				.add("parseRuleCount", Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build())
+				.build();
 	}
 
 	/*
