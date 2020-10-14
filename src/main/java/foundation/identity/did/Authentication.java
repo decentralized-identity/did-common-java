@@ -5,10 +5,10 @@ import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
-import javax.json.JsonObject;
 import java.io.Reader;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Authentication extends JsonLDObject {
@@ -21,7 +21,7 @@ public class Authentication extends JsonLDObject {
 		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
-	public Authentication(JsonObject jsonObject) {
+	public Authentication(Map<String, Object> jsonObject) {
 		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
@@ -43,7 +43,7 @@ public class Authentication extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.verificationMethod != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, JsonLDUtils.uriToString(this.verificationMethod));
+			if (this.verificationMethod != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, JsonLDUtils.uriToString(this.verificationMethod));
 
 			return this.jsonLDObject;
 		}
@@ -87,7 +87,7 @@ public class Authentication extends JsonLDObject {
 	 */
 
 	public List<VerificationMethod> getVerificationMethods() {
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
 	public URI URI() {

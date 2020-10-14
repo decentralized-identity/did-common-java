@@ -5,9 +5,9 @@ import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
-import javax.json.JsonObject;
 import java.io.Reader;
 import java.net.URI;
+import java.util.Map;
 
 public class Service extends JsonLDObject {
 
@@ -19,7 +19,7 @@ public class Service extends JsonLDObject {
 		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
-	public Service(JsonObject jsonObject) {
+	public Service(Map<String, Object> jsonObject) {
 		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
@@ -41,7 +41,7 @@ public class Service extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.serviceEndpoint != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_SERVICEENDPOINT, this.serviceEndpoint);
+			if (this.serviceEndpoint != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_SERVICEENDPOINT, this.serviceEndpoint);
 
 			return this.jsonLDObject;
 		}

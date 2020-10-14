@@ -6,6 +6,7 @@ import org.apache.http.client.utils.URLEncodedUtils;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -180,13 +181,13 @@ public class DIDURL {
 	public JsonObject toJsonObject() {
 
 		return Json.createObjectBuilder()
-				.add("did", this.getDid().toJsonObject())
-				.add("parameters", Json.createObjectBuilder(new HashMap<String, Object>(this.getParameters())).build())
-				.add("path", this.getPath())
-				.add("query", this.getQuery())
-				.add("fragment", this.getFragment())
-				.add("parseTree", this.getParseTree())
-				.add("parseRuleCount", Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build())
+				.add("did", this.getDid() == null ? JsonValue.NULL : this.getDid().toJsonObject())
+				.add("parameters", this.getParameters() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParameters())).build())
+				.add("path", this.getPath() == null ? JsonValue.NULL : Json.createValue(this.getPath()))
+				.add("query", this.getQuery() == null ? JsonValue.NULL : Json.createValue(this.getQuery()))
+				.add("fragment", this.getFragment() == null ? JsonValue.NULL : Json.createValue(this.getFragment()))
+				.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
+				.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build())
 				.build();
 	}
 

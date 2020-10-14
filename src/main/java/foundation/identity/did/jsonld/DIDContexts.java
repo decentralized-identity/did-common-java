@@ -5,7 +5,6 @@ import com.apicatalog.jsonld.document.JsonDocument;
 import com.apicatalog.jsonld.http.media.MediaType;
 import com.apicatalog.jsonld.loader.DocumentLoader;
 import foundation.identity.jsonld.ConfigurableDocumentLoader;
-import foundation.identity.jsonld.JsonLDObject;
 
 import java.net.URI;
 import java.util.HashMap;

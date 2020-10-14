@@ -5,9 +5,9 @@ import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
-import javax.json.JsonObject;
 import java.io.Reader;
 import java.net.URI;
+import java.util.Map;
 
 public class VerificationMethod extends JsonLDObject {
 
@@ -19,7 +19,7 @@ public class VerificationMethod extends JsonLDObject {
 		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
-	public VerificationMethod(JsonObject jsonObject) {
+	public VerificationMethod(Map<String, Object> jsonObject) {
 		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
@@ -33,7 +33,7 @@ public class VerificationMethod extends JsonLDObject {
 		private String publicKeyBase58;
 		private String publicKeyHex;
 		private String publicKeyPem;
-		private JsonObject publicKeyJwk;
+		private Map<String, Object> publicKeyJwk;
 
 		public Builder(VerificationMethod jsonLDObject) {
 			super(jsonLDObject);
@@ -45,11 +45,11 @@ public class VerificationMethod extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.publicKeyBase64 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
-			if (this.publicKeyBase58 != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
-			if (this.publicKeyHex != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
-			if (this.publicKeyPem != null) JsonLDUtils.jsonLdAddString(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
-			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAddJsonValue(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
+			if (this.publicKeyBase64 != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
+			if (this.publicKeyBase58 != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
+			if (this.publicKeyHex != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
+			if (this.publicKeyPem != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
+			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
 
 			return this.jsonLDObject;
 		}
@@ -74,7 +74,7 @@ public class VerificationMethod extends JsonLDObject {
 			return this;
 		}
 
-		public Builder publicKeyJwk(JsonObject publicKeyJwk) {
+		public Builder publicKeyJwk(Map<String, Object> publicKeyJwk) {
 			this.publicKeyJwk = publicKeyJwk;
 			return this;
 		}
@@ -128,7 +128,7 @@ public class VerificationMethod extends JsonLDObject {
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYPEM);
 	}
 
-	public JsonObject getPublicKeyJwk() {
+	public Map<String, Object> getPublicKeyJwk() {
 		return JsonLDUtils.jsonLdGetJsonObject(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYJWK);
 	}
 }

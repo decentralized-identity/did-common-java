@@ -1,16 +1,17 @@
 package foundation.identity.did;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import foundation.identity.did.jsonld.DIDContexts;
 import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
-import javax.json.JsonObject;
 import java.io.Reader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class DIDDocument extends JsonLDObject {
@@ -23,11 +24,12 @@ public class DIDDocument extends JsonLDObject {
 	public static final String MIME_TYPE_JSON = "application/did+json";
 	public static final String MIME_TYPE_CBOR = "application/did+cbor";
 
+	@JsonCreator
 	private DIDDocument() {
 		super(DIDContexts.DOCUMENT_LOADER);
 	}
 
-	public DIDDocument(JsonObject jsonObject) {
+	public DIDDocument(Map<String, Object> jsonObject) {
 		super(DIDContexts.DOCUMENT_LOADER, jsonObject);
 	}
 
@@ -132,14 +134,14 @@ public class DIDDocument extends JsonLDObject {
 	 */
 
 	public List<VerificationMethod> getVerificationMethods() {
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
 	public List<Authentication> getAuthentications() {
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION).stream().map(x -> new Authentication((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION).stream().map(x -> new Authentication((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
 	public List<Service> getServices() {
-		return JsonLDUtils.jsonLdGetJsonValueList(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE).stream().map(x -> new Service((JsonObject) x)).collect(Collectors.toList());
+		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE).stream().map(x -> new Service((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 }

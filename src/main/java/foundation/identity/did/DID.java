@@ -4,6 +4,7 @@ import foundation.identity.did.parser.*;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,10 +177,10 @@ public class DID {
 	public JsonObject toJsonObject() {
 
 		return Json.createObjectBuilder()
-				.add("method", this.getMethod())
-				.add("methodSpecificId", this.getMethodSpecificId())
-				.add("parseTree", this.getParseTree())
-				.add("parseRuleCount", Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build())
+				.add("method", this.getMethod() == null ? JsonValue.NULL : Json.createValue(this.getMethod()))
+				.add("methodSpecificId", this.getMethodSpecificId() == null ? JsonValue.NULL : Json.createValue(this.getMethodSpecificId()))
+				.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
+				.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build())
 				.build();
 	}
 
