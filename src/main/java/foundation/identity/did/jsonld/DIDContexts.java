@@ -29,15 +29,15 @@ public class DIDContexts {
             CONTEXTS = new HashMap<>();
 
             CONTEXTS.put(JSONLD_CONTEXT_W3_NS_DID_V1,
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3-ns-did-v1.jsonld")));
+                    JsonDocument.of(MediaType.JSON_LD, DIDContexts.class.getResourceAsStream("diddocument-context-w3-ns-did-v1.jsonld")));
             CONTEXTS.put(JSONLD_CONTEXT_W3_2019_DID_V1,
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3-did-v1.jsonld")));
+                    JsonDocument.of(MediaType.JSON_LD, DIDContexts.class.getResourceAsStream("diddocument-context-w3-2019-did-v1.jsonld")));
             CONTEXTS.put(JSONLD_CONTEXT_W3ID_DID_V1,
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3id-did-v1.jsonld")));
+                    JsonDocument.of(MediaType.JSON_LD, DIDContexts.class.getResourceAsStream("diddocument-context-w3id-did-v1.jsonld")));
             CONTEXTS.put(JSONLD_CONTEXT_W3ID_DID_V011,
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3id-did-v011.jsonld")));
+                    JsonDocument.of(MediaType.JSON_LD, DIDContexts.class.getResourceAsStream("diddocument-context-w3id-did-v011.jsonld")));
             CONTEXTS.put(JSONLD_CONTEXT_W3ID_VERESONE_V1,
-                    JsonDocument.of(MediaType.JSON_LD, JsonLDObject.class.getResourceAsStream("diddocument-context-w3id-veresone-v1.jsonld")));
+                    JsonDocument.of(MediaType.JSON_LD, DIDContexts.class.getResourceAsStream("diddocument-context-w3id-veresone-v1.jsonld")));
 
             for (Map.Entry<URI, JsonDocument> context : CONTEXTS.entrySet()) {
                 context.getValue().setDocumentUrl(context.getKey());
