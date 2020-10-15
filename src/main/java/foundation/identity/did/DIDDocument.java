@@ -67,39 +67,39 @@ public class DIDDocument extends JsonLDObject {
 		}
 
 		public B verificationMethods(List<VerificationMethod> verificationMethods) {
-			this.verificationMethods = new ArrayList<VerificationMethod> (verificationMethods);
+			this.verificationMethods = verificationMethods;
 			return (B) this;
 		}
 
 		public B verificationMethod(VerificationMethod verificationMethod) {
-			return this.verificationMethods(Collections.singletonList(verificationMethod));
+			return this.verificationMethods(verificationMethod == null ? null : Collections.singletonList(verificationMethod));
 		}
 
 		public B publicKeys(List<PublicKey> publicKeys) {
-			this.publicKeys = new ArrayList<PublicKey> (publicKeys);
+			this.publicKeys = publicKeys;
 			return (B) this;
 		}
 
 		public B publicKey(PublicKey publicKey) {
-			return this.publicKeys(Collections.singletonList(publicKey));
+			return this.publicKeys(publicKey == null ? null : Collections.singletonList(publicKey));
 		}
 
 		public B authentications(List<Authentication> authentications) {
-			this.authentications = new ArrayList<Authentication> (authentications);
+			this.authentications = authentications;
 			return (B) this;
 		}
 
 		public B authentication(Authentication authentication) {
-			return this.authentications(Collections.singletonList(authentication));
+			return this.authentications(authentication == null ? null : Collections.singletonList(authentication));
 		}
 
 		public B services(List<Service> services) {
-			this.services = new ArrayList<Service> (services);
+			this.services = services;
 			return (B) this;
 		}
 
 		public B service(Service service) {
-			return this.services(Collections.singletonList(service));
+			return this.services(service == null ? null : Collections.singletonList(service));
 		}
 	}
 
