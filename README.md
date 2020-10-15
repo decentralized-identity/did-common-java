@@ -31,13 +31,13 @@ Example code:
     URI did = URI.create("did:ex:1234");
 
     Service service = Service.builder()
-            .type("XdiService")
-            .serviceEndpoint("https://myservice.com/myxdi")
+            .type("ServiceEndpointProxyService")
+            .serviceEndpoint("https://myservice.com/myendpoint")
             .build();
 
     VerificationMethod verificationMethod = VerificationMethod.builder()
             .id(URI.create(did + "#key-1"))
-            .type("Ed25519VerificationKey")
+            .type("Ed25519VerificationKey2018")
             .publicKeyBase58("FyfKP2HvTKqDZQzvyL38yXH7bExmwofxHf2NR5BrcGf1")
             .build();
 
