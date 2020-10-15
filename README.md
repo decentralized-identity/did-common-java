@@ -8,7 +8,7 @@ This is a work-in-progress implementation of the DID Core specification:
 
  - [Decentralized Identifiers v1.0](https://w3c.github.io/did-core/)
 
-Highly experimental, incomplete, and not ready for production use! Use at your own risk! Pull requests welcome.
+Work-in-progress implementation of DIDs and DID documents! Use at your own risk! Pull requests welcome.
 
 ## Maven
 
