@@ -8,7 +8,7 @@ This is a work-in-progress implementation of the DID Core specification:
 
  - [Decentralized Identifiers v1.0](https://w3c.github.io/did-core/)
 
-Work-in-progress implementation of DIDs and DID documents! Use at your own risk! Pull requests welcome.
+Not ready for production use! Use at your own risk! Pull requests welcome.
 
 ## Maven
 
@@ -47,10 +47,23 @@ Example code:
             .verificationMethod(verificationMethod)
             .build();
 
-    ((ConfigurableDocumentLoader) diddoc.getDocumentLoader()).setEnableLocalCache(true);
-    ((ConfigurableDocumentLoader) diddoc.getDocumentLoader()).setEnableHttps(false);
-
     System.out.println(diddoc.toJson(true));
+
+Example DID document:
+
+    {
+      "@context" : "https://www.w3.org/ns/did/v1",
+      "id" : "did:ex:1234",
+      "verificationMethod" : {
+        "type" : "Ed25519VerificationKey2018",
+        "id" : "did:ex:1234#key-1",
+        "publicKeyBase58" : "FyfKP2HvTKqDZQzvyL38yXH7bExmwofxHf2NR5BrcGf1"
+      },
+      "service" : {
+        "type" : "ServiceEndpointProxyService",
+        "serviceEndpoint" : "https://myservice.com/myendpoint"
+      }
+    }
 
 ## About
 
