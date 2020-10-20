@@ -6,6 +6,9 @@ on:
       - '.gitignore'
       - 'README.md'
       - 'LICENSE'
+      - '.github/workflows/release.yml'
+    branches-ignore:
+      - 'release-**'
 
 jobs:
   build:

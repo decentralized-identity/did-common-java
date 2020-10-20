@@ -1,0 +1,32 @@
+name: Release Artifact to Danubetech Nexus
+
+on:
+  push:
+    branches:
+      - 'release-**'
+    paths:
+      - '.github/workflows/release.yml'
+
+env:
+  RELEASE_VERSION:
+  DEVELOPMENT_VERSION:
+  TAG:
+  RELEASE_BRANCH:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: ${{ env.RELEASE_BRANCH }}
+      - name: Run maven release action
+        uses: danubetech/github-action-maven-release@master
+        with:
+          server_id: danubetech-maven-release
+          release_version: ${{ env.RELEASE_VERSION }}
+          development_version: ${{ env.DEVELOPMENT_VERSION }}
+          tag: ${{ env.TAG }}
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
