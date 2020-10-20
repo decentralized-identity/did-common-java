@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@master
         with: RELEASE_BRANCH
-          ref: release-0.2.x
+          ref: 'release-0.2.x'
       - name: Run maven release action
         uses: danubetech/github-action-maven-release@master
         with:
