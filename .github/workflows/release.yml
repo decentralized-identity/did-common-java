@@ -8,10 +8,10 @@ on:
       - '.github/workflows/release.yml'
 
 env:
-  RELEASE_VERSION: 0.2.0
-  DEVELOPMENT_VERSION: 0.3-SNAPSHOT
-  TAG: v0.2.0
-  RELEASE_BRANCH: release-0.2.x
+  RELEASE_VERSION:
+  DEVELOPMENT_VERSION:
+  TAG:
+  RELEASE_BRANCH:
 
 jobs:
   build:
