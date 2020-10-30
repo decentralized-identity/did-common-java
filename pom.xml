@@ -6,7 +6,7 @@
 	<groupId>decentralized-identity</groupId>
 	<artifactId>did-common-java</artifactId>
 	<packaging>jar</packaging>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.3-SNAPSHOT</version>
 	<name>did-common-java</name>
 
 	<scm>
