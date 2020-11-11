@@ -18,10 +18,17 @@ Build:
 
 Dependency:
 
+	<repositories>
+		<repository>
+			<id>danubetech-maven-public</id>
+			<url>https://repo.danubetech.com/repository/maven-public/</url>
+		</repository>
+	</repositories>
+
 	<dependency>
-        <groupId>decentralized-identity</groupId>
-        <artifactId>did-common-java</artifactId>
-        <version>0.2-SNAPSHOT</version>
+		<groupId>decentralized-identity</groupId>
+		<artifactId>did-common-java</artifactId>
+		<version>0.2.0</version>
 	</dependency>
 
 ## Example
