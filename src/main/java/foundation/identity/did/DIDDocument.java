@@ -136,14 +136,17 @@ public class DIDDocument extends JsonLDObject {
 	 */
 
 	public List<VerificationMethod> getVerificationMethods() {
-		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((Map<String, Object>) x)).collect(Collectors.toList());
+		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
+		return jsonArray == null ? null : jsonArray.stream().map(x -> new VerificationMethod((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
 	public List<Authentication> getAuthentications() {
-		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION).stream().map(x -> new Authentication((Map<String, Object>) x)).collect(Collectors.toList());
+		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION);
+		return jsonArray == null ? null : jsonArray.stream().map(x -> new Authentication((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
 	public List<Service> getServices() {
-		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE).stream().map(x -> new Service((Map<String, Object>) x)).collect(Collectors.toList());
+		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE);
+		return jsonArray == null ? null : jsonArray.stream().map(x -> new Service((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 }

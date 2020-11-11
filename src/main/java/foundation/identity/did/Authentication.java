@@ -91,7 +91,8 @@ public class Authentication extends JsonLDObject {
 	 */
 
 	public List<VerificationMethod> getVerificationMethods() {
-		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD).stream().map(x -> new VerificationMethod((Map<String, Object>) x)).collect(Collectors.toList());
+		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
+		return jsonArray == null ? null : jsonArray.stream().map(x -> new VerificationMethod((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
 	public URI URI() {
