@@ -88,9 +88,9 @@ public class PublicKey extends JsonLDObject {
 		return new Builder(new PublicKey());
 	}
 
-	/*
-	 * Reading the JSON-LD object
-	 */
+	public static PublicKey fromJsonObject(Map<String, Object> jsonObject) {
+		return new PublicKey(jsonObject);
+	}
 
 	public static PublicKey fromJson(Reader reader) {
 		return new PublicKey(readJson(reader));
