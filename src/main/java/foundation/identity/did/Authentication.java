@@ -92,10 +92,10 @@ public class Authentication extends JsonLDObject {
 
 	public List<VerificationMethod> getVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
-		return jsonArray == null ? null : jsonArray.stream().map(x -> new VerificationMethod((Map<String, Object>) x)).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(x -> VerificationMethod.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
-	public URI URI() {
+	public URI getVerificationMethodURI() {
 		return JsonLDUtils.stringToUri(JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD));
 	}
 }
