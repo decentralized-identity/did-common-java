@@ -85,17 +85,4 @@ public class CapabilityDelegation extends VerificationRelationship {
 	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
 		JsonLDObject.removeFromJsonLdObject(CapabilityDelegation.class, jsonLdObject);
 	}
-
-	/*
-	 * Getters
-	 */
-
-	public List<VerificationMethod> getVerificationMethods() {
-		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
-		return jsonArray == null ? null : jsonArray.stream().map(x -> VerificationMethod.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
-	}
-
-	public URI getVerificationMethodURI() {
-		return JsonLDUtils.stringToUri(JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD));
-	}
 }

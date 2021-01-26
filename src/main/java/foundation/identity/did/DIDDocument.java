@@ -138,36 +138,36 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<VerificationMethod> getVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this)).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(x -> VerificationMethod.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
 	public List<Authentication> getAuthentications() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this)).map(x -> Authentication.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> Authentication.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<AssertionMethod> getAssertionMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_ASSERTIONMETHOD);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this)).map(x -> AssertionMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> AssertionMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<KeyAgreement> getKeyAgreements() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_KEYAGREEMENT);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this)).map(x -> KeyAgreement.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> KeyAgreement.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<CapabilityInvocation> getCapabilityInvocations() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CAPABILITYINVOCATION);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this)).map(x -> CapabilityInvocation.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> CapabilityInvocation.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<CapabilityDelegation> getCapabilityDelegations() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CAPABILITYDELEGATION);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this)).map(x -> CapabilityDelegation.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> CapabilityDelegation.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<Service> getServices() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this)).map(x -> Service.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(x -> Service.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 }
