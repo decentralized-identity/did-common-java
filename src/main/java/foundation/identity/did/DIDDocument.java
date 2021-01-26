@@ -50,7 +50,7 @@ public class DIDDocument extends JsonLDObject {
 		public Builder(DIDDocument jsonLDObject) {
 			super(jsonLDObject);
 			this.defaultContexts(true);
-			this.defaultTypes(true);
+			this.defaultTypes(false);
 		}
 
 		@Override
