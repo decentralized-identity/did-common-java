@@ -14,6 +14,10 @@ public class DIDKeywords {
     public static final String JSONLD_TERM_PUBLICKEYJWK = "publicKeyJwk";
     public static final String JSONLD_TERM_PUBLICKEY = "publicKey";
     public static final String JSONLD_TERM_AUTHENTICATION = "authentication";
+    public static final String JSONLD_TERM_ASSERTIONMETHOD = "assertionMethod";
+    public static final String JSONLD_TERM_KEYAGREEMENT = "keyAgreement";
+    public static final String JSONLD_TERM_CAPABILITYINVOCATION = "capabilityInvocation";
+    public static final String JSONLD_TERM_CAPABILITYDELEGATION = "capabilityDelegation";
     public static final String JSONLD_TERM_SERVICE = "service";
     public static final String JSONLD_TERM_SERVICEENDPOINT = "serviceEndpoint";
 }

@@ -13,19 +13,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Authentication extends VerificationRelationship {
+public class KeyAgreement extends VerificationRelationship {
 
 	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
 	public static final String[] DEFAULT_JSONLD_TYPES = { };
-	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_AUTHENTICATION;
+	public static final String DEFAULT_JSONLD_PREDICATE = DIDKeywords.JSONLD_TERM_KEYAGREEMENT;
 	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DIDContexts.DOCUMENT_LOADER;
 
 	@JsonCreator
-	public Authentication() {
+	public KeyAgreement() {
 		super();
 	}
 
-	protected Authentication(Map<String, Object> jsonObject) {
+	protected KeyAgreement(Map<String, Object> jsonObject) {
 		super(jsonObject);
 	}
 
@@ -37,19 +37,19 @@ public class Authentication extends VerificationRelationship {
 
 		private URI verificationMethod;
 
-		public Builder(Authentication jsonLDObject) {
+		public Builder(KeyAgreement jsonLDObject) {
 			super(jsonLDObject);
 		}
 
 		@Override
-		public Authentication build() {
+		public KeyAgreement build() {
 
 			super.build();
 
 			// add JSON-LD properties
 			if (this.verificationMethod != null) JsonLDUtils.jsonLdAdd(this.jsonLDObject, DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, JsonLDUtils.uriToString(this.verificationMethod));
 
-			return (Authentication) this.jsonLDObject;
+			return (KeyAgreement) this.jsonLDObject;
 		}
 
 		public B verificationMethod(URI verificationMethod) {
@@ -59,31 +59,31 @@ public class Authentication extends VerificationRelationship {
 	}
 
 	public static Builder<? extends Builder<?>> builder() {
-		return new Builder(new Authentication());
+		return new Builder(new KeyAgreement());
 	}
 
-	public static Authentication fromJsonObject(Map<String, Object> jsonObject) {
-		return new Authentication(jsonObject);
+	public static KeyAgreement fromJsonObject(Map<String, Object> jsonObject) {
+		return new KeyAgreement(jsonObject);
 	}
 
-	public static Authentication fromJson(Reader reader) {
-		return new Authentication(readJson(reader));
+	public static KeyAgreement fromJson(Reader reader) {
+		return new KeyAgreement(readJson(reader));
 	}
 
-	public static Authentication fromJson(String json) {
-		return new Authentication(readJson(json));
+	public static KeyAgreement fromJson(String json) {
+		return new KeyAgreement(readJson(json));
 	}
 
 	/*
 	 * Adding, getting, and removing the JSON-LD object
 	 */
 
-	public static Authentication getFromJsonLDObject(JsonLDObject jsonLdObject) {
-		return JsonLDObject.getFromJsonLDObject(Authentication.class, jsonLdObject);
+	public static KeyAgreement getFromJsonLDObject(JsonLDObject jsonLdObject) {
+		return JsonLDObject.getFromJsonLDObject(KeyAgreement.class, jsonLdObject);
 	}
 
 	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
-		JsonLDObject.removeFromJsonLdObject(Authentication.class, jsonLdObject);
+		JsonLDObject.removeFromJsonLdObject(KeyAgreement.class, jsonLdObject);
 	}
 
 	/*
