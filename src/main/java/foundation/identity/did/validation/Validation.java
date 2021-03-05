@@ -7,9 +7,9 @@ import java.net.URISyntaxException;
 
 public class Validation {
 
-    private static void validateTrue(boolean valid) throws IllegalStateException {
+    private static void validateTrue(boolean valid) {
 
-        if (! valid) throw new IllegalStateException();
+        if (! valid) throw new RuntimeException();
     }
 
     private static void validateUrl(URI uri) {
@@ -30,6 +30,7 @@ public class Validation {
             runnable.run();
         } catch (Exception ex) {
 
+            if (ex.getMessage() != null && ! ex.getMessage().isEmpty()) message = message + " (" + ex.getMessage().trim() + ")";
             throw new IllegalStateException(message);
         }
     }
