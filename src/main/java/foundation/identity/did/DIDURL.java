@@ -3,6 +3,7 @@ package foundation.identity.did;
 import foundation.identity.did.parser.*;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -178,17 +179,28 @@ public class DIDURL {
 	 * Helper methods
 	 */
 
-	public JsonObject toJsonObject() {
+	public JsonObject toJsonObject(boolean addParseTree) {
 
-		return Json.createObjectBuilder()
-				.add("did", this.getDid() == null ? JsonValue.NULL : this.getDid().toJsonObject())
+		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+
+		jsonObjectBuilder = jsonObjectBuilder
+				.add("did", this.getDid() == null ? JsonValue.NULL : this.getDid().toJsonObject(addParseTree))
 				.add("parameters", this.getParameters() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParameters())).build())
 				.add("path", this.getPath() == null ? JsonValue.NULL : Json.createValue(this.getPath()))
 				.add("query", this.getQuery() == null ? JsonValue.NULL : Json.createValue(this.getQuery()))
-				.add("fragment", this.getFragment() == null ? JsonValue.NULL : Json.createValue(this.getFragment()))
-				.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
-				.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build())
-				.build();
+				.add("fragment", this.getFragment() == null ? JsonValue.NULL : Json.createValue(this.getFragment()));
+
+		if (addParseTree) {
+			jsonObjectBuilder = jsonObjectBuilder
+					.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
+					.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build());
+		}
+
+		return jsonObjectBuilder.build();
+	}
+
+	public JsonObject toJsonObject() {
+		return this.toJsonObject(false);
 	}
 
 	/*
@@ -281,6 +293,6 @@ public class DIDURL {
 	@Override
 	public String toString() {
 
-		return this.didUrlString.toString();
+		return this.didUrlString;
 	}
 }

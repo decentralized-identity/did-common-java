@@ -3,6 +3,7 @@ package foundation.identity.did;
 import foundation.identity.did.parser.*;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
 
 import java.net.URI;
@@ -174,14 +175,25 @@ public class DID {
 	 * Helper methods
 	 */
 
-	public JsonObject toJsonObject() {
+	public JsonObject toJsonObject(boolean addParseTree) {
 
-		return Json.createObjectBuilder()
+		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+
+		jsonObjectBuilder = jsonObjectBuilder
 				.add("method", this.getMethod() == null ? JsonValue.NULL : Json.createValue(this.getMethod()))
-				.add("methodSpecificId", this.getMethodSpecificId() == null ? JsonValue.NULL : Json.createValue(this.getMethodSpecificId()))
-				.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
-				.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build())
-				.build();
+				.add("methodSpecificId", this.getMethodSpecificId() == null ? JsonValue.NULL : Json.createValue(this.getMethodSpecificId()));
+
+		if (addParseTree) {
+			jsonObjectBuilder = jsonObjectBuilder
+					.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
+					.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build());
+		}
+
+		return jsonObjectBuilder.build();
+	}
+
+	public JsonObject toJsonObject() {
+		return toJsonObject(false);
 	}
 
 	/*
@@ -250,6 +262,6 @@ public class DID {
 	@Override
 	public String toString() {
 
-		return this.didString.toString();
+		return this.didString;
 	}
 }
