@@ -74,6 +74,12 @@ Example DID document:
 
 ## About
 
-<img align="left" src="https://raw.githubusercontent.com/decentralized-identity/universal-resolver/master/docs/logo-dif.png" width="115">
+<img align="left" src="https://raw.githubusercontent.com/decentralized-identity/did-common-java/master/docs/logo-dif.png" width="115">
 
 Decentralized Identity Foundation - https://identity.foundation/
+
+<br clear="left" />
+
+<img align="left" src="https://raw.githubusercontent.com/decentralized-identity/did-common-java/master/docs/logo-ngi-essiflab.png" width="115">
+
+Supported by [ESSIF-Lab](https://essif-lab.eu/), which is made possible with financial support from the European Commission's [Next Generation Internet](https://ngi.eu/) programme.
