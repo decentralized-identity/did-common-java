@@ -196,6 +196,25 @@ public class DID {
 		return toJsonObject(false);
 	}
 
+	public Map<String, Object> toMap(boolean addParseTree) {
+
+		Map<String, Object> map = new HashMap<> ();
+
+		map.put("method", this.getMethod() == null ? null : this.getMethod());
+		map.put("methodSpecificId", this.getMethodSpecificId() == null ? null : this.getMethodSpecificId());
+
+		if (addParseTree) {
+			map.put("parseTree", this.getParseTree() == null ? null : this.getParseTree());
+			map.put("parseRuleCount", this.getParseRuleCount() == null ? null : new HashMap<String, Object>(this.getParseRuleCount()));
+		}
+
+		return map;
+	}
+
+	public Map<String, Object> toMap() {
+		return toMap(false);
+	}
+
 	/*
 	 * Getters
 	 */

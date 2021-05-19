@@ -203,6 +203,28 @@ public class DIDURL {
 		return this.toJsonObject(false);
 	}
 
+	public Map<String, Object> toMap(boolean addParseTree) {
+
+		Map<String, Object> map = new HashMap<> ();
+
+		map.put("did", this.getDid() == null ? null : this.getDid().toMap(addParseTree));
+		map.put("parameters", this.getParameters() == null ? null : new HashMap<String, Object>(this.getParameters()));
+		map.put("path", this.getPath() == null ? null : this.getPath());
+		map.put("query", this.getQuery() == null ? null : this.getQuery());
+		map.put("fragment", this.getFragment() == null ? null : this.getFragment());
+
+		if (addParseTree) {
+			map.put("parseTree", this.getParseTree() == null ? null : this.getParseTree());
+			map.put("parseRuleCount", this.getParseRuleCount() == null ? null : new HashMap<String, Object>(this.getParseRuleCount()));
+		}
+
+		return map;
+	}
+
+	public Map<String, Object> toMap() {
+		return toMap(false);
+	}
+
 	/*
 	 * Getters
 	 */
