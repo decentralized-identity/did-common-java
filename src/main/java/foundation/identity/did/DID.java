@@ -180,6 +180,7 @@ public class DID {
 		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
 
 		jsonObjectBuilder = jsonObjectBuilder
+				.add("didString", this.getDidString() == null ? JsonValue.NULL : Json.createValue(this.getDidString()))
 				.add("method", this.getMethod() == null ? JsonValue.NULL : Json.createValue(this.getMethod()))
 				.add("methodSpecificId", this.getMethodSpecificId() == null ? JsonValue.NULL : Json.createValue(this.getMethodSpecificId()));
 

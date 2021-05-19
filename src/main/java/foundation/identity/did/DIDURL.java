@@ -184,6 +184,7 @@ public class DIDURL {
 		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
 
 		jsonObjectBuilder = jsonObjectBuilder
+				.add("didUrlString", this.getDidUrlString() == null ? JsonValue.NULL : Json.createValue(this.getDidUrlString()))
 				.add("did", this.getDid() == null ? JsonValue.NULL : this.getDid().toJsonObject(addParseTree))
 				.add("parameters", this.getParameters() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParameters())).build())
 				.add("path", this.getPath() == null ? JsonValue.NULL : Json.createValue(this.getPath()))
@@ -207,6 +208,7 @@ public class DIDURL {
 
 		Map<String, Object> map = new HashMap<> ();
 
+		map.put("didUrlString", this.getDidUrlString() == null ? null : this.getDidUrlString());
 		map.put("did", this.getDid() == null ? null : this.getDid().toMap(addParseTree));
 		map.put("parameters", this.getParameters() == null ? null : new HashMap<String, Object>(this.getParameters()));
 		map.put("path", this.getPath() == null ? null : this.getPath());
