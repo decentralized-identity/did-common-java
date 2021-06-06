@@ -1,6 +1,9 @@
 package foundation.identity.did;
 
-import foundation.identity.did.parser.*;
+import apg.Ast;
+import apg.Parser;
+import foundation.identity.did.parser.DIDGrammar;
+import foundation.identity.did.parser.ParserException;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
@@ -8,9 +11,10 @@ import jakarta.json.JsonValue;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,168 +24,149 @@ public class DIDURL {
 	public static final String URI_SCHEME = "did";
 
 	private String didUrlString;
-	private transient DID did;
-	private transient String path;
-	private transient String query;
-	private transient String fragment;
-	private transient Map<String, String> parameters = new HashMap<String, String> ();
-	private transient String parseTree;
-	private transient Map<String, Integer> parseRuleCount;
+	private DID did;
+	private String path;
+	private String query;
+	private String fragment;
+	private Map<String, String> parameters = new HashMap<String, String> ();
+	private String parseTree;
 
-	private DIDURL() {
-
-	}
-
-	private DIDURL(String didUrlString, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+	DIDURL(String didUrlString, DID did, String path, String query, Map<String, String> parameters, String fragment, String parseTree) {
 
 		this.didUrlString = didUrlString;
-
-		this.parse((Rule_did_url) Parser.parse("did-url", this.didUrlString), keepParseTree);
-	}
-
-	private void parse(Rule_did_url rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		DIDVisitor visitor = new DIDVisitor(keepParseTree);
-		rule.accept(visitor);
-
-		if (keepParseTree) {
-
-			this.parseTree = visitor.parseTree.toString();
-			this.parseRuleCount = visitor.parseRuleCount;
-		}
+		this.did = did;
+		this.path = path;
+		this.query = query;
+		this.parameters = parameters;
+		this.fragment = fragment;
+		this.parseTree = parseTree;
 	}
 
 	/*
 	 * Factory methods
 	 */
 
-	public static DIDURL fromString(String string) throws IllegalArgumentException, ParserException {
+	private static DIDURL parse(String didUrlString, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
-		return new DIDURL(string, false);
+		try {
+
+			apg.Parser parser = new apg.Parser(DIDGrammar.getInstance());
+			parser.setInputString(didUrlString);
+			parser.setStartRule(DIDGrammar.RuleNames.DID_URL.ruleID());
+
+			Ast ast = parser.enableAst(true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.DID.ruleID(), true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.METHOD_NAME.ruleID(), true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.METHOD_SPECIFIC_ID.ruleID(), true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.PATH_ABEMPTY.ruleID(), true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.QUERY.ruleID(), true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.FRAGMENT.ruleID(), true);
+
+			final String[] parsedStrings = new String[6];
+
+			ast.setRuleCallback(DIDGrammar.RuleNames.METHOD_NAME.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[0] = didUrlString.substring(offset, offset+length);
+				}
+			});
+			ast.setRuleCallback(DIDGrammar.RuleNames.METHOD_SPECIFIC_ID.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[1] = didUrlString.substring(offset, offset+length);
+				}
+			});
+			ast.setRuleCallback(DIDGrammar.RuleNames.DID.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[2] = didUrlString.substring(offset, offset+length);
+				}
+			});
+			ast.setRuleCallback(DIDGrammar.RuleNames.PATH_ABEMPTY.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[3] = didUrlString.substring(offset, offset+length);
+				}
+			});
+			ast.setRuleCallback(DIDGrammar.RuleNames.QUERY.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[4] = didUrlString.substring(offset, offset+length);
+				}
+			});
+			ast.setRuleCallback(DIDGrammar.RuleNames.FRAGMENT.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[5] = didUrlString.substring(offset, offset+length);
+				}
+			});
+
+			Parser.Result result = parser.parse();
+			if (!result.success()) throw new ParserException("Cannot parse DID URL: " + didUrlString);
+
+			ast.translateAst();
+			for (int i=0; i<parsedStrings.length; i++) if (parsedStrings[i] != null && parsedStrings[i].isEmpty()) parsedStrings[i] = null;
+
+			String parseTree = null;
+			if (keepParseTree) {
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ast.display(new PrintStream(byteArrayOutputStream));
+				parseTree = new String(byteArrayOutputStream.toByteArray());
+			}
+
+			String methodName = parsedStrings[0] == null ? null : parsedStrings[0];
+			String methodSpecificId = parsedStrings[1] == null ? null : parsedStrings[1];
+			String didString = parsedStrings[2] == null ? null : parsedStrings[2];
+			String path = parsedStrings[3] == null ? null : parsedStrings[3];
+			String query = parsedStrings[4] == null ? null : parsedStrings[4];
+			String fragment = parsedStrings[5] == null ? null : parsedStrings[5];
+
+			DID did = didString == null ? null : new DID(didString, methodName, methodSpecificId, null);
+			Map<String, String> parameters = query == null ? null : URLEncodedUtils.parse(query, StandardCharsets.UTF_8).stream().collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
+
+			return new DIDURL(didUrlString, did, path, query, parameters, fragment, parseTree);
+		} catch (ParserException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			throw new ParserException("Error while parsing DID URL " + didUrlString + ": " + ex.getMessage(), ex);
+		}
+	}
+
+	public static DIDURL fromString(String string) throws IllegalArgumentException, ParserException {
+		return parse(string, false);
 	}
 
 	public static DIDURL fromString(String string, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		return new DIDURL(string, keepParseTree);
+		return parse(string, keepParseTree);
 	}
 
 	public static DIDURL fromUri(URI uri) throws IllegalArgumentException, ParserException {
-
 		return fromString(uri.toString());
 	}
 
 	public static DIDURL fromUri(URI uri, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
 		return fromString(uri.toString(), keepParseTree);
-	}
-
-	/*
-	 * Helper classes
-	 */
-
-	private class DIDVisitor extends Displayer {
-
-		private boolean keepParseTree;
-		private int indent;
-		private StringBuffer parseTree;
-		private Map<String, Integer> parseRuleCount;
-
-		private DIDVisitor(boolean keepParseTree) {
-
-			this.keepParseTree = keepParseTree;
-
-			if (keepParseTree) {
-
-				this.indent = 0;
-				this.parseTree = new StringBuffer();
-				this.parseRuleCount = new HashMap<String, Integer> ();
-			}
-		}
-
-		public Object visit(Rule_did rule) {
-
-			try {
-
-				DIDURL.this.did = DID.fromRule(rule, this.keepParseTree);
-			} catch (ParserException ex) {
-
-				throw new RuntimeException(ex.getMessage(), ex);
-			}
-
-			return visitRules(rule.rules);
-		}
-
-		public Object visit(Rule_path_abempty rule) {
-
-			DIDURL.this.path = rule.spelling;
-			return visitRules(rule.rules);
-		}
-
-		public Object visit(Rule_query rule) {
-
-			DIDURL.this.query = rule.spelling;
-			DIDURL.this.parameters = URLEncodedUtils.parse(rule.spelling, StandardCharsets.UTF_8).stream().collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
-			return visitRules(rule.rules);
-		}
-
-		public Object visit(Rule_fragment rule) {
-
-			DIDURL.this.fragment = rule.spelling;
-			return visitRules(rule.rules);
-		}
-
-		@Override
-		public Object visit(Terminal_StringValue value) {
-
-			return null;
-		}
-
-		@Override
-		public Object visit(Terminal_NumericValue value) {
-
-			return null;
-		}
-
-		@Override
-		public Object visitRules(ArrayList<Rule> rules) {
-
-			for (Rule rule : rules) {
-
-				if (this.keepParseTree) {
-
-					String ruleName = rule.getClass().getSimpleName().substring(rule.getClass().getSimpleName().indexOf("_") + 1);
-
-					if (! (rule instanceof Terminal_NumericValue || rule instanceof Terminal_StringValue)) {
-
-						if (parseTree.length() > 0) parseTree.append(System.lineSeparator());
-						for (int i=0; i<indent; i++) parseTree.append("  ");
-						parseTree.append(ruleName);
-						parseTree.append(": " + "\"" + rule.spelling + "\"");
-					}
-
-					Integer ruleCount = parseRuleCount.get(ruleName);
-					ruleCount = ruleCount == null ? Integer.valueOf(1) : Integer.valueOf(ruleCount.intValue() + 1);
-					parseRuleCount.put(ruleName, ruleCount);
-
-					indent++;
-					rule.accept(this);
-					indent--;
-				} else {
-
-					rule.accept(this);
-				}
-			}
-			return null;
-		}
 	}
 
 	/*
 	 * Helper methods
 	 */
 
+	public URI toUri() {
+		return URI.create(this.getDidUrlString());
+	}
+
+	public boolean isBareDid() {
+		return this.getDidUrlString().equals(this.getDid().getDidString());
+	}
+
+	public URI getUriWithoutDid() {
+		if (isBareDid()) return null;
+		return URI.create(this.getDidUrlString().substring(this.getDid().getDidString().length()));
+	}
+
+	public URI getUriWithoutFragment() {
+		if (this.getFragment() == null) return this.toUri();
+		return URI.create(this.getDidUrlString().substring(0, this.getDidUrlString().indexOf('#')));
+	}
+
 	public JsonObject toJsonObject(boolean addParseTree) {
 
-		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
+		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder(this.toMap(addParseTree));
 
 		jsonObjectBuilder = jsonObjectBuilder
 				.add("didUrlString", this.getDidUrlString() == null ? JsonValue.NULL : Json.createValue(this.getDidUrlString()))
@@ -193,8 +178,7 @@ public class DIDURL {
 
 		if (addParseTree) {
 			jsonObjectBuilder = jsonObjectBuilder
-					.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
-					.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build());
+					.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()));
 		}
 
 		return jsonObjectBuilder.build();
@@ -217,7 +201,6 @@ public class DIDURL {
 
 		if (addParseTree) {
 			map.put("parseTree", this.getParseTree() == null ? null : this.getParseTree());
-			map.put("parseRuleCount", this.getParseRuleCount() == null ? null : new HashMap<String, Object>(this.getParseRuleCount()));
 		}
 
 		return map;
@@ -285,14 +268,6 @@ public class DIDURL {
 
 	public final void setParseTree(String parseTree) {
 		this.parseTree = parseTree;
-	}
-
-	public final Map<String, Integer> getParseRuleCount() {
-		return this.parseRuleCount;
-	}
-
-	public final void setParseRuleCount(Map<String, Integer> parseRuleCount) {
-		this.parseRuleCount = parseRuleCount;
 	}
 
 	/*

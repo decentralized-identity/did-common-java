@@ -1,13 +1,17 @@
 package foundation.identity.did;
 
-import foundation.identity.did.parser.*;
+import apg.Ast;
+import apg.Parser;
+import foundation.identity.did.parser.DIDGrammar;
+import foundation.identity.did.parser.ParserException;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,164 +20,94 @@ public class DID {
 	public static final String URI_SCHEME = "did";
 
 	private String didString;
-	private transient String method;
-	private transient String methodSpecificId;
-	private transient String parseTree;
-	private transient Map<String, Integer> parseRuleCount;
+	private String methodName;
+	private String methodSpecificId;
+	private String parseTree;
 
-	private DID() {
-
-	}
-
-	private DID(String didString, boolean keepParseTree) throws IllegalArgumentException, ParserException {
+	DID(String didString, String methodName, String methodSpecificId, String parseTree) {
 
 		this.didString = didString;
-
-		this.parse((Rule_did) Parser.parse("did", this.didString), keepParseTree);
-	}
-
-	private DID(Rule_did rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		this.didString = rule.spelling;
-
-		this.parse(rule, keepParseTree);
-	}
-
-	private void parse(Rule_did rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		DIDVisitor visitor = new DIDVisitor(keepParseTree);
-		rule.accept(visitor);
-
-		if (keepParseTree) {
-
-			this.parseTree = visitor.parseTree.toString();
-			this.parseRuleCount = visitor.parseRuleCount;
-		}
+		this.methodName = methodName;
+		this.methodSpecificId = methodSpecificId;
+		this.parseTree = parseTree;
 	}
 
 	/*
 	 * Factory methods
 	 */
 
-	public static DID fromString(String string) throws IllegalArgumentException, ParserException {
+	private static DID parse(String didString, boolean keepParseTree) throws IllegalArgumentException, ParserException {
 
-		return new DID(string, false);
+		try {
+
+			apg.Parser parser = new apg.Parser(DIDGrammar.getInstance());
+			parser.setInputString(didString);
+			parser.setStartRule(DIDGrammar.RuleNames.DID.ruleID());
+
+			Ast ast = parser.enableAst(true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.METHOD_NAME.ruleID(), true);
+			ast.enableRuleNode(DIDGrammar.RuleNames.METHOD_SPECIFIC_ID.ruleID(), true);
+
+			final String[] parsedStrings = new String[2];
+
+			ast.setRuleCallback(DIDGrammar.RuleNames.METHOD_NAME.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[0] = didString.substring(offset, offset+length);
+				}
+			});
+			ast.setRuleCallback(DIDGrammar.RuleNames.METHOD_SPECIFIC_ID.ruleID(), new Ast.AstCallback(ast) {
+				public void postBranch(int offset, int length) {
+					parsedStrings[1] = didString.substring(offset, offset+length);
+				}
+			});
+
+			Parser.Result result = parser.parse();
+			if (!result.success()) throw new ParserException("Cannot parse DID: " + didString);
+
+			ast.translateAst();
+			for (int i=0; i<parsedStrings.length; i++) if (parsedStrings[i] != null && parsedStrings[i].isEmpty()) parsedStrings[i] = null;
+
+			String parseTree = null;
+			if (keepParseTree) {
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				ast.display(new PrintStream(byteArrayOutputStream));
+				parseTree = new String(byteArrayOutputStream.toByteArray());
+			}
+
+			String methodName = parsedStrings[0] == null ? null : parsedStrings[0];
+			String methodSpecificId = parsedStrings[1] == null ? null : parsedStrings[1];
+
+			return new DID(didString, methodName, methodSpecificId, parseTree);
+		} catch (ParserException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			throw new ParserException("Error while parsing DID " + didString + ": " + ex.getMessage(), ex);
+		}
+	}
+
+	public static DID fromString(String string) throws IllegalArgumentException, ParserException {
+		return parse(string, false);
 	}
 
 	public static DID fromString(String string, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		return new DID(string, keepParseTree);
+		return parse(string, keepParseTree);
 	}
 
 	public static DID fromUri(URI uri) throws IllegalArgumentException, ParserException {
-
 		return fromString(uri.toString());
 	}
 
 	public static DID fromUri(URI uri, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
 		return fromString(uri.toString(), keepParseTree);
-	}
-
-	static DID fromRule(Rule_did rule) throws IllegalArgumentException, ParserException {
-
-		return new DID(rule, false);
-	}
-
-	static DID fromRule(Rule_did rule, boolean keepParseTree) throws IllegalArgumentException, ParserException {
-
-		return new DID(rule, keepParseTree);
-	}
-
-	/*
-	 * Helper classes
-	 */
-
-	private class DIDVisitor extends Displayer {
-
-		private boolean keepParseTree;
-		private int indent;
-		private StringBuffer parseTree;
-		private Map<String, Integer> parseRuleCount;
-
-		private DIDVisitor(boolean keepParseTree) {
-
-			this.keepParseTree = keepParseTree;
-
-			if (keepParseTree) {
-
-				this.indent = 0;
-				this.parseTree = new StringBuffer();
-				this.parseRuleCount = new HashMap<String, Integer> ();
-			}
-		}
-
-		public Object visit(Rule_did rule) {
-
-			DID.this.didString = rule.spelling;
-			return visitRules(rule.rules);
-		}
-
-		public Object visit(Rule_method_name rule) {
-
-			DID.this.method = rule.spelling;
-			return visitRules(rule.rules);
-		}
-
-		public Object visit(Rule_method_specific_id rule) {
-
-			DID.this.methodSpecificId = rule.spelling;
-			return visitRules(rule.rules);
-		}
-
-		@Override
-		public Object visit(Terminal_StringValue value) {
-
-			return null;
-		}
-
-		@Override
-		public Object visit(Terminal_NumericValue value) {
-
-			return null;
-		}
-
-		@Override
-		public Object visitRules(ArrayList<Rule> rules) {
-
-			for (Rule rule : rules) {
-
-				if (this.keepParseTree) {
-
-					String ruleName = rule.getClass().getSimpleName().substring(rule.getClass().getSimpleName().indexOf("_") + 1);
-
-					if (! (rule instanceof Terminal_NumericValue || rule instanceof Terminal_StringValue)) {
-
-						if (parseTree.length() > 0) parseTree.append(System.lineSeparator());
-						for (int i=0; i<indent; i++) parseTree.append("  ");
-						parseTree.append(ruleName);
-						parseTree.append(": " + "\"" + rule.spelling + "\"");
-					}
-
-					Integer ruleCount = parseRuleCount.get(ruleName);
-					ruleCount = ruleCount == null ? Integer.valueOf(1) : Integer.valueOf(ruleCount.intValue() + 1);
-					parseRuleCount.put(ruleName, ruleCount);
-
-					indent++;
-					rule.accept(this);
-					indent--;
-				} else {
-
-					rule.accept(this);
-				}
-			}
-			return null;
-		}
 	}
 
 	/*
 	 * Helper methods
 	 */
+
+	public URI toUri() {
+		return URI.create(this.getDidString());
+	}
 
 	public JsonObject toJsonObject(boolean addParseTree) {
 
@@ -181,13 +115,12 @@ public class DID {
 
 		jsonObjectBuilder = jsonObjectBuilder
 				.add("didString", this.getDidString() == null ? JsonValue.NULL : Json.createValue(this.getDidString()))
-				.add("method", this.getMethod() == null ? JsonValue.NULL : Json.createValue(this.getMethod()))
+				.add("method", this.getMethodName() == null ? JsonValue.NULL : Json.createValue(this.getMethodName()))
 				.add("methodSpecificId", this.getMethodSpecificId() == null ? JsonValue.NULL : Json.createValue(this.getMethodSpecificId()));
 
 		if (addParseTree) {
 			jsonObjectBuilder = jsonObjectBuilder
-					.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()))
-					.add("parseRuleCount", this.getParseRuleCount() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParseRuleCount())).build());
+					.add("parseTree", this.getParseTree() == null ? JsonValue.NULL : Json.createValue(this.getParseTree()));
 		}
 
 		return jsonObjectBuilder.build();
@@ -201,12 +134,11 @@ public class DID {
 
 		Map<String, Object> map = new HashMap<> ();
 
-		map.put("method", this.getMethod() == null ? null : this.getMethod());
+		map.put("method", this.getMethodName() == null ? null : this.getMethodName());
 		map.put("methodSpecificId", this.getMethodSpecificId() == null ? null : this.getMethodSpecificId());
 
 		if (addParseTree) {
 			map.put("parseTree", this.getParseTree() == null ? null : this.getParseTree());
-			map.put("parseRuleCount", this.getParseRuleCount() == null ? null : new HashMap<String, Object>(this.getParseRuleCount()));
 		}
 
 		return map;
@@ -228,12 +160,12 @@ public class DID {
 		this.didString = didString;
 	}
 
-	public final String getMethod() {
-		return this.method;
+	public final String getMethodName() {
+		return this.methodName;
 	}
 
-	public final void setMethod(String method) {
-		this.method = method;
+	public final void setMethodName(String methodName) {
+		this.methodName = methodName;
 	}
 
 	public final String getMethodSpecificId() {
@@ -250,14 +182,6 @@ public class DID {
 
 	public final void setParseTree(String parseTree) {
 		this.parseTree = parseTree;
-	}
-
-	public final Map<String, Integer> getParseRuleCount() {
-		return this.parseRuleCount;
-	}
-
-	public final void setParseRuleCount(Map<String, Integer> parseRuleCount) {
-		this.parseRuleCount = parseRuleCount;
 	}
 
 	/*
