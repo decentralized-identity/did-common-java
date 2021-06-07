@@ -13,7 +13,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DIDDocument extends JsonLDObject {
@@ -23,9 +22,11 @@ public class DIDDocument extends JsonLDObject {
 	public static final String DEFAULT_JSONLD_PREDICATE = null;
 	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DIDContexts.DOCUMENT_LOADER;
 
-	public static final String MIME_TYPE_JSON_LD = "application/did+ld+json";
-	public static final String MIME_TYPE_JSON = "application/did+json";
-	public static final String MIME_TYPE_CBOR = "application/did+cbor";
+	public static final String MEDIA_TYPE_JSON_LD = "application/did+ld+json";
+	public static final String MEDIA_TYPE_JSON = "application/did+json";
+	public static final String MEDIA_TYPE_CBOR = "application/did+cbor";
+
+	public static final String[] MEDIA_TYPES = new String[] { MEDIA_TYPE_JSON_LD, MEDIA_TYPE_JSON, MEDIA_TYPE_JSON_LD };
 
 	@JsonCreator
 	public DIDDocument() {
@@ -43,8 +44,11 @@ public class DIDDocument extends JsonLDObject {
 	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
 		private List<VerificationMethod> verificationMethods;
-		private List<PublicKey> publicKeys;
-		private List<Authentication> authentications;
+		private List<VerificationMethod> authenticationVerificationMethods;
+		private List<VerificationMethod> assertionMethodVerificationMethods;
+		private List<VerificationMethod> keyAgreementVerificationMethods;
+		private List<VerificationMethod> capabilityInvocationVerificationMethods;
+		private List<VerificationMethod> capabilityDelegationVerificationMethods;
 		private List<Service> services;
 
 		public Builder(DIDDocument jsonLDObject) {
@@ -61,12 +65,15 @@ public class DIDDocument extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.verificationMethods != null) for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLDObject);
-			if (this.publicKeys != null) for (PublicKey publicKey : this.publicKeys) publicKey.addToJsonLDObjectAsJsonArray(this.jsonLDObject);
-			if (this.authentications != null) for (Authentication authentication : this.authentications) authentication.addToJsonLDObjectAsJsonArray(this.jsonLDObject);
-			if (this.services != null) for (Service service : this.services) service.addToJsonLDObjectAsJsonArray(this.jsonLDObject);
+			if (this.verificationMethods != null) for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
+			if (this.authenticationVerificationMethods != null) for (VerificationMethod authenticationVerificationMethod : this.authenticationVerificationMethods) authenticationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.AUTHENTICATION);
+			if (this.assertionMethodVerificationMethods != null) for (VerificationMethod assertionMethodVerificationMethod : this.assertionMethodVerificationMethods) assertionMethodVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.ASSERTIONMETHOD);
+			if (this.keyAgreementVerificationMethods != null) for (VerificationMethod keyAgreementVerificationMethod : this.keyAgreementVerificationMethods) keyAgreementVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.KEYAGREEMENT);
+			if (this.capabilityInvocationVerificationMethods != null) for (VerificationMethod capabilityInvocationVerificationMethod : this.capabilityInvocationVerificationMethods) capabilityInvocationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYINVOCATION);
+			if (this.capabilityDelegationVerificationMethods != null) for (VerificationMethod capabilityDelegationVerificationMethod : this.capabilityDelegationVerificationMethods) capabilityDelegationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYDELEGATION);
+			if (this.services != null) for (Service service : this.services) service.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
 
-			return (DIDDocument) this.jsonLDObject;
+			return (DIDDocument) this.jsonLdObject;
 		}
 
 		public B verificationMethods(List<VerificationMethod> verificationMethods) {
@@ -78,22 +85,49 @@ public class DIDDocument extends JsonLDObject {
 			return this.verificationMethods(verificationMethod == null ? null : Collections.singletonList(verificationMethod));
 		}
 
-		public B publicKeys(List<PublicKey> publicKeys) {
-			this.publicKeys = publicKeys;
+		public B authenticationVerificationMethods(List<VerificationMethod> authenticationVerificationMethods) {
+			this.authenticationVerificationMethods = authenticationVerificationMethods;
 			return (B) this;
 		}
 
-		public B publicKey(PublicKey publicKey) {
-			return this.publicKeys(publicKey == null ? null : Collections.singletonList(publicKey));
+		public B authenticationVerificationMethod(VerificationMethod authenticationVerificationMethod) {
+			return this.authenticationVerificationMethods(authenticationVerificationMethod == null ? null : Collections.singletonList(authenticationVerificationMethod));
 		}
 
-		public B authentications(List<Authentication> authentications) {
-			this.authentications = authentications;
+		public B assertionMethodVerificationMethods(List<VerificationMethod> assertionMethodVerificationMethods) {
+			this.assertionMethodVerificationMethods = assertionMethodVerificationMethods;
 			return (B) this;
 		}
 
-		public B authentication(Authentication authentication) {
-			return this.authentications(authentication == null ? null : Collections.singletonList(authentication));
+		public B assertionMethodVerificationMethod(VerificationMethod assertionMethodVerificationMethod) {
+			return this.assertionMethodVerificationMethods(assertionMethodVerificationMethod == null ? null : Collections.singletonList(assertionMethodVerificationMethod));
+		}
+
+		public B keyAgreementVerificationMethods(List<VerificationMethod> keyAgreementVerificationMethods) {
+			this.keyAgreementVerificationMethods = keyAgreementVerificationMethods;
+			return (B) this;
+		}
+
+		public B keyAgreementVerificationMethod(VerificationMethod keyAgreementVerificationMethod) {
+			return this.keyAgreementVerificationMethods(keyAgreementVerificationMethod == null ? null : Collections.singletonList(keyAgreementVerificationMethod));
+		}
+
+		public B capabilityInvocationVerificationMethods(List<VerificationMethod> capabilityInvocationVerificationMethods) {
+			this.capabilityInvocationVerificationMethods = capabilityInvocationVerificationMethods;
+			return (B) this;
+		}
+
+		public B capabilityInvocationVerificationMethod(VerificationMethod capabilityInvocationVerificationMethod) {
+			return this.capabilityInvocationVerificationMethods(capabilityInvocationVerificationMethod == null ? null : Collections.singletonList(capabilityInvocationVerificationMethod));
+		}
+
+		public B capabilityDelegationVerificationMethods(List<VerificationMethod> capabilityDelegationVerificationMethods) {
+			this.capabilityDelegationVerificationMethods = capabilityDelegationVerificationMethods;
+			return (B) this;
+		}
+
+		public B capabilityDelegationVerificationMethod(VerificationMethod capabilityDelegationVerificationMethod) {
+			return this.capabilityInvocationVerificationMethods(capabilityDelegationVerificationMethod == null ? null : Collections.singletonList(capabilityDelegationVerificationMethod));
 		}
 
 		public B services(List<Service> services) {
@@ -122,6 +156,10 @@ public class DIDDocument extends JsonLDObject {
 		return new DIDDocument(readJson(json));
 	}
 
+	public static DIDDocument fromMap(Map<String, Object> map) {
+		return new DIDDocument(map);
+	}
+
 	/*
 	 * Adding, getting, and removing the JSON-LD object
 	 */
@@ -135,6 +173,14 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	/*
+	 * Helper methods
+	 */
+
+	public Map<String, Object> toMap() {
+		return this.getJsonObject();
+	}
+
+	/*
 	 * Getters
 	 */
 
@@ -143,29 +189,29 @@ public class DIDDocument extends JsonLDObject {
 		return jsonArray == null ? null : jsonArray.stream().map(x -> VerificationMethod.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
-	public List<Authentication> getAuthentications() {
+	public List<VerificationMethod> getAuthenticationVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> Authentication.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
-	public List<AssertionMethod> getAssertionMethods() {
+	public List<VerificationMethod> getAssertionMethodVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_ASSERTIONMETHOD);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> AssertionMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
-	public List<KeyAgreement> getKeyAgreements() {
+	public List<VerificationMethod> getKeyAgreementVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_KEYAGREEMENT);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> KeyAgreement.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
-	public List<CapabilityInvocation> getCapabilityInvocations() {
+	public List<VerificationMethod> getCapabilityInvocationVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CAPABILITYINVOCATION);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> CapabilityInvocation.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
-	public List<CapabilityDelegation> getCapabilityDelegations() {
+	public List<VerificationMethod> getCapabilityDelegationVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CAPABILITYDELEGATION);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> CapabilityDelegation.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<Service> getServices() {
