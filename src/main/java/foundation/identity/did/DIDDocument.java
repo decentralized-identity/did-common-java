@@ -22,12 +22,6 @@ public class DIDDocument extends JsonLDObject {
 	public static final String DEFAULT_JSONLD_PREDICATE = null;
 	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DIDContexts.DOCUMENT_LOADER;
 
-	public static final String MEDIA_TYPE_JSON_LD = "application/did+ld+json";
-	public static final String MEDIA_TYPE_JSON = "application/did+json";
-	public static final String MEDIA_TYPE_CBOR = "application/did+cbor";
-
-	public static final String[] MEDIA_TYPES = new String[] { MEDIA_TYPE_JSON_LD, MEDIA_TYPE_JSON, MEDIA_TYPE_JSON_LD };
-
 	@JsonCreator
 	public DIDDocument() {
 		super();
