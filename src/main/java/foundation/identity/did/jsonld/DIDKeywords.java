@@ -11,8 +11,8 @@ public class DIDKeywords {
     public static final String JSONLD_TERM_PUBLICKEYBASE58 = "publicKeyBase58";
     public static final String JSONLD_TERM_PUBLICKEYHEX = "publicKeyHex";
     public static final String JSONLD_TERM_PUBLICKEYPEM = "publicKeyPem";
+    public static final String JSONLD_TERM_PUBLICKEYMULTIBASE = "publicKeyMultibase";
     public static final String JSONLD_TERM_PUBLICKEYJWK = "publicKeyJwk";
-    public static final String JSONLD_TERM_PUBLICKEY = "publicKey";
     public static final String JSONLD_TERM_AUTHENTICATION = "authentication";
     public static final String JSONLD_TERM_ASSERTIONMETHOD = "assertionMethod";
     public static final String JSONLD_TERM_KEYAGREEMENT = "keyAgreement";
