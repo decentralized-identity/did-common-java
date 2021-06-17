@@ -5,6 +5,7 @@ import com.upokecenter.cbor.CBORObject;
 import foundation.identity.did.representations.Representations;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RepresentationConsumerCBOR extends AbstractRepresentationConsumer implements RepresentationConsumer {
@@ -23,7 +24,7 @@ public class RepresentationConsumerCBOR extends AbstractRepresentationConsumer i
     @Override
     public RepresentationConsumer.Result consume(byte[] representation) throws IOException {
         CBORObject cborObject = CBORObject.DecodeFromBytes(representation);
-        Map<String, Object> map = (Map<String, Object>) cborObject.ToObject(Map.class);
+        Map<String, Object> map = (Map<String, Object>) cborObject.ToObject(LinkedHashMap.class);
         return this.detectRepresentationSpecificEntries(map);
     }
 }

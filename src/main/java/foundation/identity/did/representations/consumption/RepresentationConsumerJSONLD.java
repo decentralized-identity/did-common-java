@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import foundation.identity.did.representations.Representations;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RepresentationConsumerJSONLD extends AbstractRepresentationConsumer implements RepresentationConsumer {
@@ -21,7 +22,7 @@ public class RepresentationConsumerJSONLD extends AbstractRepresentationConsumer
 
     @Override
     public RepresentationConsumer.Result consume(byte[] representation) throws IOException {
-        Map<String, Object> map = objectMapper.readValue(representation, Map.class);
+        Map<String, Object> map = objectMapper.readValue(representation, LinkedHashMap.class);
         return this.detectRepresentationSpecificEntries(map);
     }
 }
