@@ -72,6 +72,10 @@ public class Service extends JsonLDObject {
 		return new Service(readJson(json));
 	}
 
+	public static Service fromMap(Map<String, Object> map) {
+		return new Service(map);
+	}
+
 	/*
 	 * Adding, getting, and removing the JSON-LD object
 	 */

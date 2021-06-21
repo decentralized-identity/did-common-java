@@ -107,6 +107,10 @@ public class VerificationMethod extends JsonLDObject {
 		return new VerificationMethod(readJson(json));
 	}
 
+	public static VerificationMethod fromMap(Map<String, Object> map) {
+		return new VerificationMethod(map);
+	}
+
 	/*
 	 * Adding, getting, and removing the JSON-LD object
 	 */
