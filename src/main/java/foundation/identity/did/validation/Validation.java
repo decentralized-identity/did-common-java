@@ -19,7 +19,7 @@ public class Validation {
             if (! uri.isAbsolute()) throw new URISyntaxException("Not absolute.", uri.toString());
         } catch (URISyntaxException ex) {
 
-            throw new RuntimeException(ex.getMessage());
+            throw new RuntimeException(ex.getMessage(), ex);
         }
     }
 
@@ -31,7 +31,7 @@ public class Validation {
         } catch (Exception ex) {
 
             if (ex.getMessage() != null && ! ex.getMessage().isEmpty()) message = message + " (" + ex.getMessage().trim() + ")";
-            throw new IllegalStateException(message);
+            throw new IllegalStateException(message, ex);
         }
     }
 
