@@ -166,7 +166,7 @@ public class DIDURL {
 
 	public JsonObject toJsonObject(boolean addParseTree) {
 
-		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder(this.toMap(addParseTree));
+		JsonObjectBuilder jsonObjectBuilder = Json.createObjectBuilder();
 
 		jsonObjectBuilder = jsonObjectBuilder
 				.add("didUrlString", this.getDidUrlString() == null ? JsonValue.NULL : Json.createValue(this.getDidUrlString()))

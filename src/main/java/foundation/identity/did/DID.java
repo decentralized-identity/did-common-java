@@ -134,6 +134,7 @@ public class DID {
 
 		Map<String, Object> map = new HashMap<> ();
 
+		map.put("didString", this.getDidString() == null ? null : this.getDidString());
 		map.put("method", this.getMethodName() == null ? null : this.getMethodName());
 		map.put("methodSpecificId", this.getMethodSpecificId() == null ? null : this.getMethodSpecificId());
 
