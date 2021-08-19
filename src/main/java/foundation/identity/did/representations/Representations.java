@@ -41,6 +41,10 @@ public class Representations {
         didDocumentConsumers.put(RepresentationConsumerCBOR.getInstance().getMediaType(), RepresentationConsumerCBOR.getInstance());
     }
 
+    public static boolean isRepresentationMediaType(String mediaType) {
+        return MEDIA_TYPES.contains(mediaType);
+    }
+
     public static RepresentationProducer getProducer(String mediaType) {
         return didDocumentProducers.get(mediaType);
     }
