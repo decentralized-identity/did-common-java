@@ -142,6 +142,8 @@ public class DIDDocument extends JsonLDObject {
 		return new DIDDocument(jsonObject);
 	}
 
+	public static DIDDocument fromJsonLDObject(JsonLDObject jsonLDObject) { return fromJsonObject(jsonLDObject.getJsonObject()); }
+
 	public static DIDDocument fromJson(Reader reader) {
 		return new DIDDocument(readJson(reader));
 	}

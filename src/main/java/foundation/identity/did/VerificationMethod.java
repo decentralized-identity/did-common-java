@@ -99,6 +99,8 @@ public class VerificationMethod extends JsonLDObject {
 		return new VerificationMethod(jsonObject);
 	}
 
+	public static VerificationMethod fromJsonLDObject(JsonLDObject jsonLDObject) { return fromJsonObject(jsonLDObject.getJsonObject()); }
+
 	public static VerificationMethod fromJson(Reader reader) {
 		return new VerificationMethod(readJson(reader));
 	}

@@ -64,6 +64,8 @@ public class Service extends JsonLDObject {
 		return new Service(jsonObject);
 	}
 
+	public static Service fromJsonLDObject(JsonLDObject jsonLDObject) { return fromJsonObject(jsonLDObject.getJsonObject()); }
+
 	public static Service fromJson(Reader reader) {
 		return new Service(readJson(reader));
 	}
