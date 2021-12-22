@@ -178,9 +178,17 @@ public class DIDDocument extends JsonLDObject {
 	 * Getters
 	 */
 
+	private List<Object> getVerificationMethodsJsonArray(String term, boolean ignoreDereferencingErrors) {
+		try {
+			return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), term);
+		} catch (IllegalArgumentException ex) {
+			if (ignoreDereferencingErrors) return null; else throw ex;
+		}
+	}
+
 	public List<VerificationMethod> getAllVerificationMethods(boolean ignoreDereferencingErrors) {
 		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
-		List<VerificationMethod> verificationMethods = this.getVerificationMethods();
+		List<VerificationMethod> verificationMethods = this.getVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> authenticationVerificationMethods = this.getAuthenticationVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> assertionMethodVerificationMethods = this.getAssertionMethodVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> keyAgreementVerificationMethods = this.getKeyAgreementVerificationMethods(ignoreDereferencingErrors);
@@ -199,13 +207,17 @@ public class DIDDocument extends JsonLDObject {
 		return this.getAllVerificationMethods(false);
 	}
 
-	public List<VerificationMethod> getVerificationMethods() {
-		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
+	public List<VerificationMethod> getVerificationMethods(boolean ignoreDereferencingErrors) {
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, ignoreDereferencingErrors);
 		return jsonArray == null ? null : jsonArray.stream().map(x -> VerificationMethod.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
 	}
 
+	public List<VerificationMethod> getVerificationMethods() {
+		return this.getVerificationMethods(false);
+	}
+
 	public List<VerificationMethod> getAuthenticationVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_AUTHENTICATION);
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_AUTHENTICATION, ignoreDereferencingErrors);
 		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
@@ -214,7 +226,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getAssertionMethodVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_ASSERTIONMETHOD);
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_ASSERTIONMETHOD, ignoreDereferencingErrors);
 		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
@@ -223,7 +235,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getKeyAgreementVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_KEYAGREEMENT);
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_KEYAGREEMENT, ignoreDereferencingErrors);
 		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
@@ -232,7 +244,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getCapabilityInvocationVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CAPABILITYINVOCATION);
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_CAPABILITYINVOCATION, ignoreDereferencingErrors);
 		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
@@ -241,7 +253,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getCapabilityDelegationVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CAPABILITYDELEGATION);
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_CAPABILITYDELEGATION, ignoreDereferencingErrors);
 		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
