@@ -178,15 +178,19 @@ public class DIDDocument extends JsonLDObject {
 	 * Getters
 	 */
 
-	public List<VerificationMethod> getAllVerificationMethods() {
+	public List<VerificationMethod> getAllVerificationMethods(boolean ignoreErrors) {
 		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
 		if (this.getVerificationMethods() != null) allVerificationMethods.addAll(this.getVerificationMethods());
-		if (this.getAuthenticationVerificationMethods() != null) allVerificationMethods.addAll(this.getAuthenticationVerificationMethods());
-		if (this.getAssertionMethodVerificationMethods() != null) allVerificationMethods.addAll(this.getAssertionMethodVerificationMethods());
-		if (this.getKeyAgreementVerificationMethods() != null) allVerificationMethods.addAll(this.getKeyAgreementVerificationMethods());
-		if (this.getCapabilityInvocationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityInvocationVerificationMethods());
-		if (this.getCapabilityDelegationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityDelegationVerificationMethods());
+		if (this.getAuthenticationVerificationMethods() != null) allVerificationMethods.addAll(this.getAuthenticationVerificationMethods(ignoreErrors));
+		if (this.getAssertionMethodVerificationMethods() != null) allVerificationMethods.addAll(this.getAssertionMethodVerificationMethods(ignoreErrors));
+		if (this.getKeyAgreementVerificationMethods() != null) allVerificationMethods.addAll(this.getKeyAgreementVerificationMethods(ignoreErrors));
+		if (this.getCapabilityInvocationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityInvocationVerificationMethods(ignoreErrors));
+		if (this.getCapabilityDelegationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityDelegationVerificationMethods(ignoreErrors));
 		return allVerificationMethods;
+	}
+
+	public List<VerificationMethod> getAllVerificationMethods() {
+		return this.getAllVerificationMethods(false);
 	}
 
 	public List<VerificationMethod> getVerificationMethods() {
@@ -200,7 +204,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getAuthenticationVerificationMethods() {
-		return getAuthenticationVerificationMethods(false);
+		return this.getAuthenticationVerificationMethods(false);
 	}
 
 	public List<VerificationMethod> getAssertionMethodVerificationMethods(boolean ignoreErrors) {
@@ -209,7 +213,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getAssertionMethodVerificationMethods() {
-		return getAssertionMethodVerificationMethods(false);
+		return this.getAssertionMethodVerificationMethods(false);
 	}
 
 	public List<VerificationMethod> getKeyAgreementVerificationMethods(boolean ignoreErrors) {
@@ -218,7 +222,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getKeyAgreementVerificationMethods() {
-		return getAssertionMethodVerificationMethods(false);
+		return this.getAssertionMethodVerificationMethods(false);
 	}
 
 	public List<VerificationMethod> getCapabilityInvocationVerificationMethods(boolean ignoreErrors) {
@@ -227,7 +231,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getCapabilityInvocationVerificationMethods() {
-		return getCapabilityInvocationVerificationMethods(false);
+		return this.getCapabilityInvocationVerificationMethods(false);
 	}
 
 	public List<VerificationMethod> getCapabilityDelegationVerificationMethods(boolean ignoreErrors) {
@@ -236,7 +240,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public List<VerificationMethod> getCapabilityDelegationVerificationMethods() {
-		return getCapabilityDelegationVerificationMethods(false);
+		return this.getCapabilityDelegationVerificationMethods(false);
 	}
 
 	public List<Service> getServices() {
