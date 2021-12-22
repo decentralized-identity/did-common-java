@@ -10,6 +10,7 @@ import foundation.identity.jsonld.JsonLDUtils;
 
 import java.io.Reader;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -179,6 +180,17 @@ public class DIDDocument extends JsonLDObject {
 	/*
 	 * Getters
 	 */
+
+	public List<VerificationMethod> getAllVerificationMethods() {
+		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
+		if (this.getVerificationMethods() != null) allVerificationMethods.addAll(this.getVerificationMethods());
+		if (this.getAuthenticationVerificationMethods() != null) allVerificationMethods.addAll(this.getAuthenticationVerificationMethods());
+		if (this.getAssertionMethodVerificationMethods() != null) allVerificationMethods.addAll(this.getAssertionMethodVerificationMethods());
+		if (this.getKeyAgreementVerificationMethods() != null) allVerificationMethods.addAll(this.getKeyAgreementVerificationMethods());
+		if (this.getCapabilityInvocationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityInvocationVerificationMethods());
+		if (this.getCapabilityDelegationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityDelegationVerificationMethods());
+		return allVerificationMethods;
+	}
 
 	public List<VerificationMethod> getVerificationMethods() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
