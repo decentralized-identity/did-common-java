@@ -180,12 +180,18 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<VerificationMethod> getAllVerificationMethods(boolean ignoreDereferencingErrors) {
 		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
-		if (this.getVerificationMethods() != null) allVerificationMethods.addAll(this.getVerificationMethods());
-		if (this.getAuthenticationVerificationMethods() != null) allVerificationMethods.addAll(this.getAuthenticationVerificationMethods(ignoreDereferencingErrors));
-		if (this.getAssertionMethodVerificationMethods() != null) allVerificationMethods.addAll(this.getAssertionMethodVerificationMethods(ignoreDereferencingErrors));
-		if (this.getKeyAgreementVerificationMethods() != null) allVerificationMethods.addAll(this.getKeyAgreementVerificationMethods(ignoreDereferencingErrors));
-		if (this.getCapabilityInvocationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityInvocationVerificationMethods(ignoreDereferencingErrors));
-		if (this.getCapabilityDelegationVerificationMethods() != null) allVerificationMethods.addAll(this.getCapabilityDelegationVerificationMethods(ignoreDereferencingErrors));
+		List<VerificationMethod> verificationMethods = this.getVerificationMethods();
+		List<VerificationMethod> authenticationVerificationMethods = this.getAuthenticationVerificationMethods(ignoreDereferencingErrors);
+		List<VerificationMethod> assertionMethodVerificationMethods = this.getAssertionMethodVerificationMethods(ignoreDereferencingErrors);
+		List<VerificationMethod> keyAgreementVerificationMethods = this.getKeyAgreementVerificationMethods(ignoreDereferencingErrors);
+		List<VerificationMethod> capabilityInvocationVerificationMethods = this.getCapabilityInvocationVerificationMethods(ignoreDereferencingErrors);
+		List<VerificationMethod> capabilityDelegationVerificationMethods = this.getCapabilityDelegationVerificationMethods(ignoreDereferencingErrors);
+		if (verificationMethods != null) allVerificationMethods.addAll(verificationMethods);
+		if (authenticationVerificationMethods != null) allVerificationMethods.addAll(authenticationVerificationMethods);
+		if (assertionMethodVerificationMethods != null) allVerificationMethods.addAll(assertionMethodVerificationMethods);
+		if (keyAgreementVerificationMethods != null) allVerificationMethods.addAll(keyAgreementVerificationMethods);
+		if (capabilityInvocationVerificationMethods != null) allVerificationMethods.addAll(capabilityInvocationVerificationMethods);
+		if (capabilityDelegationVerificationMethods != null) allVerificationMethods.addAll(capabilityDelegationVerificationMethods);
 		return allVerificationMethods;
 	}
 
