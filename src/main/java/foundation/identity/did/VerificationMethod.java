@@ -33,6 +33,7 @@ public class VerificationMethod extends JsonLDObject {
 
 	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
+		private String controller;
 		private String publicKeyBase64;
 		private String publicKeyBase58;
 		private String publicKeyHex;
@@ -50,6 +51,7 @@ public class VerificationMethod extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
+			if (this.controller != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, this.controller);
 			if (this.publicKeyBase64 != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
 			if (this.publicKeyBase58 != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
 			if (this.publicKeyHex != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
@@ -58,6 +60,11 @@ public class VerificationMethod extends JsonLDObject {
 			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
 
 			return (VerificationMethod) this.jsonLdObject;
+		}
+
+		public B controller(String controller) {
+			this.controller = controller;
+			return (B) this;
 		}
 
 		public B publicKeyBase64(String publicKeyBase64) {
@@ -128,6 +135,10 @@ public class VerificationMethod extends JsonLDObject {
 	/*
 	 * Getters
 	 */
+
+	public String getController() {
+		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CONTROLLER);
+	}
 
 	public String getPublicKeyBase64() {
 		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64);

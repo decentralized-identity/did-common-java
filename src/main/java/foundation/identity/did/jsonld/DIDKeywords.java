@@ -7,6 +7,7 @@ public class DIDKeywords {
      */
 
     public static final String JSONLD_TERM_VERIFICATIONMETHOD = "verificationMethod";
+    public static final String JSONLD_TERM_CONTROLLER = "controller";
     public static final String JSONLD_TERM_PUBLICKEYBASE64 = "publicKeyBase64";
     public static final String JSONLD_TERM_PUBLICKEYBASE58 = "publicKeyBase58";
     public static final String JSONLD_TERM_PUBLICKEYHEX = "publicKeyHex";
