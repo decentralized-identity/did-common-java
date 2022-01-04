@@ -178,16 +178,9 @@ public class DIDDocument extends JsonLDObject {
 	 * Getters
 	 */
 
-	private List<Object> getVerificationMethodsJsonArray(String term, boolean ignoreDereferencingErrors) {
-		try {
-			return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), term);
-		} catch (IllegalArgumentException ex) {
-			if (ignoreDereferencingErrors) return null; else throw ex;
-		}
-	}
-
-	public List<VerificationMethod> getAllVerificationMethods(boolean ignoreDereferencingErrors) {
+	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap(boolean ignoreDereferencingErrors) {
 		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
+		Map<URI, VerificationMethod> allVerificationMethodsAsMap = new HashMap<>();
 		List<VerificationMethod> verificationMethods = this.getVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> authenticationVerificationMethods = this.getAuthenticationVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> assertionMethodVerificationMethods = this.getAssertionMethodVerificationMethods(ignoreDereferencingErrors);
@@ -200,11 +193,30 @@ public class DIDDocument extends JsonLDObject {
 		if (keyAgreementVerificationMethods != null) allVerificationMethods.addAll(keyAgreementVerificationMethods);
 		if (capabilityInvocationVerificationMethods != null) allVerificationMethods.addAll(capabilityInvocationVerificationMethods);
 		if (capabilityDelegationVerificationMethods != null) allVerificationMethods.addAll(capabilityDelegationVerificationMethods);
-		return allVerificationMethods;
+		for (VerificationMethod verificationMethod : allVerificationMethods) {
+			allVerificationMethodsAsMap.put(verificationMethod.getId(), verificationMethod);
+		}
+		return allVerificationMethodsAsMap;
+	}
+
+	public List<VerificationMethod> getAllVerificationMethods(boolean ignoreDereferencingErrors) {
+		return this.getAllVerificationMethodsAsMap(ignoreDereferencingErrors).values().stream().collect(Collectors.toList());
+	}
+
+	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap() {
+		return this.getAllVerificationMethodsAsMap(false);
 	}
 
 	public List<VerificationMethod> getAllVerificationMethods() {
 		return this.getAllVerificationMethods(false);
+	}
+
+	private List<Object> getVerificationMethodsJsonArray(String term, boolean ignoreDereferencingErrors) {
+		try {
+			return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), term);
+		} catch (IllegalArgumentException ex) {
+			if (ignoreDereferencingErrors) return null; else throw ex;
+		}
 	}
 
 	public List<VerificationMethod> getVerificationMethods(boolean ignoreDereferencingErrors) {
