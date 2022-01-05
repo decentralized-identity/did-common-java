@@ -95,7 +95,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>${maven-release-plugin.version}</version>
 				<configuration>
-					<scmCommentPrefix>[maven-release-plugin]</scmCommentPrefix>
+					<scmCommentPrefix>[skip ci]</scmCommentPrefix>
 					<tagNameFormat>v@{project.version}</tagNameFormat>
 				</configuration>
 			</plugin>
