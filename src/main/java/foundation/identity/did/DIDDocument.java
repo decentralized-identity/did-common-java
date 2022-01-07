@@ -180,19 +180,19 @@ public class DIDDocument extends JsonLDObject {
 
 	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap(boolean ignoreDereferencingErrors) {
 		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
-		Map<URI, VerificationMethod> allVerificationMethodsAsMap = new HashMap<>();
-		List<VerificationMethod> verificationMethods = this.getVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> authenticationVerificationMethods = this.getAuthenticationVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> assertionMethodVerificationMethods = this.getAssertionMethodVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> keyAgreementVerificationMethods = this.getKeyAgreementVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> capabilityInvocationVerificationMethods = this.getCapabilityInvocationVerificationMethods(ignoreDereferencingErrors);
 		List<VerificationMethod> capabilityDelegationVerificationMethods = this.getCapabilityDelegationVerificationMethods(ignoreDereferencingErrors);
-		if (verificationMethods != null) allVerificationMethods.addAll(verificationMethods);
+		List<VerificationMethod> verificationMethods = this.getVerificationMethods(ignoreDereferencingErrors);
 		if (authenticationVerificationMethods != null) allVerificationMethods.addAll(authenticationVerificationMethods);
 		if (assertionMethodVerificationMethods != null) allVerificationMethods.addAll(assertionMethodVerificationMethods);
 		if (keyAgreementVerificationMethods != null) allVerificationMethods.addAll(keyAgreementVerificationMethods);
 		if (capabilityInvocationVerificationMethods != null) allVerificationMethods.addAll(capabilityInvocationVerificationMethods);
 		if (capabilityDelegationVerificationMethods != null) allVerificationMethods.addAll(capabilityDelegationVerificationMethods);
+		if (verificationMethods != null) allVerificationMethods.addAll(verificationMethods);
+		Map<URI, VerificationMethod> allVerificationMethodsAsMap = new HashMap<>();
 		for (VerificationMethod verificationMethod : allVerificationMethods) {
 			allVerificationMethodsAsMap.put(verificationMethod.getId(), verificationMethod);
 		}
