@@ -145,7 +145,7 @@
 		<dependency>
 			<groupId>com.upokecenter</groupId>
 			<artifactId>cbor</artifactId>
-			<version>4.4.3</version>
+			<version>4.5.1</version>
 		</dependency>
 	</dependencies>
 
