@@ -4,11 +4,9 @@
 
 ## Information
 
-This is a work-in-progress implementation of the DID Core specification:
+This is an implementation of the DID Core specification:
 
  - [Decentralized Identifiers v1.0](https://w3c.github.io/did-core/)
-
-Not ready for production use! Use at your own risk! Pull requests welcome.
 
 ## Maven
 
@@ -28,7 +26,7 @@ Dependency:
 	<dependency>
 		<groupId>decentralized-identity</groupId>
 		<artifactId>did-common-java</artifactId>
-		<version>0.3-SNAPSHOT</version>
+		<version>1.0.0</version>
 	</dependency>
 
 ## Example
