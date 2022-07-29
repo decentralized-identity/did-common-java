@@ -76,6 +76,6 @@ Decentralized Identity Foundation - https://identity.foundation/
 
 <br clear="left" />
 
-<img align="left" src="https://raw.githubusercontent.com/decentralized-identity/did-common-java/main/docs/logo-ngi-essiflab.png" width="115">
+<img align="left" height="70" src="https://raw.githubusercontent.com/decentralized-identity/did-common-java/main/docs/logo-ngi-essiflab.png">
 
-Supported by [ESSIF-Lab](https://essif-lab.eu/), which is made possible with financial support from the European Commission's [Next Generation Internet](https://ngi.eu/) programme.
+This software library is part of a project that has received funding from the European Union's Horizon 2020 research and innovation programme under grant agreement No 871932
