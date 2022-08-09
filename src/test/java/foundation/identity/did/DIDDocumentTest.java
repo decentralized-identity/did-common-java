@@ -1,8 +1,6 @@
 package foundation.identity.did;
 
-import foundation.identity.did.parser.ParserException;
 import foundation.identity.jsonld.JsonLDDereferencer;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
@@ -52,16 +50,16 @@ public class DIDDocumentTest {
 
 		assertEquals(URI.create("did:ex:123"), didDocument.getId());
 		assertEquals("Ed25519VerificationKey2018", didDocument.getVerificationMethods().get(0).getType());
-		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAuthenticationVerificationMethods().get(0).getId());
-		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAssertionMethodVerificationMethods().get(0).getId());
+		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAuthenticationVerificationMethodsDereferenced().get(0).getId());
+		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAssertionMethodVerificationMethodsDereferenced().get(0).getId());
 		assertEquals("did:ex:123#key-1", ((List<String>) didDocument.getJsonObject().get("authentication")).get(0));
 		assertEquals("did:ex:123#key-1", ((List<String>) didDocument.getJsonObject().get("assertionMethod")).get(0));
-		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAssertionMethodVerificationMethods().get(0).getId());
+		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAssertionMethodVerificationMethodsDereferenced().get(0).getId());
 		assertEquals("DIDCommService", didDocument.getServices().get(0).getType());
 		assertEquals("http://localhost:8080/", didDocument.getServices().get(0).getServiceEndpoint());
 		assertEquals("http://localhost:8080/", ((List<Map<String, Object>>) didDocument.getJsonObject().get("service")).get(0).get("serviceEndpoint"));
 
-		assertEquals("000000000", VerificationMethod.fromJsonObject(JsonLDDereferencer.findByIdInJsonLdObject(didDocument, didDocument.getAuthenticationVerificationMethods().get(0).getId(), null).getJsonObject()).getPublicKeyBase58());
-		assertEquals("000000000", VerificationMethod.fromJsonObject(JsonLDDereferencer.findByIdInJsonLdObject(didDocument, didDocument.getAssertionMethodVerificationMethods().get(0).getId(), null).getJsonObject()).getPublicKeyBase58());
+		assertEquals("000000000", VerificationMethod.fromJsonObject(JsonLDDereferencer.findByIdInJsonLdObject(didDocument, didDocument.getAuthenticationVerificationMethodsDereferenced().get(0).getId(), null).getJsonObject()).getPublicKeyBase58());
+		assertEquals("000000000", VerificationMethod.fromJsonObject(JsonLDDereferencer.findByIdInJsonLdObject(didDocument, didDocument.getAssertionMethodVerificationMethodsDereferenced().get(0).getId(), null).getJsonObject()).getPublicKeyBase58());
 	}
 }

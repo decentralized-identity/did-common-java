@@ -178,20 +178,20 @@ public class DIDDocument extends JsonLDObject {
 	 * Getters
 	 */
 
-	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap(boolean ignoreDereferencingErrors) {
+	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap() {
 		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
-		List<VerificationMethod> authenticationVerificationMethods = this.getAuthenticationVerificationMethods(ignoreDereferencingErrors);
-		List<VerificationMethod> assertionMethodVerificationMethods = this.getAssertionMethodVerificationMethods(ignoreDereferencingErrors);
-		List<VerificationMethod> keyAgreementVerificationMethods = this.getKeyAgreementVerificationMethods(ignoreDereferencingErrors);
-		List<VerificationMethod> capabilityInvocationVerificationMethods = this.getCapabilityInvocationVerificationMethods(ignoreDereferencingErrors);
-		List<VerificationMethod> capabilityDelegationVerificationMethods = this.getCapabilityDelegationVerificationMethods(ignoreDereferencingErrors);
-		List<VerificationMethod> verificationMethods = this.getVerificationMethods(ignoreDereferencingErrors);
+		List<VerificationMethod> verificationMethods = this.getVerificationMethods();
+		List<VerificationMethod> authenticationVerificationMethods = this.getAuthenticationVerificationMethodsInline();
+		List<VerificationMethod> assertionMethodVerificationMethods = this.getAssertionMethodVerificationMethodsInline();
+		List<VerificationMethod> keyAgreementVerificationMethods = this.getKeyAgreementVerificationMethodsInline();
+		List<VerificationMethod> capabilityInvocationVerificationMethods = this.getCapabilityInvocationVerificationMethodsInline();
+		List<VerificationMethod> capabilityDelegationVerificationMethods = this.getCapabilityDelegationVerificationMethodsInline();
+		if (verificationMethods != null) allVerificationMethods.addAll(verificationMethods);
 		if (authenticationVerificationMethods != null) allVerificationMethods.addAll(authenticationVerificationMethods);
 		if (assertionMethodVerificationMethods != null) allVerificationMethods.addAll(assertionMethodVerificationMethods);
 		if (keyAgreementVerificationMethods != null) allVerificationMethods.addAll(keyAgreementVerificationMethods);
 		if (capabilityInvocationVerificationMethods != null) allVerificationMethods.addAll(capabilityInvocationVerificationMethods);
 		if (capabilityDelegationVerificationMethods != null) allVerificationMethods.addAll(capabilityDelegationVerificationMethods);
-		if (verificationMethods != null) allVerificationMethods.addAll(verificationMethods);
 		Map<URI, VerificationMethod> allVerificationMethodsAsMap = new HashMap<>();
 		for (VerificationMethod verificationMethod : allVerificationMethods) {
 			allVerificationMethodsAsMap.put(verificationMethod.getId(), verificationMethod);
@@ -199,82 +199,95 @@ public class DIDDocument extends JsonLDObject {
 		return allVerificationMethodsAsMap;
 	}
 
-	public List<VerificationMethod> getAllVerificationMethods(boolean ignoreDereferencingErrors) {
-		return this.getAllVerificationMethodsAsMap(ignoreDereferencingErrors).values().stream().collect(Collectors.toList());
-	}
-
-	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap() {
-		return this.getAllVerificationMethodsAsMap(false);
-	}
-
 	public List<VerificationMethod> getAllVerificationMethods() {
-		return this.getAllVerificationMethods(false);
+		return new ArrayList<>(this.getAllVerificationMethodsAsMap().values());
 	}
 
-	private List<Object> getVerificationMethodsJsonArray(String term, boolean ignoreDereferencingErrors) {
-		try {
-			return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), term);
-		} catch (IllegalArgumentException ex) {
-			if (ignoreDereferencingErrors) return null; else throw ex;
-		}
+	private List<Object> getVerificationMethodsJsonArray(String term) {
+		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), term);
 	}
 
 	public List<VerificationMethod> getVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD, ignoreDereferencingErrors);
-		return jsonArray == null ? null : jsonArray.stream().map(x -> VerificationMethod.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
+		return jsonArray == null ? null : jsonArray.stream().map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
 	}
 
 	public List<VerificationMethod> getVerificationMethods() {
 		return this.getVerificationMethods(false);
 	}
 
-	public List<VerificationMethod> getAuthenticationVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_AUTHENTICATION, ignoreDereferencingErrors);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+	public List<Object> getAuthenticationVerificationMethods() {
+		return this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_AUTHENTICATION);
 	}
 
-	public List<VerificationMethod> getAuthenticationVerificationMethods() {
-		return this.getAuthenticationVerificationMethods(false);
+	public List<VerificationMethod> getAuthenticationVerificationMethodsInline() {
+		List<Object> jsonArray = this.getAuthenticationVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().filter(Map.class::isInstance).map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
 	}
 
-	public List<VerificationMethod> getAssertionMethodVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_ASSERTIONMETHOD, ignoreDereferencingErrors);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+	public List<VerificationMethod> getAuthenticationVerificationMethodsDereferenced() {
+		List<Object> jsonArray = this.getAuthenticationVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
-	public List<VerificationMethod> getAssertionMethodVerificationMethods() {
-		return this.getAssertionMethodVerificationMethods(false);
+	public List<Object> getAssertionMethodVerificationMethods() {
+		return this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_ASSERTIONMETHOD);
 	}
 
-	public List<VerificationMethod> getKeyAgreementVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_KEYAGREEMENT, ignoreDereferencingErrors);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+	public List<VerificationMethod> getAssertionMethodVerificationMethodsInline() {
+		List<Object> jsonArray = this.getAssertionMethodVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().filter(Map.class::isInstance).map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
 	}
 
-	public List<VerificationMethod> getKeyAgreementVerificationMethods() {
-		return this.getAssertionMethodVerificationMethods(false);
+	public List<VerificationMethod> getAssertionMethodVerificationMethodsDereferenced() {
+		List<Object> jsonArray = this.getAssertionMethodVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
-	public List<VerificationMethod> getCapabilityInvocationVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_CAPABILITYINVOCATION, ignoreDereferencingErrors);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+	public List<Object> getKeyAgreementVerificationMethods() {
+		return this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_KEYAGREEMENT);
 	}
 
-	public List<VerificationMethod> getCapabilityInvocationVerificationMethods() {
-		return this.getCapabilityInvocationVerificationMethods(false);
+	public List<VerificationMethod> getKeyAgreementVerificationMethodsInline() {
+		List<Object> jsonArray = this.getKeyAgreementVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().filter(Map.class::isInstance).map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
 	}
 
-	public List<VerificationMethod> getCapabilityDelegationVerificationMethods(boolean ignoreDereferencingErrors) {
-		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_CAPABILITYDELEGATION, ignoreDereferencingErrors);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), ignoreDereferencingErrors)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+	public List<VerificationMethod> getKeyAgreementVerificationMethodsDereferenced() {
+		List<Object> jsonArray = this.getKeyAgreementVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
-	public List<VerificationMethod> getCapabilityDelegationVerificationMethods() {
-		return this.getCapabilityDelegationVerificationMethods(false);
+	public List<Object> getCapabilityInvocationVerificationMethods() {
+		return this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_CAPABILITYINVOCATION);
+	}
+
+	public List<VerificationMethod> getCapabilityInvocationVerificationMethodsInline() {
+		List<Object> jsonArray = this.getCapabilityInvocationVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().filter(Map.class::isInstance).map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
+	}
+
+	public List<VerificationMethod> getCapabilityInvocationVerificationMethodsDereferenced() {
+		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_CAPABILITYINVOCATION);
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+	}
+
+	public List<Object> getCapabilityDelegationVerificationMethods() {
+		return this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_CAPABILITYDELEGATION);
+	}
+
+	public List<VerificationMethod> getCapabilityDelegationVerificationMethodsInline() {
+		List<Object> jsonArray = this.getCapabilityDelegationVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().filter(Map.class::isInstance).map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
+	}
+
+	public List<VerificationMethod> getCapabilityDelegationVerificationMethodsDereferenced() {
+		List<Object> jsonArray = this.getCapabilityDelegationVerificationMethods();
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<Service> getServices() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE);
-		return jsonArray == null ? null : jsonArray.stream().map(x -> Service.fromJsonObject((Map<String, Object>) x)).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(Map.class::cast).map(Service::fromJsonObject).collect(Collectors.toList());
 	}
 }
