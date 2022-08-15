@@ -207,13 +207,9 @@ public class DIDDocument extends JsonLDObject {
 		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), term);
 	}
 
-	public List<VerificationMethod> getVerificationMethods(boolean ignoreDereferencingErrors) {
+	public List<VerificationMethod> getVerificationMethods() {
 		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
 		return jsonArray == null ? null : jsonArray.stream().map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
-	}
-
-	public List<VerificationMethod> getVerificationMethods() {
-		return this.getVerificationMethods(false);
 	}
 
 	public List<Object> getAuthenticationVerificationMethods() {
