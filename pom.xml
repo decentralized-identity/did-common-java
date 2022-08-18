@@ -4,14 +4,14 @@
 	<groupId>decentralized-identity</groupId>
 	<artifactId>did-common-java</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1.0</version>
 	<name>did-common-java</name>
 
 	<scm>
 		<url>https://github.com/decentralized-identity/did-common-java</url>
 		<connection>scm:git:https://github.com/decentralized-identity/did-common-java.git</connection>
 		<developerConnection>scm:git:https://github.com/decentralized-identity/did-common-java.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>1.1.0</tag>
 	</scm>
 
 	<issueManagement>
