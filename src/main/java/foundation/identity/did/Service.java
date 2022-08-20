@@ -33,7 +33,7 @@ public class Service extends JsonLDObject {
 
 	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
-		private String serviceEndpoint;
+		private Object serviceEndpoint;
 
 		public Builder(Service jsonLDObject) {
 			super(jsonLDObject);
@@ -50,7 +50,7 @@ public class Service extends JsonLDObject {
 			return (Service) this.jsonLdObject;
 		}
 
-		public B serviceEndpoint(String serviceEndpoint) {
+		public B serviceEndpoint(Object serviceEndpoint) {
 			this.serviceEndpoint = serviceEndpoint;
 			return (B) this;
 		}
@@ -94,7 +94,7 @@ public class Service extends JsonLDObject {
 	 * Getters
 	 */
 
-	public String getServiceEndpoint() {
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICEENDPOINT);
+	public Object getServiceEndpoint() {
+		return JsonLDUtils.jsonLdGetJsonValue(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICEENDPOINT);
 	}
 }
