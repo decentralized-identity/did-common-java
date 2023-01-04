@@ -40,6 +40,8 @@ public class DIDDocumentTest {
 
 		DIDDocument didDocument = DIDDocument.builder()
 				.id(URI.create("did:ex:123"))
+				.controller(URI.create("did:ex:456"))
+				.alsoKnownAs(URI.create("did:ex:789"))
 				.verificationMethods(verificationMethods)
 				.authenticationVerificationMethods(Collections.singletonList(VerificationMethod.builder().id(verificationMethod.getId()).build()))
 				.assertionMethodVerificationMethods(Collections.singletonList(VerificationMethod.builder().id(verificationMethod.getId()).build()))
@@ -49,6 +51,8 @@ public class DIDDocumentTest {
 		// tests
 
 		assertEquals(URI.create("did:ex:123"), didDocument.getId());
+		assertEquals(didDocument.getControllers().get(0), URI.create("did:ex:456"));
+		assertEquals(didDocument.getAlsoKnownAses().get(0), URI.create("did:ex:789"));
 		assertEquals("Ed25519VerificationKey2018", didDocument.getVerificationMethods().get(0).getType());
 		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAuthenticationVerificationMethodsDereferenced().get(0).getId());
 		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAssertionMethodVerificationMethodsDereferenced().get(0).getId());

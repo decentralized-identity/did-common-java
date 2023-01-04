@@ -35,6 +35,8 @@ public class DIDDocument extends JsonLDObject {
 
 	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
+		private List<URI> controllers;
+		private List<URI> alsoKnownAses;
 		private List<VerificationMethod> verificationMethods;
 		private List<VerificationMethod> authenticationVerificationMethods;
 		private List<VerificationMethod> assertionMethodVerificationMethods;
@@ -57,6 +59,8 @@ public class DIDDocument extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
+			if (this.controllers != null) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, this.controllers);
+			if (this.alsoKnownAses != null) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_ALSOKNOWNAS, this.alsoKnownAses);
 			if (this.verificationMethods != null) for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
 			if (this.authenticationVerificationMethods != null) for (VerificationMethod authenticationVerificationMethod : this.authenticationVerificationMethods) authenticationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.AUTHENTICATION);
 			if (this.assertionMethodVerificationMethods != null) for (VerificationMethod assertionMethodVerificationMethod : this.assertionMethodVerificationMethods) assertionMethodVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.ASSERTIONMETHOD);
@@ -66,6 +70,24 @@ public class DIDDocument extends JsonLDObject {
 			if (this.services != null) for (Service service : this.services) service.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
 
 			return (DIDDocument) this.jsonLdObject;
+		}
+
+		public B controllers(List<URI> controllers) {
+			this.controllers = controllers;
+			return (B) this;
+		}
+
+		public B controller(URI controller) {
+			return this.controllers(controller == null ? null : Collections.singletonList(controller));
+		}
+
+		public B alsoKnownAses(List<URI> alsoKnownAses) {
+			this.alsoKnownAses = alsoKnownAses;
+			return (B) this;
+		}
+
+		public B alsoKnownAs(URI alsoKnownAs) {
+			return this.alsoKnownAses(alsoKnownAs == null ? null : Collections.singletonList(alsoKnownAs));
 		}
 
 		public B verificationMethods(List<VerificationMethod> verificationMethods) {
@@ -177,6 +199,14 @@ public class DIDDocument extends JsonLDObject {
 	/*
 	 * Getters
 	 */
+
+	public List<URI> getControllers() {
+		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CONTROLLER).stream().map(URI.class::cast).collect(Collectors.toList());
+	}
+
+	public List<URI> getAlsoKnownAses() {
+		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_ALSOKNOWNAS).stream().map(URI.class::cast).collect(Collectors.toList());
+	}
 
 	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap() {
 		List<VerificationMethod> allVerificationMethods = new ArrayList<>();
