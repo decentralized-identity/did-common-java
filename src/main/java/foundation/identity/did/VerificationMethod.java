@@ -33,7 +33,7 @@ public class VerificationMethod extends JsonLDObject {
 
 	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
-		private String controller;
+		private URI controller;
 		private String publicKeyBase64;
 		private String publicKeyBase58;
 		private String publicKeyHex;
@@ -62,7 +62,7 @@ public class VerificationMethod extends JsonLDObject {
 			return (VerificationMethod) this.jsonLdObject;
 		}
 
-		public B controller(String controller) {
+		public B controller(URI controller) {
 			this.controller = controller;
 			return (B) this;
 		}
@@ -136,8 +136,8 @@ public class VerificationMethod extends JsonLDObject {
 	 * Getters
 	 */
 
-	public String getController() {
-		return JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CONTROLLER);
+	public URI getController() {
+		return JsonLDUtils.stringToUri(JsonLDUtils.jsonLdGetString(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CONTROLLER));
 	}
 
 	public String getPublicKeyBase64() {
