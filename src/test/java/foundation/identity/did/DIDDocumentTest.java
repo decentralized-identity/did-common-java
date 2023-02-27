@@ -13,6 +13,26 @@ public class DIDDocumentTest {
 	@Test
 	public void testDIDDocument() throws Exception {
 
+		DIDDocument didDocument = create();
+		test(didDocument);
+	}
+
+	@Test
+	public void testDIDDocumentFromJson() throws Exception {
+
+		DIDDocument didDocument = DIDDocument.fromJson(create().toJson());
+		test(didDocument);
+	}
+
+	@Test
+	public void testDIDDocumentFromMap() throws Exception {
+
+		DIDDocument didDocument = DIDDocument.fromMap(create().toMap());
+		test(didDocument);
+	}
+
+	private DIDDocument create() {
+
 		// DID DOCUMENT verificationMethods
 
 		List<VerificationMethod> verificationMethods = new ArrayList<>();
@@ -38,7 +58,7 @@ public class DIDDocumentTest {
 
 		// create DID DOCUMENT
 
-		DIDDocument didDocument = DIDDocument.builder()
+		return DIDDocument.builder()
 				.id(URI.create("did:ex:123"))
 				.controller(URI.create("did:ex:456"))
 				.alsoKnownAs(URI.create("did:ex:789"))
@@ -47,13 +67,16 @@ public class DIDDocumentTest {
 				.assertionMethodVerificationMethods(Collections.singletonList(VerificationMethod.builder().id(verificationMethod.getId()).build()))
 				.services(services)
 				.build();
+	}
 
-		// tests
+	private void test(DIDDocument didDocument) {
 
 		assertEquals(URI.create("did:ex:123"), didDocument.getId());
 		assertEquals(didDocument.getControllers().get(0), URI.create("did:ex:456"));
 		assertEquals(didDocument.getAlsoKnownAses().get(0), URI.create("did:ex:789"));
+		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getVerificationMethods().get(0).getId());
 		assertEquals("Ed25519VerificationKey2018", didDocument.getVerificationMethods().get(0).getType());
+		assertEquals("000000000", didDocument.getVerificationMethods().get(0).getPublicKeyBase58());
 		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAuthenticationVerificationMethodsDereferenced().get(0).getId());
 		assertEquals(URI.create("did:ex:123#key-1"), didDocument.getAssertionMethodVerificationMethodsDereferenced().get(0).getId());
 		assertEquals("did:ex:123#key-1", ((List<String>) didDocument.getJsonObject().get("authentication")).get(0));
