@@ -201,11 +201,13 @@ public class DIDDocument extends JsonLDObject {
 	 */
 
 	public List<URI> getControllers() {
-		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CONTROLLER).stream().map(String.class::cast).map(JsonLDUtils::stringToUri).collect(Collectors.toList());
+		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CONTROLLER);
+		return jsonArray == null ? null : jsonArray.stream().map(String.class::cast).map(JsonLDUtils::stringToUri).collect(Collectors.toList());
 	}
 
 	public List<URI> getAlsoKnownAses() {
-		return JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_ALSOKNOWNAS).stream().map(String.class::cast).map(JsonLDUtils::stringToUri).collect(Collectors.toList());
+		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_ALSOKNOWNAS);
+		return jsonArray == null ? null : jsonArray.stream().map(String.class::cast).map(JsonLDUtils::stringToUri).collect(Collectors.toList());
 	}
 
 	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap() {
