@@ -255,7 +255,7 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<VerificationMethod> getVerificationMethodsDereferenced(String verificationRelationship) {
 		List<Object> jsonArray = this.getVerificationMethods(verificationRelationship);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId())).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), true)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
 	}
 
 	public List<Object> getAuthenticationVerificationMethods() {
