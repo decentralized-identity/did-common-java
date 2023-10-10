@@ -141,7 +141,7 @@ public class DIDDocument extends JsonLDObject {
 		}
 
 		public B capabilityDelegationVerificationMethod(VerificationMethod capabilityDelegationVerificationMethod) {
-			return this.capabilityInvocationVerificationMethods(capabilityDelegationVerificationMethod == null ? null : Collections.singletonList(capabilityDelegationVerificationMethod));
+			return this.capabilityDelegationVerificationMethods(capabilityDelegationVerificationMethod == null ? null : Collections.singletonList(capabilityDelegationVerificationMethod));
 		}
 
 		public B services(List<Service> services) {
