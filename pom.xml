@@ -93,7 +93,7 @@
 				<artifactId>maven-enforcer-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>enforce-no-snapshots</id>
+						<id>enforce-maven-version</id>
 						<goals>
 							<goal>enforce</goal>
 						</goals>
