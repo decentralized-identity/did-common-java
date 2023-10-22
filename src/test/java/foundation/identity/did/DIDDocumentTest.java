@@ -4,7 +4,10 @@ import foundation.identity.jsonld.JsonLDDereferencer;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -39,7 +42,7 @@ public class DIDDocumentTest {
 
 		VerificationMethod verificationMethod = VerificationMethod.builder()
 				.id(URI.create("did:ex:123#key-1"))
-				.types(Arrays.asList("Ed25519VerificationKey2018"))
+				.types(List.of("Ed25519VerificationKey2018"))
 				.publicKeyBase58("000000000")
 				.build();
 
@@ -47,7 +50,7 @@ public class DIDDocumentTest {
 
 		// DID DOCUMENT services
 
-		List<Service> services = new ArrayList<Service>();
+		List<Service> services = new ArrayList<>();
 
 		Service service = Service.builder()
 				.type("DIDCommService")

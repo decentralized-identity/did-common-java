@@ -4,7 +4,7 @@ import foundation.identity.did.parser.ParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DIDTest {
 
@@ -21,8 +21,6 @@ public class DIDTest {
 	@Test
 	public void testInvalidDID() throws Exception {
 
-		Assertions.assertThrows(ParserException.class, () -> {
-			DID.fromString("did:ex");
-		});
+		Assertions.assertThrows(ParserException.class, () -> DID.fromString("did:ex"));
 	}
 }

@@ -7,11 +7,8 @@ import java.util.Map;
 
 public interface RepresentationProducer {
 
-    public static class Result {
+    public record Result(String mediaType, byte[] representation) {
 
-        public Result(String mediaType, byte[] representation) { this.mediaType = mediaType; this.representation = representation; }
-        public String mediaType;
-        public byte[] representation;
     }
 
     public static RepresentationProducer.Result produce(Map<String, Object> didDocument, Map<String, Object> representationSpecificEntries, String mediaType) throws IOException {

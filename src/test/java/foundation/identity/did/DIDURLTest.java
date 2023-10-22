@@ -49,9 +49,7 @@ public class DIDURLTest {
 	@Test
 	public void testInvalidDIDURL() throws Exception {
 
-		Assertions.assertThrows(ParserException.class, () -> {
-			DIDURL.fromString("did:ex/my/path?ab=1&cd=2#frag");
-		});
+		Assertions.assertThrows(ParserException.class, () -> DIDURL.fromString("did:ex/my/path?ab=1&cd=2#frag"));
 	}
 
 	@Test

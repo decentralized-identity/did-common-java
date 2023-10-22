@@ -57,7 +57,7 @@ public class Service extends JsonLDObject {
 	}
 
 	public static Builder<? extends Builder<?>> builder() {
-		return new Builder(new Service());
+		return new Builder<>(new Service());
 	}
 
 	public static Service fromJsonObject(Map<String, Object> jsonObject) {

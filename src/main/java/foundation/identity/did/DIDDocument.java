@@ -155,7 +155,7 @@ public class DIDDocument extends JsonLDObject {
 	}
 
 	public static Builder<? extends Builder<?>> builder() {
-		return new Builder(new DIDDocument());
+		return new Builder<>(new DIDDocument());
 	}
 
 	public static DIDDocument fromJsonObject(Map<String, Object> jsonObject) {

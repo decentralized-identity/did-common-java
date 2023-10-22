@@ -28,7 +28,7 @@ public class DIDURL {
 	private String path;
 	private String query;
 	private String fragment;
-	private Map<String, String> parameters = new HashMap<String, String> ();
+	private Map<String, String> parameters;
 	private String parseTree;
 
 	DIDURL(String didUrlString, DID did, String path, String query, Map<String, String> parameters, String fragment, String parseTree) {
@@ -105,7 +105,7 @@ public class DIDURL {
 			if (keepParseTree) {
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ast.display(new PrintStream(byteArrayOutputStream));
-				parseTree = new String(byteArrayOutputStream.toByteArray());
+				parseTree = byteArrayOutputStream.toString(StandardCharsets.UTF_8);
 			}
 
 			String methodName = parsedStrings[0] == null ? null : parsedStrings[0];
@@ -171,7 +171,7 @@ public class DIDURL {
 		jsonObjectBuilder = jsonObjectBuilder
 				.add("didUrlString", this.getDidUrlString() == null ? JsonValue.NULL : Json.createValue(this.getDidUrlString()))
 				.add("did", this.getDid() == null ? JsonValue.NULL : this.getDid().toJsonObject(addParseTree))
-				.add("parameters", this.getParameters() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<String, Object>(this.getParameters())).build())
+				.add("parameters", this.getParameters() == null ? JsonValue.NULL : Json.createObjectBuilder(new HashMap<>(this.getParameters())).build())
 				.add("path", this.getPath() == null ? JsonValue.NULL : Json.createValue(this.getPath()))
 				.add("query", this.getQuery() == null ? JsonValue.NULL : Json.createValue(this.getQuery()))
 				.add("fragment", this.getFragment() == null ? JsonValue.NULL : Json.createValue(this.getFragment()));
@@ -283,7 +283,7 @@ public class DIDURL {
 	@Override
 	public boolean equals(Object obj) {
 
-		if (obj == null || ! (obj instanceof DIDURL)) return false;
+		if (! (obj instanceof DIDURL)) return false;
 		if (obj == this) return true;
 
 		return this.didUrlString.equals(((DIDURL) obj).didUrlString);

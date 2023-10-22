@@ -99,7 +99,7 @@ public class VerificationMethod extends JsonLDObject {
 	}
 
 	public static Builder<? extends Builder<?>> builder() {
-		return new Builder(new VerificationMethod());
+		return new Builder<>(new VerificationMethod());
 	}
 
 	public static VerificationMethod fromJsonObject(Map<String, Object> jsonObject) {

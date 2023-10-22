@@ -24,7 +24,7 @@ public class RepresentationConsumerCBOR extends AbstractRepresentationConsumer i
     @Override
     public RepresentationConsumer.Result consume(byte[] representation) throws IOException {
         CBORObject cborObject = CBORObject.DecodeFromBytes(representation);
-        Map<String, Object> map = (Map<String, Object>) cborObject.ToObject(LinkedHashMap.class);
+        Map<String, Object> map = cborObject.ToObject(LinkedHashMap.class);
         return this.detectRepresentationSpecificEntries(map);
     }
 }

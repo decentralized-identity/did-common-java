@@ -6,6 +6,7 @@
 package foundation.identity.did.parser;
 
 import apg.Grammar;
+
 import java.io.PrintStream;
 
 public class DIDGrammar extends Grammar{

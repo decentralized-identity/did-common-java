@@ -12,6 +12,7 @@ import jakarta.json.JsonValue;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public class DID {
 			if (keepParseTree) {
 				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 				ast.display(new PrintStream(byteArrayOutputStream));
-				parseTree = new String(byteArrayOutputStream.toByteArray());
+				parseTree = byteArrayOutputStream.toString(StandardCharsets.UTF_8);
 			}
 
 			String methodName = parsedStrings[0] == null ? null : parsedStrings[0];
@@ -198,7 +199,7 @@ public class DID {
 	@Override
 	public boolean equals(Object obj) {
 
-		if (obj == null || ! (obj instanceof DID)) return false;
+		if (! (obj instanceof DID)) return false;
 		if (obj == this) return true;
 
 		return this.didString.equals(((DID) obj).didString);
