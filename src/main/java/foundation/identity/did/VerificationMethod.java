@@ -51,13 +51,28 @@ public class VerificationMethod extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.controller != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, this.controller);
-			if (this.publicKeyBase64 != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
-			if (this.publicKeyBase58 != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
-			if (this.publicKeyHex != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
-			if (this.publicKeyPem != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
-			if (this.publicKeyMultibase != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYMULTIBASE, this.publicKeyMultibase);
-			if (this.publicKeyJwk != null) JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
+
+			if (this.controller != null) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, JsonLDUtils.uriToString(this.controller));
+			}
+			if (this.publicKeyBase64 != null) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE64, this.publicKeyBase64);
+			}
+			if (this.publicKeyBase58 != null) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYBASE58, this.publicKeyBase58);
+			}
+			if (this.publicKeyHex != null) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYHEX, this.publicKeyHex);
+			}
+			if (this.publicKeyPem != null) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYPEM, this.publicKeyPem);
+			}
+			if (this.publicKeyMultibase != null) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYMULTIBASE, this.publicKeyMultibase);
+			}
+			if (this.publicKeyJwk != null) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_PUBLICKEYJWK, this.publicKeyJwk);
+			}
 
 			return (VerificationMethod) this.jsonLdObject;
 		}

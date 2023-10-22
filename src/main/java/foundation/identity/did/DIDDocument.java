@@ -59,15 +59,34 @@ public class DIDDocument extends JsonLDObject {
 			super.build();
 
 			// add JSON-LD properties
-			if (this.controllers != null) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, this.controllers.stream().map(JsonLDUtils::uriToString).collect(Collectors.toList()));
-			if (this.alsoKnownAses != null) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_ALSOKNOWNAS, this.alsoKnownAses.stream().map(JsonLDUtils::uriToString).collect(Collectors.toList()));
-			if (this.verificationMethods != null) for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
-			if (this.authenticationVerificationMethods != null) for (VerificationMethod authenticationVerificationMethod : this.authenticationVerificationMethods) authenticationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.AUTHENTICATION);
-			if (this.assertionMethodVerificationMethods != null) for (VerificationMethod assertionMethodVerificationMethod : this.assertionMethodVerificationMethods) assertionMethodVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.ASSERTIONMETHOD);
-			if (this.keyAgreementVerificationMethods != null) for (VerificationMethod keyAgreementVerificationMethod : this.keyAgreementVerificationMethods) keyAgreementVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.KEYAGREEMENT);
-			if (this.capabilityInvocationVerificationMethods != null) for (VerificationMethod capabilityInvocationVerificationMethod : this.capabilityInvocationVerificationMethods) capabilityInvocationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYINVOCATION);
-			if (this.capabilityDelegationVerificationMethods != null) for (VerificationMethod capabilityDelegationVerificationMethod : this.capabilityDelegationVerificationMethods) capabilityDelegationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYDELEGATION);
-			if (this.services != null) for (Service service : this.services) service.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
+
+			if (this.controllers != null) {
+				JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, this.controllers.stream().map(JsonLDUtils::uriToString).collect(Collectors.toList()));
+			}
+			if (this.alsoKnownAses != null) {
+				JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_ALSOKNOWNAS, this.alsoKnownAses.stream().map(JsonLDUtils::uriToString).collect(Collectors.toList()));
+			}
+			if (this.verificationMethods != null) {
+				for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
+			}
+			if (this.authenticationVerificationMethods != null) {
+				for (VerificationMethod authenticationVerificationMethod : this.authenticationVerificationMethods) authenticationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.AUTHENTICATION);
+			}
+			if (this.assertionMethodVerificationMethods != null) {
+				for (VerificationMethod assertionMethodVerificationMethod : this.assertionMethodVerificationMethods) assertionMethodVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.ASSERTIONMETHOD);
+			}
+			if (this.keyAgreementVerificationMethods != null) {
+				for (VerificationMethod keyAgreementVerificationMethod : this.keyAgreementVerificationMethods) keyAgreementVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.KEYAGREEMENT);
+			}
+			if (this.capabilityInvocationVerificationMethods != null) {
+				for (VerificationMethod capabilityInvocationVerificationMethod : this.capabilityInvocationVerificationMethods) capabilityInvocationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYINVOCATION);
+			}
+			if (this.capabilityDelegationVerificationMethods != null) {
+				for (VerificationMethod capabilityDelegationVerificationMethod : this.capabilityDelegationVerificationMethods) capabilityDelegationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYDELEGATION);
+			}
+			if (this.services != null) {
+				for (Service service : this.services) service.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
+			}
 
 			return (DIDDocument) this.jsonLdObject;
 		}
@@ -188,15 +207,7 @@ public class DIDDocument extends JsonLDObject {
 		JsonLDObject.removeFromJsonLdObject(DIDDocument.class, jsonLdObject);
 	}
 
-	/*
-	 * Helper methods
-	 */
-
-	public Map<String, Object> toMap() {
-		return this.getJsonObject();
-	}
-
-	/*
+    /*
 	 * Getters
 	 */
 
