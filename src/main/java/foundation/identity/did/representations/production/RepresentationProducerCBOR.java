@@ -26,7 +26,7 @@ public class RepresentationProducerCBOR extends AbstractRepresentationProducer i
     public RepresentationProducer.Result produce(Map<String, Object> didDocument, Map<String, Object> representationSpecificEntries) throws IOException {
 
         RepresentationProducer.Result jsonResult = RepresentationProducerJSON.getInstance().produce(didDocument, representationSpecificEntries);
-        CBORObject cborObject = CBORObject.FromJSONBytes(jsonResult.representation());
+        CBORObject cborObject = CBORObject.FromJSONBytes(jsonResult.getRepresentation());
         byte[] representation = cborObject.EncodeToBytes();
         return new RepresentationProducer.Result(MEDIA_TYPE, representation);
     }
