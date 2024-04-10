@@ -49,10 +49,10 @@
 
 		<!-- Plugin Versions -->
 
-		<maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-		<maven-surefire-plugin.version>3.1.2</maven-surefire-plugin.version>
-		<maven-dependency-plugin.version>3.6.0</maven-dependency-plugin.version>
+		<maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
+		<maven-dependency-plugin.version>3.6.1</maven-dependency-plugin.version>
 		<maven-release-plugin.version>3.0.1</maven-release-plugin.version>
 		<maven-scm-plugin.version>2.0.1</maven-scm-plugin.version>
 		<maven-enforcer-plugin.version>3.4.1</maven-enforcer-plugin.version>
@@ -100,7 +100,7 @@
 						<configuration>
 							<rules>
 								<requireMavenVersion>
-									<version>3.2.5</version>
+									<version>3.6.3</version>
 								</requireMavenVersion>
 							</rules>
 							<fail>true</fail>
@@ -154,31 +154,31 @@
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-engine</artifactId>
-			<version>5.10.1</version>
+			<version>5.10.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>5.10.1</version>
+			<version>5.10.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>5.8.0</version>
+			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-junit-jupiter</artifactId>
-			<version>5.8.0</version>
+			<version>5.11.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>decentralized-identity</groupId>
 			<artifactId>jsonld-common-java</artifactId>
-			<version>1.9.0</version>
+			<version>1.10.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -188,7 +188,7 @@
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.16.0</version>
+			<version>1.16.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.sabnf</groupId>
