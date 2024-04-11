@@ -8,15 +8,15 @@ import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonValue;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.utils.URLEncodedUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class DIDURL {
@@ -116,7 +116,10 @@ public class DIDURL {
 			String fragment = parsedStrings[5] == null ? null : parsedStrings[5];
 
 			DID did = didString == null ? null : new DID(didString, methodName, methodSpecificId, null);
-			Map<String, String> parameters = query == null ? null : URLEncodedUtils.parse(query, StandardCharsets.UTF_8).stream().collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
+			URI uri;
+			URL url;
+
+			Map<String, String> parameters = query == null ? null : parseQuerySingle(query);
 
 			return new DIDURL(didUrlString, did, path, query, parameters, fragment, parseTree);
 		} catch (ParserException ex) {
@@ -145,6 +148,26 @@ public class DIDURL {
 	/*
 	 * Helper methods
 	 */
+
+	private static Map<String, String> parseQuerySingle(String query) {
+		return Pattern.compile("&")
+				.splitAsStream(query)
+				.map(s -> Arrays.copyOf(s.split("=", 2), 2))
+				.collect(Collectors.toMap(s -> decode(s[0]), s -> decode(s[1])));
+	}
+
+	private static Map<String, List<String>> parseQueryMulti(String query) {
+		return Pattern.compile("&")
+				.splitAsStream(query)
+				.map(s -> Arrays.copyOf(s.split("=", 2), 2))
+				.collect(Collectors.groupingBy(s -> decode(s[0]), Collectors.mapping(s -> decode(s[1]), Collectors.toList())));
+	}
+
+	private static String decode(final String encoded) {
+		return Optional.ofNullable(encoded)
+				.map(e -> URLDecoder.decode(e, StandardCharsets.UTF_8))
+				.orElse(null);
+	}
 
 	public URI toUri() {
 		return URI.create(this.getDidUrlString());
