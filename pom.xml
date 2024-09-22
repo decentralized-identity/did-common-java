@@ -178,7 +178,7 @@
 		<dependency>
 			<groupId>decentralized-identity</groupId>
 			<artifactId>jsonld-common-java</artifactId>
-			<version>1.10.0</version>
+			<version>1.11.0</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -193,7 +193,7 @@
 		<dependency>
 			<groupId>com.upokecenter</groupId>
 			<artifactId>cbor</artifactId>
-			<version>4.5.3</version>
+			<version>4.5.6</version>
 		</dependency>
 	</dependencies>
 
