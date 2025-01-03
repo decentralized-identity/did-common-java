@@ -13,6 +13,7 @@ import java.util.Objects;
 
 public class DIDContexts {
 
+    public static final URI JSONLD_CONTEXT_W3_NS_DID_V1_1 = URI.create("https://www.w3.org/ns/did/v1.1");
     public static final URI JSONLD_CONTEXT_W3_NS_DID_V1 = URI.create("https://www.w3.org/ns/did/v1");
     public static final URI JSONLD_CONTEXT_W3_2019_DID_V1 = URI.create("https://www.w3.org/2019/did/v1");
     public static final URI JSONLD_CONTEXT_W3ID_DID_V1 = URI.create("https://w3id.org/did/v1");
@@ -36,6 +37,8 @@ public class DIDContexts {
 
             CONTEXTS = new HashMap<>();
 
+            CONTEXTS.put(JSONLD_CONTEXT_W3_NS_DID_V1_1,
+                    JsonDocument.of(MediaType.JSON_LD, Objects.requireNonNull(DIDContexts.class.getResourceAsStream("diddocument-context-w3-ns-did-v1.1.jsonld"))));
             CONTEXTS.put(JSONLD_CONTEXT_W3_NS_DID_V1,
                     JsonDocument.of(MediaType.JSON_LD, Objects.requireNonNull(DIDContexts.class.getResourceAsStream("diddocument-context-w3-ns-did-v1.jsonld"))));
             CONTEXTS.put(JSONLD_CONTEXT_W3_2019_DID_V1,
