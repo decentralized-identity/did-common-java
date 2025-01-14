@@ -8,9 +8,10 @@ import java.io.IOException;
 public interface RepresentationProducer {
 
     public static byte[] produce(DIDDocument didDocument, String mediaType) throws IOException {
-        RepresentationProducer didDocumentConsumer = Representations.getProducer(mediaType);
-        if (didDocumentConsumer == null) throw new IllegalArgumentException("No producer for media type " + mediaType);
-        return didDocumentConsumer.produce(didDocument);
+        RepresentationProducer representationProducer = Representations.getProducer(mediaType);
+        if (representationProducer == null) throw new IOException("No DID document producer for media type: " + mediaType);
+
+        return representationProducer.produce(didDocument);
     }
 
     public String getMediaType();
