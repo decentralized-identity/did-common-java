@@ -15,4 +15,8 @@ jobs:
     uses: danubetech/workflows/.github/workflows/maven-snapshot.yml@main
     with:
       MAVEN_REPO_SERVER_ID: 'danubetech-maven-snapshots'
-    secrets: inherit
+    secrets:
+      VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+      CI_SECRET_READER_PERIODIC_TOKEN: ${{ secrets.CI_SECRET_READER_PERIODIC_TOKEN }}
+      VAULTCA: ${{ secrets.VAULTCA }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
