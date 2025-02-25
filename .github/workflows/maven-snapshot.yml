@@ -13,8 +13,6 @@ on:
 jobs:
   maven-snapshot:
     uses: danubetech/workflows/.github/workflows/maven-snapshot.yml@main
-    with:
-      MAVEN_REPO_SERVER_ID: 'danubetech-maven-snapshots'
     secrets:
       VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
       CI_SECRET_READER_PERIODIC_TOKEN: ${{ secrets.CI_SECRET_READER_PERIODIC_TOKEN }}
