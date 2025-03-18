@@ -43,6 +43,11 @@ public class DIDDocument extends JsonLDObject {
 		private List<VerificationMethod> keyAgreementVerificationMethods;
 		private List<VerificationMethod> capabilityInvocationVerificationMethods;
 		private List<VerificationMethod> capabilityDelegationVerificationMethods;
+		private List<URI> authenticationVerificationMethodReferences;
+		private List<URI> assertionMethodVerificationMethodReferences;
+		private List<URI> keyAgreementVerificationMethodReferences;
+		private List<URI> capabilityInvocationVerificationMethodReferences;
+		private List<URI> capabilityDelegationVerificationMethodReferences;
 		private List<Service> services;
 
 		public Builder(DIDDocument jsonLDObject) {
@@ -83,6 +88,21 @@ public class DIDDocument extends JsonLDObject {
 			}
 			if (this.capabilityDelegationVerificationMethods != null) {
 				for (VerificationMethod capabilityDelegationVerificationMethod : this.capabilityDelegationVerificationMethods) capabilityDelegationVerificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYDELEGATION);
+			}
+			if (this.authenticationVerificationMethodReferences != null) {
+				for (URI authenticationVerificationMethodReference : this.authenticationVerificationMethodReferences) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, VerificationRelationships.AUTHENTICATION, JsonLDUtils.uriToString(authenticationVerificationMethodReference));
+			}
+			if (this.assertionMethodVerificationMethodReferences != null) {
+				for (URI assertionMethodVerificationMethodReference : this.assertionMethodVerificationMethodReferences) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, VerificationRelationships.ASSERTIONMETHOD, JsonLDUtils.uriToString(assertionMethodVerificationMethodReference));
+			}
+			if (this.keyAgreementVerificationMethodReferences != null) {
+				for (URI keyAgreementVerificationMethodReference : this.keyAgreementVerificationMethodReferences) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, VerificationRelationships.KEYAGREEMENT, JsonLDUtils.uriToString(keyAgreementVerificationMethodReference));
+			}
+			if (this.capabilityInvocationVerificationMethodReferences != null) {
+				for (URI capabilityInvocationVerificationMethodReference : this.capabilityInvocationVerificationMethodReferences) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYINVOCATION, JsonLDUtils.uriToString(capabilityInvocationVerificationMethodReference));
+			}
+			if (this.capabilityDelegationVerificationMethodReferences != null) {
+				for (URI capabilityDelegationVerificationMethodReference : this.capabilityDelegationVerificationMethodReferences) JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, VerificationRelationships.CAPABILITYDELEGATION, JsonLDUtils.uriToString(capabilityDelegationVerificationMethodReference));
 			}
 			if (this.services != null) {
 				for (Service service : this.services) service.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
@@ -161,6 +181,51 @@ public class DIDDocument extends JsonLDObject {
 
 		public B capabilityDelegationVerificationMethod(VerificationMethod capabilityDelegationVerificationMethod) {
 			return this.capabilityDelegationVerificationMethods(capabilityDelegationVerificationMethod == null ? null : Collections.singletonList(capabilityDelegationVerificationMethod));
+		}
+
+		public B authenticationVerificationMethodReferences(List<URI> authenticationVerificationMethodReferences) {
+			this.authenticationVerificationMethodReferences = authenticationVerificationMethodReferences;
+			return (B) this;
+		}
+
+		public B authenticationVerificationMethodReference(URI authenticationVerificationMethodReference) {
+			return this.authenticationVerificationMethodReferences(authenticationVerificationMethodReference == null ? null : Collections.singletonList(authenticationVerificationMethodReference));
+		}
+
+		public B assertionMethodVerificationMethodReferences(List<URI> assertionMethodVerificationMethodReferences) {
+			this.assertionMethodVerificationMethodReferences = assertionMethodVerificationMethodReferences;
+			return (B) this;
+		}
+
+		public B assertionMethodVerificationMethodReference(URI assertionMethodVerificationMethodReference) {
+			return this.assertionMethodVerificationMethodReferences(assertionMethodVerificationMethodReference == null ? null : Collections.singletonList(assertionMethodVerificationMethodReference));
+		}
+
+		public B keyAgreementVerificationMethodReferences(List<URI> keyAgreementVerificationMethodReferences) {
+			this.keyAgreementVerificationMethodReferences = keyAgreementVerificationMethodReferences;
+			return (B) this;
+		}
+
+		public B keyAgreementVerificationMethodReference(URI keyAgreementVerificationMethodReference) {
+			return this.keyAgreementVerificationMethodReferences(keyAgreementVerificationMethodReference == null ? null : Collections.singletonList(keyAgreementVerificationMethodReference));
+		}
+
+		public B capabilityInvocationVerificationMethodReferences(List<URI> capabilityInvocationVerificationMethodReferences) {
+			this.capabilityInvocationVerificationMethodReferences = capabilityInvocationVerificationMethodReferences;
+			return (B) this;
+		}
+
+		public B capabilityInvocationVerificationMethodReference(URI capabilityInvocationVerificationMethodReference) {
+			return this.capabilityInvocationVerificationMethodReferences(capabilityInvocationVerificationMethodReference == null ? null : Collections.singletonList(capabilityInvocationVerificationMethodReference));
+		}
+
+		public B capabilityDelegationVerificationMethodReferences(List<URI> capabilityDelegationVerificationMethodReferences) {
+			this.capabilityDelegationVerificationMethodReferences = capabilityDelegationVerificationMethodReferences;
+			return (B) this;
+		}
+
+		public B capabilityDelegationVerificationMethodReference(URI capabilityDelegationVerificationMethodReference) {
+			return this.capabilityDelegationVerificationMethodReferences(capabilityDelegationVerificationMethodReference == null ? null : Collections.singletonList(capabilityDelegationVerificationMethodReference));
 		}
 
 		public B services(List<Service> services) {
