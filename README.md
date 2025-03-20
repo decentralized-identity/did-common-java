@@ -24,7 +24,7 @@ Dependency:
 	<dependency>
 		<groupId>decentralized-identity</groupId>
 		<artifactId>did-common-java</artifactId>
-		<version>1.11.0</version>
+		<version>1.17.0</version>
 	</dependency>
 
 ## Example
