@@ -66,10 +66,10 @@ public class DIDDocument extends JsonLDObject {
 			// add JSON-LD properties
 
 			if (this.controllers != null) {
-				JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, this.controllers.stream().map(JsonLDUtils::uriToString).collect(Collectors.toList()));
+				JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_CONTROLLER, this.controllers.stream().map(JsonLDUtils::uriToString).toList());
 			}
 			if (this.alsoKnownAses != null) {
-				JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_ALSOKNOWNAS, this.alsoKnownAses.stream().map(JsonLDUtils::uriToString).collect(Collectors.toList()));
+				JsonLDUtils.jsonLdAddAsJsonArray(this.jsonLdObject, DIDKeywords.JSONLD_TERM_ALSOKNOWNAS, this.alsoKnownAses.stream().map(JsonLDUtils::uriToString).toList());
 			}
 			if (this.verificationMethods != null) {
 				for (VerificationMethod verificationMethod : this.verificationMethods) verificationMethod.addToJsonLDObjectAsJsonArray(this.jsonLdObject);
@@ -278,12 +278,12 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<URI> getControllers() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_CONTROLLER);
-		return jsonArray == null ? null : jsonArray.stream().map(String.class::cast).map(JsonLDUtils::stringToUri).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(String.class::cast).map(JsonLDUtils::stringToUri).toList();
 	}
 
 	public List<URI> getAlsoKnownAses() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_ALSOKNOWNAS);
-		return jsonArray == null ? null : jsonArray.stream().map(String.class::cast).map(JsonLDUtils::stringToUri).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(String.class::cast).map(JsonLDUtils::stringToUri).toList();
 	}
 
 	public Map<URI, VerificationMethod> getAllVerificationMethodsAsMap() {
@@ -317,7 +317,7 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<VerificationMethod> getVerificationMethods() {
 		List<Object> jsonArray = this.getVerificationMethodsJsonArray(DIDKeywords.JSONLD_TERM_VERIFICATIONMETHOD);
-		return jsonArray == null ? null : jsonArray.stream().map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(Map.class::cast).map(VerificationMethod::fromJsonObject).toList();
 	}
 
 	public List<Object> getVerificationMethods(String verificationRelationship) {
@@ -326,12 +326,12 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<VerificationMethod> getVerificationMethodsInline(String verificationRelationship) {
 		List<Object> jsonArray = this.getVerificationMethods(verificationRelationship);
-		return jsonArray == null ? null : jsonArray.stream().filter(Map.class::isInstance).map(Map.class::cast).map(VerificationMethod::fromJsonObject).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().filter(Map.class::isInstance).map(Map.class::cast).map(VerificationMethod::fromJsonObject).toList();
 	}
 
 	public List<VerificationMethod> getVerificationMethodsDereferenced(String verificationRelationship) {
 		List<Object> jsonArray = this.getVerificationMethods(verificationRelationship);
-		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), true)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(new JsonLDDereferencer.Function(this, this.getId(), true)).filter(Objects::nonNull).map(x -> VerificationMethod.fromJsonObject(x.getJsonObject())).toList();
 	}
 
 	public List<Object> getAuthenticationVerificationMethods() {
@@ -396,6 +396,6 @@ public class DIDDocument extends JsonLDObject {
 
 	public List<Service> getServices() {
 		List<Object> jsonArray = JsonLDUtils.jsonLdGetJsonArray(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICE);
-		return jsonArray == null ? null : jsonArray.stream().map(Map.class::cast).map(Service::fromJsonObject).collect(Collectors.toList());
+		return jsonArray == null ? null : jsonArray.stream().map(Map.class::cast).map(Service::fromJsonObject).toList();
 	}
 }
