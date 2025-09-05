@@ -2,6 +2,8 @@ package foundation.identity.did;
 
 import org.junit.jupiter.api.Test;
 
+import java.net.URI;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ServiceTest {
@@ -31,13 +33,13 @@ public class ServiceTest {
 
 		return Service.builder()
 				.type("DIDCommService")
-				.serviceEndpoint("http://localhost:8080/")
+				.serviceEndpoint(URI.create("http://localhost:8080/"))
 				.build();
 	}
 
 	private void test(Service service) {
 
 		assertEquals("DIDCommService", service.getType());
-		assertEquals("http://localhost:8080/", service.getServiceEndpoint());
+		assertEquals(URI.create("http://localhost:8080/"), service.getServiceEndpoint());
 	}
 }

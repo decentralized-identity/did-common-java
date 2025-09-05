@@ -46,17 +46,26 @@ public class Service extends JsonLDObject {
 
 			// add JSON-LD properties
 
-			if (this.serviceEndpoint != null) {
-				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_SERVICEENDPOINT, this.serviceEndpoint);
-			}
+			if (this.serviceEndpoint != null && this.serviceEndpoint instanceof URI serviceEndpointUri) {
+				JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_SERVICEENDPOINT, JsonLDUtils.uriToString(serviceEndpointUri));
+			} else if (this.serviceEndpoint != null && this.serviceEndpoint instanceof Map<?, ?> serviceEndpointMap) {
+                JsonLDUtils.jsonLdAdd(this.jsonLdObject, DIDKeywords.JSONLD_TERM_SERVICEENDPOINT, serviceEndpointMap);
+            } else if (this.serviceEndpoint != null) {
+                throw new IllegalStateException("Invalid value for 'serviceEndpoint': " + this.serviceEndpoint.getClass().getSimpleName());
+            }
 
 			return (Service) this.jsonLdObject;
 		}
 
-		public B serviceEndpoint(Object serviceEndpoint) {
-			this.serviceEndpoint = serviceEndpoint;
+		public B serviceEndpoint(URI serviceEndpointUri) {
+			this.serviceEndpoint = serviceEndpointUri;
 			return (B) this;
 		}
+
+        public B serviceEndpoint(Map<String, Object> serviceEndpointMap) {
+            this.serviceEndpoint = serviceEndpointMap;
+            return (B) this;
+        }
 	}
 
 	public static Builder<? extends Builder<?>> builder() {
@@ -98,6 +107,15 @@ public class Service extends JsonLDObject {
 	 */
 
 	public Object getServiceEndpoint() {
-		return JsonLDUtils.jsonLdGetJsonValue(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICEENDPOINT);
+		Object serviceEndpoint = JsonLDUtils.jsonLdGetJsonValue(this.getJsonObject(), DIDKeywords.JSONLD_TERM_SERVICEENDPOINT);
+        if (serviceEndpoint != null && serviceEndpoint instanceof String serviceEndpointString) {
+            return JsonLDUtils.stringToUri(serviceEndpointString);
+        } else if (serviceEndpoint != null && serviceEndpoint instanceof Map<?, ?> serviceEndpointMap) {
+            return serviceEndpointMap;
+        } else if (serviceEndpoint != null) {
+            throw new IllegalStateException("Invalid value for 'serviceEndpoint': " + serviceEndpoint.getClass().getSimpleName());
+        } else {
+            return serviceEndpoint;
+        }
 	}
 }
