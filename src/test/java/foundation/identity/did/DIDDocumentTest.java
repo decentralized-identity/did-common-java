@@ -61,7 +61,7 @@ public class DIDDocumentTest {
 
 		// create DID DOCUMENT
 
-		return DIDDocument.builder()
+		return DIDDocumentV1_0.builder()
 				.id(URI.create("did:ex:123"))
 				.controller(URI.create("did:ex:456"))
 				.alsoKnownAs(URI.create("did:ex:789"))

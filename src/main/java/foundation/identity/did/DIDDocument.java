@@ -1,26 +1,23 @@
 package foundation.identity.did;
 
-import com.apicatalog.jsonld.loader.DocumentLoader;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import foundation.identity.did.jsonld.DIDContexts;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import foundation.identity.did.jsonld.DIDKeywords;
 import foundation.identity.jsonld.JsonLDDereferencer;
 import foundation.identity.jsonld.JsonLDObject;
 import foundation.identity.jsonld.JsonLDUtils;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 import java.util.*;
-import java.util.stream.Collectors;
 
-public class DIDDocument extends JsonLDObject {
+@JsonDeserialize(using=DIDDocument.DIDDocumentJsonDeserializer.class)
+public abstract class DIDDocument extends JsonLDObject {
 
-	public static final URI[] DEFAULT_JSONLD_CONTEXTS = { DIDContexts.JSONLD_CONTEXT_W3_NS_DID_V1 };
-	public static final String[] DEFAULT_JSONLD_TYPES = { };
-	public static final String DEFAULT_JSONLD_PREDICATE = null;
-	public static final DocumentLoader DEFAULT_DOCUMENT_LOADER = DIDContexts.DOCUMENT_LOADER;
-
-	@JsonCreator
 	public DIDDocument() {
 		super();
 	}
@@ -33,7 +30,7 @@ public class DIDDocument extends JsonLDObject {
 	 * Factory methods
 	 */
 
-	public static class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
+	public static abstract class Builder<B extends Builder<B>> extends JsonLDObject.Builder<B> {
 
 		private List<URI> controllers;
 		private List<URI> alsoKnownAses;
@@ -238,38 +235,52 @@ public class DIDDocument extends JsonLDObject {
 		}
 	}
 
-	public static Builder<? extends Builder<?>> builder() {
-		return new Builder<>(new DIDDocument());
-	}
-
 	public static DIDDocument fromJsonObject(Map<String, Object> jsonObject) {
-		return new DIDDocument(jsonObject);
+		List<URI> jsonldContexts = JsonLDObject.fromMap(jsonObject).getContexts();
+		URI firstJsonldContext = jsonldContexts.get(0);
+		if (DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0].equals(firstJsonldContext)) {
+			return new DIDDocumentV1_0(jsonObject);
+		}
+		if (DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0].equals(firstJsonldContext)) {
+			return new DIDDocumentV1_1(jsonObject);
+		}
+		return new DIDDocumentV1_0(jsonObject);
 	}
 
 	public static DIDDocument fromJsonLDObject(JsonLDObject jsonLDObject) { return fromJsonObject(jsonLDObject.getJsonObject()); }
 
 	public static DIDDocument fromJson(Reader reader) {
-		return new DIDDocument(readJson(reader));
+		return fromJsonObject(readJson(reader));
 	}
 
 	public static DIDDocument fromJson(String json) {
-		return new DIDDocument(readJson(json));
+		return fromJsonObject(readJson(json));
 	}
 
 	public static DIDDocument fromMap(Map<String, Object> map) {
-		return new DIDDocument(map);
+		return fromJsonObject(map);
 	}
 
 	/*
-	 * Adding, getting, and removing the JSON-LD object
+	 * Helper classes
 	 */
 
-	public static DIDDocument getFromJsonLDObject(JsonLDObject jsonLdObject) {
-		return JsonLDObject.getFromJsonLDObject(DIDDocument.class, jsonLdObject);
-	}
+	static class DIDDocumentJsonDeserializer extends JsonDeserializer<DIDDocument> {
 
-	public static void removeFromJsonLdObject(JsonLDObject jsonLdObject) {
-		JsonLDObject.removeFromJsonLdObject(DIDDocument.class, jsonLdObject);
+		@Override
+		public DIDDocument deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+			Map<String, Object> jsonObject = jp.readValueAs(Map.class);
+			Object contexts = jsonObject.get("@context");
+			if (! (contexts instanceof List) || ((List<?>) contexts).isEmpty() || ! (((List<?>) contexts).get(0) instanceof String)) throw new IllegalArgumentException("Not a valid value for DID document @context: " + contexts);
+			String firstContext = ((List<String>) contexts).get(0);
+			if (DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0].toString().equals(firstContext)) {
+				return DIDDocumentV1_0.fromJsonObject(jsonObject);
+			}
+			if (DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0].toString().equals(firstContext)) {
+				return DIDDocumentV1_1.fromJsonObject(jsonObject);
+			}
+			return DIDDocumentV1_0.fromJsonObject(jsonObject);
+		}
 	}
 
     /*
