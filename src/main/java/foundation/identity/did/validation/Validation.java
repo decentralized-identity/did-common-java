@@ -1,6 +1,7 @@
 package foundation.identity.did.validation;
 
 import foundation.identity.did.DIDDocument;
+import foundation.identity.did.DIDDocumentV1_0;
 import foundation.identity.did.DIDDocumentV1_1;
 
 import java.net.URI;
@@ -37,11 +38,23 @@ public class Validation {
     }
 
     public static void validate(DIDDocument didDocument) throws IllegalStateException {
+        if (didDocument instanceof DIDDocumentV1_0 didDocumentV1_0) {
+            validate(didDocumentV1_0);
+            return;
+        }
+        if (didDocument instanceof DIDDocumentV1_1 didDocumentV1_1) {
+            validate(didDocumentV1_1);
+            return;
+        }
+        throw new IllegalStateException("Unknown DID document version: " + didDocument);
+    }
+
+    public static void validate(DIDDocumentV1_0 didDocument) throws IllegalStateException {
 
         validateRun(() -> validateTrue(didDocument.getJsonObject() != null), "Bad or missing JSON object.");
         validateRun(() -> validateTrue(! didDocument.getContexts().isEmpty()), "Bad or missing '@context'.");
         validateRun(() -> validateUrl(didDocument.getContexts().get(0)), "@context must be a valid URI: " + didDocument.getContexts().get(0));
-        validateRun(() -> validateTrue(DIDDocument.DEFAULT_JSONLD_CONTEXTS[0].equals(didDocument.getContexts().get(0))), "First value of @context must be " + DIDDocument.DEFAULT_JSONLD_CONTEXTS[0] + ": " + didDocument.getContexts().get(0));
+        validateRun(() -> validateTrue(DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0].equals(didDocument.getContexts().get(0))), "First value of @context must be " + DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0] + ": " + didDocument.getContexts().get(0));
         validateRun(() -> { if (didDocument.getId() != null) validateUrl(didDocument.getId()); }, "'id' must be a valid URI.");
     }
 
