@@ -271,8 +271,12 @@ public abstract class DIDDocument extends JsonLDObject {
 		public DIDDocument deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 			Map<String, Object> jsonObject = jp.readValueAs(Map.class);
 			Object contexts = jsonObject.get("@context");
-			if (! (contexts instanceof List) || ((List<?>) contexts).isEmpty() || ! (((List<?>) contexts).get(0) instanceof String)) throw new IllegalArgumentException("Not a valid value for DID document @context: " + contexts);
-			String firstContext = ((List<String>) contexts).get(0);
+			String firstContext;
+			if (contexts instanceof List && ! ((List<?>) contexts).isEmpty() && ((List<?>) contexts).get(0) instanceof String) {
+				firstContext = ((List<String>) contexts).get(0);
+			} else {
+				firstContext = null;
+			}
 			if (DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0].toString().equals(firstContext)) {
 				return DIDDocumentV1_0.fromJsonObject(jsonObject);
 			}
