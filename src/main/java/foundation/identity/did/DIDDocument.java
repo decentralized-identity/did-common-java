@@ -236,12 +236,12 @@ public abstract class DIDDocument extends JsonLDObject {
 	}
 
 	public static DIDDocument fromJsonObject(Map<String, Object> jsonObject) {
-		List<URI> jsonldContexts = JsonLDObject.fromMap(jsonObject).getContexts();
-		URI firstJsonldContext = jsonldContexts.get(0);
-		if (DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0].equals(firstJsonldContext)) {
+		List<URI> contexts = JsonLDObject.fromMap(jsonObject).getContexts();
+		URI firstContext = contexts == null ? null : contexts.get(0);
+		if (DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0].equals(firstContext)) {
 			return new DIDDocumentV1_0(jsonObject);
 		}
-		if (DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0].equals(firstJsonldContext)) {
+		if (DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0].equals(firstContext)) {
 			return new DIDDocumentV1_1(jsonObject);
 		}
 		return new DIDDocumentV1_0(jsonObject);
