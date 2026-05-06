@@ -2,7 +2,6 @@ package foundation.identity.did.representations.production;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import foundation.identity.did.DIDDocument;
-import foundation.identity.did.representations.Representations;
 
 import java.io.IOException;
 

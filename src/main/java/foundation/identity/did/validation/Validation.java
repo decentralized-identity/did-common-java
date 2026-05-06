@@ -1,37 +1,33 @@
 package foundation.identity.did.validation;
 
-import foundation.identity.did.DIDDocument;
-import foundation.identity.did.DIDDocumentV1_0;
-import foundation.identity.did.DIDDocumentV1_1;
+import foundation.identity.did.*;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class Validation {
 
     private static void validateTrue(boolean valid) {
-
         if (! valid) throw new RuntimeException();
     }
 
-    private static void validateUrl(URI uri) {
+    private static void validateNotNull(Object object) {
+        if (object == null) throw new RuntimeException();
+    }
 
-        try {
+    private static void validateNotEmpty(Collection<?> collection) {
+        if (collection.isEmpty()) throw new RuntimeException();
+    }
 
-            if (! uri.isAbsolute()) throw new URISyntaxException("Not absolute.", uri.toString());
-        } catch (URISyntaxException ex) {
-
-            throw new RuntimeException(ex.getMessage(), ex);
-        }
+    private static void validateEquals(Object o1, Object o2) {
+        if (! o1.equals(o2)) throw new RuntimeException();
     }
 
     private static void validateRun(Runnable runnable, String message) throws IllegalStateException {
-
         try {
-
             runnable.run();
         } catch (Exception ex) {
-
             if (ex.getMessage() != null && ! ex.getMessage().isEmpty()) message = message + " (" + ex.getMessage().trim() + ")";
             throw new IllegalStateException(message, ex);
         }
@@ -50,20 +46,39 @@ public class Validation {
     }
 
     public static void validate(DIDDocumentV1_0 didDocument) throws IllegalStateException {
-
-        validateRun(() -> validateTrue(didDocument.getJsonObject() != null), "Bad or missing JSON object.");
-        validateRun(() -> validateTrue(! didDocument.getContexts().isEmpty()), "Bad or missing '@context'.");
-        validateRun(() -> validateUrl(didDocument.getContexts().get(0)), "@context must be a valid URI: " + didDocument.getContexts().get(0));
-        validateRun(() -> validateTrue(DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0].equals(didDocument.getContexts().get(0))), "First value of @context must be " + DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0] + ": " + didDocument.getContexts().get(0));
-        validateRun(() -> { if (didDocument.getId() != null) validateUrl(didDocument.getId()); }, "'id' must be a valid URI.");
+        validateRun(() -> validateNotNull(didDocument.getJsonObject()), "Missing JSON object.");
+        validateRun(() -> validateNotNull(didDocument.getContexts()), "Missing '@context': " + didDocument.getContexts());
+        validateRun(() -> validateNotEmpty(didDocument.getContexts()), "Empty '@context': " + didDocument.getContexts());
+        validateRun(() -> validateEquals(DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0], didDocument.getContexts().get(0)), "First value of '@context' must be " + DIDDocumentV1_0.DEFAULT_JSONLD_CONTEXTS[0] + ": " + didDocument.getContexts().get(0));
+        validateRun(() -> validateNotNull(didDocument.getId()), "Missing 'id': " + didDocument.getId());
+        validateRun(() -> validateTrue(didDocument.getId().isAbsolute()), "'Invalid 'id': " + didDocument.getId());
+        if (didDocument.getVerificationMethods() != null) didDocument.getVerificationMethods().forEach(Validation::validate);
+        if (didDocument.getServices() != null) didDocument.getServices().forEach(Validation::validate);
     }
 
     public static void validate(DIDDocumentV1_1 didDocument) throws IllegalStateException {
+        validateRun(() -> validateNotNull(didDocument.getJsonObject()), "Missing JSON object.");
+        validateRun(() -> validateNotNull(didDocument.getContexts()), "Missing '@context': " + didDocument.getContexts());
+        validateRun(() -> validateNotEmpty(didDocument.getContexts()), "Empty '@context': " + didDocument.getContexts());
+        validateRun(() -> validateEquals(DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0], didDocument.getContexts().get(0)), "First value of '@context' must be " + DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0] + ": " + didDocument.getContexts().get(0));
+        validateRun(() -> validateTrue(didDocument.getId().isAbsolute()), "'Invalid 'id': " + didDocument.getId());
+        if (didDocument.getVerificationMethods() != null) didDocument.getVerificationMethods().forEach(Validation::validate);
+        if (didDocument.getServices() != null) didDocument.getServices().forEach(Validation::validate);
+    }
 
-        validateRun(() -> validateTrue(didDocument.getJsonObject() != null), "Bad or missing JSON object.");
-        validateRun(() -> validateTrue(! didDocument.getContexts().isEmpty()), "Bad or missing '@context'.");
-        validateRun(() -> validateUrl(didDocument.getContexts().get(0)), "@context must be a valid URI: " + didDocument.getContexts().get(0));
-        validateRun(() -> validateTrue(DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0].equals(didDocument.getContexts().get(0))), "First value of @context must be " + DIDDocumentV1_1.DEFAULT_JSONLD_CONTEXTS[0] + ": " + didDocument.getContexts().get(0));
-        validateRun(() -> { if (didDocument.getId() != null) validateUrl(didDocument.getId()); }, "'id' must be a valid URI.");
+    public static void validate(VerificationMethod verificationMethod) {
+        validateRun(() -> validateNotNull(verificationMethod.getJsonObject()), "Missing JSON object.");
+        validateRun(() -> validateNotNull(verificationMethod.getId()), "Missing verficationMethod 'id': " + verificationMethod.getId());
+        validateRun(() -> validateNotNull(verificationMethod.getType()), "Missing verficationMethod 'type': " + verificationMethod.getType());
+        validateRun(() -> validateNotNull(verificationMethod.getController()), "Missing verficationMethod 'controller': " + verificationMethod.getController());
+        validateRun(() -> validateTrue(verificationMethod.getController().isAbsolute()), "'Invalid verificationMethod 'controller': " + verificationMethod.getController());
+    }
+
+    public static void validate(Service service) {
+        validateRun(() -> validateNotNull(service.getJsonObject()), "Missing JSON object.");
+        validateRun(() -> validateNotNull(service.getId()), "Missing service 'id': " + service.getId());
+        validateRun(() -> validateNotNull(service.getType()), "Missing service 'type': " + service.getType());
+        validateRun(() -> validateNotNull(service.getServiceEndpoint()), "Missing service 'serviceEndpoint': " + service.getServiceEndpoint());
+        validateRun(() -> validateTrue(service.getServiceEndpoint() instanceof String || service.getServiceEndpoint() instanceof Map || service.getServiceEndpoint() instanceof List), "Bad or missing service 'serviceEndpoint': " + service.getServiceEndpoint());
     }
 }

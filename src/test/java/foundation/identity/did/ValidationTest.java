@@ -4,9 +4,6 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import foundation.identity.did.validation.Validation;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class ValidationTest {
