@@ -79,6 +79,6 @@ public class Validation {
         validateRun(() -> validateNotNull(service.getId()), "Missing service 'id': " + service.getId());
         validateRun(() -> validateNotNull(service.getType()), "Missing service 'type': " + service.getType());
         validateRun(() -> validateNotNull(service.getServiceEndpoint()), "Missing service 'serviceEndpoint': " + service.getServiceEndpoint());
-        validateRun(() -> validateTrue(service.getServiceEndpoint() instanceof String || service.getServiceEndpoint() instanceof Map || service.getServiceEndpoint() instanceof List), "Bad or missing service 'serviceEndpoint': " + service.getServiceEndpoint());
+        validateRun(() -> validateTrue(service.getServiceEndpoint() instanceof String || service.getServiceEndpoint() instanceof Map || service.getServiceEndpoint() instanceof List), "Bad or missing service 'serviceEndpoint': " + service.getServiceEndpoint() + " (" + (service.getServiceEndpoint() == null ? null : service.getServiceEndpoint().getClass().getSimpleName()) + ")");
     }
 }
