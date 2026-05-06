@@ -9,6 +9,7 @@ import foundation.identity.jsonld.JsonLDUtils;
 
 import java.io.Reader;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 public class Service extends JsonLDObject {
@@ -112,6 +113,8 @@ public class Service extends JsonLDObject {
             return JsonLDUtils.stringToUri(serviceEndpointString);
         } else if (serviceEndpoint != null && serviceEndpoint instanceof Map<?, ?> serviceEndpointMap) {
             return serviceEndpointMap;
+		} else if (serviceEndpoint != null && serviceEndpoint instanceof List<?> serviceEndpointMap) {
+			return serviceEndpointMap;
         } else if (serviceEndpoint != null) {
             throw new IllegalStateException("Invalid value for 'serviceEndpoint': " + serviceEndpoint.getClass().getSimpleName());
         } else {
